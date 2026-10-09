@@ -1,0 +1,9 @@
+manuscript/build/
+__pycache__/
+*.pyc
+.venv/
+*.aux
+*.log
+*.bbl
+*.blg
+*.out
