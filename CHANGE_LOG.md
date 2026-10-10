@@ -1,3 +1,15 @@
+# 2026-10-10 — Methods: MIP backend, limits and hardware (#3, branch `issue-3-solver-settings`)
+
+- `metadata.tex`: `\mipbackend` = Gurobi 13.0.3, `\miptimelimit` = 1800 s, `\earlinesslimit` =
+  900 s. Settings decided by G. Paradis on 2026-10-10 (option B).
+- `sections/methods.tex`: new calibration paragraph justifying the limits. Its numbers come from
+  `results/calibration/trajectory_checkpoints.csv`; the HiGHS vs Gurobi comparison comes from
+  `results/solver_probe/`. Also added hardware and concurrency (36 MIP / 34 SA workers; 36 physical
+  cores) and the software versions.
+- `results/calibration/` and `results/solver_probe/`: copies of the experiment-repo outputs (commit
+  `9eef3da`) with `PROVENANCE.md`.
+- Build: `cd manuscript && /tmp/opencode/tex/tectonic -o build main.tex` (0 errors, no overfull boxes).
+
 # 2026-10-10 — Manuscript skeleton and Ch. 4 → paper map (#1, branch `issue-1-manuscript-skeleton`)
 
 - `manuscript/main.tex` (article class, 12 pt, Letter, double spacing, continuous line numbers,
