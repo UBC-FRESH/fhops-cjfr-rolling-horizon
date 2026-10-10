@@ -102,8 +102,11 @@ re-optimization interval. The results reported here supersede those values.
 The full factorial design crossed the nine scenarios with
 $\theta \in \{2, 4, 8, 16\}$~weeks, $f \in \{1, 7, 14\}$~days, and both solution methods: 216
 rolling-horizon runs. These levels represent daily, weekly, and biweekly re-planning cycles and
-horizons from two weeks to the full season. For each scenario and method we also solved one
-full-horizon baseline ($\theta = f = H$), giving 18 baselines. Inputs were identical across
+horizons from two weeks to the full season. For each scenario and method we also solved one full-horizon baseline ($\theta = f = H$), giving 18 baselines.
+A rolling run solves $\lceil H/f \rceil$ windows: 112, 16, or 8 for $f = 1$, 7, and 14 days. Window
+lengths of 2--16 weeks span a wide range of problem sizes. For the MIP, the window models range from
+about 10\,000 binary variables (18 blocks, 14 days) to about 350\,000 (40 blocks, 112 days)
+(Table~S1). Inputs were identical across
 windows, so differences between runs come only from the rolling-horizon configuration. Runs were
 executed in parallel, one single-threaded process per run, on a Linux server with 36 physical
 cores (72 logical) and 754~GB of memory. The MIP runs were executed first, 36 at a time (one per physical
@@ -122,10 +125,18 @@ Each run was scored on its stitched plan, replayed against the full 112-day scen
 deterministic playback. We report:
 \begin{itemize}
   \item delivered volume (m$^3$ output by the final phase) and remaining volume;
-  \item relative delivered volume against two references: the same-method full-horizon baseline,
-        which measures the cost of decomposition for a given method; and the best plan found for
-        the scenario by any run, which allows comparison across methods and covers baselines that
-        are themselves limited by solver time;
+  \item relative delivered volume against two references. For run $r$ on scenario $k$ with
+        method $m$ and delivered volume $V_r$,
+        \begin{equation}
+          R^{\mathrm{base}}_r = \frac{V_r}{V^{\mathrm{base}}_{k,m}}, \qquad
+          R^{\mathrm{best}}_r = \frac{V_r}{\max_{r' \in \mathcal{R}_k} V_{r'}},
+          \label{eq:relative}
+        \end{equation}
+        where $V^{\mathrm{base}}_{k,m}$ is the delivered volume of the same-method full-horizon
+        baseline and $\mathcal{R}_k$ is the set of all runs on scenario $k$ (both methods,
+        baselines included). $R^{\mathrm{base}}$ measures the cost of decomposition for a given
+        method. $R^{\mathrm{best}}$ allows comparison across methods and is not inflated when a
+        baseline is itself limited by solver time;
   \item sequencing violations in the replayed plan, that is, slots in which a phase was scheduled
         to process more volume than its upstream phases had staged. We count them twice: with the
         FHOPS volume tolerance of $10^{-6}$~m$^3$, and with a tolerance of $10^{-3}$~m$^3$. The
@@ -133,7 +144,14 @@ deterministic playback. We report:
   \item block-to-block machine moves and schedule continuity, computed from the playback records
         that produced volume. Continuity is the share of the machines working a block on one
         working day that also work it on the block's next working day, pooled over blocks and days
-        \citep[adapted from][]{vanhoucke2006work}. Moves are free in these scenarios, so neither
+        \citep[adapted from][]{vanhoucke2006work}:
+        \begin{equation}
+          C = \frac{\sum_{b}\sum_{i} \lvert M_{b,d_i} \cap M_{b,d_{i+1}} \rvert}
+                   {\sum_{b}\sum_{i} \lvert M_{b,d_i} \rvert},
+          \label{eq:continuity}
+        \end{equation}
+        where $d_1 < d_2 < \dots$ are the days on which block $b$ is worked and $M_{b,d}$ is the
+        set of machines that produced volume on block $b$ on day $d$. Moves are free in these scenarios, so neither
         method is rewarded for reducing them, and both measures describe incidental schedule
         structure rather than an optimized property;
   \item computing effort: total wall time over all windows, and the number of windows that

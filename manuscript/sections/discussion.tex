@@ -50,6 +50,25 @@ work limits rather than wall-clock limits, or heuristics alone for the largest i
 \citep{frisk2016detailed,audy2023planning}. \pending{Add the grid evidence: share of time-limited
 windows by size and $\theta$; SA versus MIP delivered volume and wall time.}
 
+\subsection{Implications for evaluating operational planning systems}
+The protocol used here applies to rolling-horizon planning systems in general, not only to FHOPS.
+Four elements make an evaluation trustworthy. First, each window must start from the state
+implied by the decisions already locked. For a multi-phase system that means remaining volume,
+inter-phase inventory, and machine positions, and in other settings it would include open orders,
+crews, or road status. Second, the score must be computed on the stitched plan, replayed against
+the full problem by an evaluator independent of the solver that produced it. The replay then
+reveals infeasibilities that each window's own model cannot see. Third, window outcomes (time
+limits reached, no solution, empty plans) must be reported for every run, so that solver failures
+are not read as planning effects. Fourth, solver limits should be chosen from the observed
+trajectory of incumbent and bound, and reported together with the effective solver effort,
+because the effort a time limit buys depends on the hardware and on what else runs on it.
+These requirements echo the gaps found in operational planning models more broadly. In the review
+of \citet{jaffray2026thesis}, none of 23 models reported explicit validation and none released
+fully open artefacts. A planning system whose configuration is to be trusted in practice should
+let users lock decisions, re-plan from the current state, and audit the implemented schedule. It
+should also expose these diagnostics. Open scenario contracts and replayable outputs, as used
+here, let other groups repeat an evaluation, contest it, or extend it to their own operations.
+
 \subsection{Practical implications}
 \pending{Guidance on configuring rolling-horizon planning, carried over from the thesis
 discussion where the new results support it: directional long-range plans

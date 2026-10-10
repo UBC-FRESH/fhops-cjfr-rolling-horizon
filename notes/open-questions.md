@@ -1,6 +1,10 @@
 # Open questions and decisions
 
 ## Decided
+- 2026-10-10: Funding statement from the SoftwareX acknowledgements: NSERC Discovery Grant
+  RGPIN-2023-04197 (G.P.; part of R.J.'s stipend), FRESH lab funds (G.P.), BRIMM (K.C.'s salary).
+- 2026-10-10: Thesis citation: UBC Open Collections item 1.0452424
+  (https://open.library.ubc.ca/collections/ubctheses/24/items/1.0452424).
 - 2026-10-09: CJFR **Research article**; authors Jaffray, Coupland, Paradis (corresponding: Paradis);
   all authors sign off before submission, including conclusions that differ from Ch. 4.
 - 2026-10-10: **MIP arm** uses Gurobi 13.0.3, cold start, 1 thread, 1800 s stage 1 and 900 s
@@ -17,14 +21,13 @@
 
 ## Needs author input (before submission)
 - Corresponding e-mail and departments (title page).
-- Funding agencies and grant numbers.
 - CRediT roles (draft in `sections/statements.tex`).
 - Competing-interest wording (G.P. leads FHOPS development).
 - AI-use disclosure wording (draft in Acknowledgements).
 - Suggested referees (optional).
-- Thesis citation: cIRcle handle/DOI.
-- Data deposit: Dryad (free through 2026 via the submission e-mail) or Zenodo. Make both GitHub
-  repos public at submission.
+- Data deposit (decided 2026-10-10, G.P.): open GitHub repos in UBC-FRESH. A versioned GitHub
+  release triggers a Zenodo archive and DOI. Still to do: make both repos public, cut the releases
+  and insert the DOIs.
 - FHOPS 1.0.1 archive DOI (Zenodo release), if one is wanted for the software citation.
 - Confirm that Zenodo record 19200385 matches the scenario bundles used (`data/input/scenarios/`
   in the experiment repo, generated 2026-02-28).
@@ -39,3 +42,15 @@
 - UBC-FRESH/fhops#157 (comment): tiny-production rows also occur in stage 1 with Gurobi.
 - Candidate for 1.0.2: per-stage solver options (deterministic `WorkLimit` per stage). Not filed
   yet; file if the paper needs it.
+
+## Length budget (CJFR research article: 6000 words Introduction→Discussion)
+G.P. (2026-10-10): a 2500-word body is too short. The gap was unwritten results and discussion
+plus an over-tightened introduction, not a lack of content. Target:
+
+| Section | Target | Now (2026-10-10) |
+|---|---|---|
+| Introduction | 1000–1200 | 966 |
+| Materials and methods | 1500–1700 | 1461 |
+| Results | 1400–1700 | placeholders |
+| Discussion + Conclusions | 1600–1900 | 933 (results-independent parts) |
+| Total | ≤ 6000 | 3386 |

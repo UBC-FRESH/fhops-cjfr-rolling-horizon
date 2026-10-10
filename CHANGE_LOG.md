@@ -1,3 +1,30 @@
+# 2026-10-10 — Fuller introduction and methods, funding, thesis URL, data deposit (#9, branch `issue-9-expand-text`)
+
+- G.P. flagged the 2546-word body as too short. Response: the gap was the unwritten results and
+  discussion plus an over-tightened introduction. New length budget in `notes/open-questions.md`.
+- Introduction rewritten (585 → 966 words):
+  - planning hierarchy and the under-served operational level (Rönnqvist et al. 2015, 2023;
+    Epstein et al. 2007; Santos et al. 2019; Bouchard et al. 2017; Shahi et al. 2018);
+  - findings of the thesis systematic review: 23 models, none fully open, one with open data
+    (Viana et al. 2023), no explicit validation, one rolling-horizon model (Arora et al. 2023);
+  - re-planning as practice (Martell et al. 1998; Ulvdal et al. 2023);
+  - schedule nervousness (Venkataraman and Nathan 1999; Sahin et al. 2008; Herding and Mönch 2024);
+  - solver failure as a confounder;
+  - three explicit contributions.
+- Methods: equations for relative delivered volume (1) and continuity (2); windows per run; MIP
+  model sizes (10 000–350 000 binaries; Table S1, which gains a Binaries column from
+  `results/calibration/model_sizes.csv`, experiment repo commit `347e17c`).
+- Discussion: new results-independent subsection "Implications for evaluating operational
+  planning systems".
+- Funding: NSERC Discovery Grant RGPIN-2023-04197, FRESH and BRIMM (wording from the SoftwareX
+  acknowledgements). Competing interests: standard CSP sentence plus a pending decision on the
+  FHOPS-developer note.
+- References: thesis entry becomes `@mastersthesis` with its UBC Open Collections URL. Added 8
+  entries with Crossref DOIs.
+- Data availability: open UBC-FRESH GitHub repos with release-triggered Zenodo DOIs (DOIs pending).
+- Commands: `python scripts/make_supplement_tables.py`; `python scripts/wordcount.py` (body 3386,
+  abstract 142); `tectonic -o build main.tex` and `supplement.tex` (0 errors, no overfull boxes).
+
 # 2026-10-10 — Methods: MIP-only grid phase; Gurobi work rate from solver logs (#7, branch `issue-7-concurrency-fix`)
 
 - The first grid launch put 36 MIP and 34 SA processes on 36 physical cores. Gurobi ran at a median
