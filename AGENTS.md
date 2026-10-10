@@ -60,7 +60,8 @@ Harvard (author year) citations, abstract ≤ 200 words, ≤ 6000 words Introduc
 - Follow the target journal's rules exactly. CSP/CJFR requires every AI-assisted tool to be
   disclosed with its name and model/version: writing assistance in the Acknowledgements, research
   and code use in the Methods, and again in ScholarOne. This paper names Claude Opus 5.5
-  (Anthropic, via OpenCode) (G.P., 2026-10-10).
+  (Anthropic, via OpenCode) for experiment code and text, and OpenAI GPT-5.x (several versions) for
+  FHOPS design, implementation and testing (G.P., 2026-10-10).
 - G.P.'s preference, where a journal allows it, is a generic declaration: "LLM coding and writing
   agents were used at various stages", with use-case examples and no vendor or model names.
 - Either way the statement must be truthful: it covers every kind of use, and the authors actually

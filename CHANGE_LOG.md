@@ -1,3 +1,10 @@
+# 2026-10-10 — AI disclosure: GPT-5.x for FHOPS development (#22, branch `issue-22-fhops-gpt`)
+
+- G.P.: OpenAI GPT-5.x models (several versions) assisted the design, implementation and testing of
+  FHOPS. Added to Methods in place of the pending note; cover letter, checklist, open questions and
+  `AGENTS.md` updated.
+- Commands: `cd manuscript && tectonic -o build main.tex`; `cd submission && tectonic -o ../manuscript/build cover-letter.tex` (0 errors).
+
 # 2026-10-10 — AI-use declarations follow the CSP wording (#22, branch `issue-22-csp-ai`)
 
 - G.P.: comply with the exact CSP rule (tool name and model/version). The Acknowledgements, Methods

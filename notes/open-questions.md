@@ -3,7 +3,8 @@
 ## Decided
 - 2026-10-10: AI disclosure follows the CSP wording exactly and names Claude Opus 5.5 (Anthropic,
   via OpenCode) in the Acknowledgements and Methods. This supersedes the generic version (#20).
-  Open: any other AI tool used for this project's code (e.g. the runner of 6–7 Oct)?
+  G.P.: FHOPS was designed, implemented and tested with OpenAI GPT-5.x (several versions); also
+  disclosed in Methods.
 - 2026-10-10: CRediT roles (G.P.). G.P. acquired both the NSERC and the BRIMM funding. For the
   ScholarOne levels, the first-named author in each row is lead and the others are supporting.
 
