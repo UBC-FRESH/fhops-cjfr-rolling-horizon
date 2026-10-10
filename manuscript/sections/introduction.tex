@@ -1,0 +1,61 @@
+\section{Introduction}
+
+Forest harvesting operations must coordinate machines, crews, and harvest blocks over days and
+weeks while staying consistent with tactical and strategic plans \citep{martell1998forest}.
+Delays in deploying equipment disrupt wood supply to mills and raise operating costs
+\citep{d2008using,alayet2013planning}, particularly where weather, breakdowns, and markets make
+operating conditions uncertain \citep{arora2023detailed}. Machine scheduling, the assignment of
+machines to blocks over discrete time periods subject to spatial, temporal, and logistical
+constraints \citep{corner2005scheduling}, is therefore a core operational planning problem.
+Practice ranges from spreadsheets and whiteboards in small and medium operations to proprietary
+optimization software in large ones. Few of these tools are open to inspection, and design choices
+in planning systems are rarely evaluated systematically. As a result, findings about how to
+configure them are hard to reproduce or transfer \citep{jaffray2026thesis}.
+
+Machine scheduling problems are large and combinatorial \citep{bellavenutte2020partitioning}.
+Deterministic optimization over long horizons is often intractable, and long deterministic
+schedules lose value as conditions change \citep{sethi1991theory}. Rolling-horizon planning
+addresses both problems. It solves a sequence of shorter subproblems, implements (locks) the first
+part of each solution, advances time, and re-optimizes \citep{baker1979analytic,
+venkataraman1999effect}. In forest operations this lets near-term decisions be fixed while later
+decisions stay flexible \citep{feng2010simulation,beaudoin2008hierarchical}.
+
+Rolling-horizon performance depends on two design parameters: the length of each planning window
+(the planning horizon) and the interval between re-optimizations, which is also the span of
+decisions committed at each step. Operations research theory suggests a horizon beyond which
+further look-ahead adds little \citep{baker1979analytic,sethi1991theory,santos2021integrated}.
+In practice, horizons are often set by convention, which can impose high computing costs or rely
+on unreliable long-range forecasts \citep{chand2002forecast}. In forest machine scheduling there is
+little evidence on how horizon length and re-optimization frequency trade off solution quality
+against computing effort. Uncertainty is usually the motivation for re-planning, but the
+structural effect of these parameters can be isolated under deterministic conditions first.
+
+A sound evaluation also depends on how the rolling procedure is implemented and how its output is
+scored. Each window must start from the state left by the decisions already implemented. In a
+multi-phase harvesting system (felling, skidding, processing, loading), that state includes the
+volume remaining in each block, the inventory staged between phases, and the position of each
+machine. A rolling plan should be judged by the schedule that is actually implemented, that is,
+the stitched sequence of locked decisions, evaluated against the full problem. The objective of
+any single window is not a measure of that schedule. An implementation that omits the carried
+state, or a metric based on a single window, can produce apparent horizon and frequency effects
+that are artifacts. \citet{jaffray2026thesis} reported a first evaluation of these parameters with
+an early release of the Forest Harvesting Operations Planning System (FHOPS). That release did not
+carry state between windows, and the evaluation scored runs by the last window's objective. FHOPS
+1.0.1 \citep{fhops2026v101} carries the operational state forward between windows and replays the
+stitched plan for evaluation.
+
+This study repeats that evaluation with FHOPS 1.0.1, an open-source machine scheduling framework
+(\fhopspaper), on nine semi-synthetic case studies representative of British Columbia (BC)
+harvesting operations. We ask:
+\begin{enumerate}
+  \item At what planning horizon length do further gains in delivered volume become small?
+  \item Does frequent re-optimization outperform longer planning windows that are updated less
+        often?
+  \item How do horizon length and re-optimization frequency affect schedule continuity and the
+        feasibility of the implemented schedule?
+  \item How do these effects depend on problem size and on the solution method (exact
+        mixed-integer programming versus simulated annealing), including the computing time
+        each configuration requires?
+\end{enumerate}
+All experiments are deterministic. They therefore establish baseline performance bounds that
+future studies under uncertainty can be compared with.

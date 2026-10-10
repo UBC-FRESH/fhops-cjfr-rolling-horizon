@@ -1,0 +1,48 @@
+\section{Discussion}
+
+\pending{Opening summary of answers to RQ1--RQ4.}
+
+\subsection{Planning horizon and re-optimization frequency}
+\pending{Interpretation against rolling-horizon theory \citep{baker1979analytic,sethi1991theory,
+sahin2008master} and forest operations studies \citep{beaudoin2008hierarchical,frisk2016detailed,
+arora2023detailed}. State explicitly which conclusions of \citet{jaffray2026thesis} hold and which
+are revised: (a) re-optimization frequency dominates solution quality; (b) horizons beyond about
+8 weeks give diminishing returns; (c) weekly re-optimization over 4--8-week horizons is a practical
+sweet spot; (d) horizon length mainly drives computing effort.}
+
+\subsection{Why state carry-forward and stitched-plan evaluation matter}
+\pending{Rolling-horizon evaluations must carry the operational state (remaining volume, staged
+inventory between phases, machine positions) between windows and score the implemented stitched
+schedule. Evidence: the size and direction of the differences from the earlier evaluation, without
+reporting its values as results.}
+
+\subsection{Solver choice and tractability}
+\pending{Cold-start exact solves on large windows; empty incumbents; the earliness stage and work
+deferred past the locked span; the case for heuristics or warm-started MIP at operational scale
+\citep{frisk2016detailed,audy2023planning}.}
+
+\subsection{Practical implications}
+\pending{Guidance on configuring rolling-horizon planning, carried over from the thesis
+discussion where the new results support it: directional long-range plans
+\citep{myers2004analysis,beaudoin2008hierarchical}; open tools lowering the perceived risk of
+changing practice \citep{de2023perceptions}; dependence on scale and context.}
+
+\subsection{Limitations}
+This evaluation is deterministic. It isolates the structural effects of the rolling-horizon
+configuration and leaves out weather, breakdowns, and forecast error, which are the usual reason
+for re-planning. Extending it with the stochastic playback in FHOPS is the natural next step. The
+case studies are semi-synthetic. They use real BC inventory and terrain data but one harvesting
+system, synthetic fleets, one landing per block, no mobilisation costs, and no block time windows.
+SA was run with one seed and a fixed iteration budget, so its results show the behaviour of one
+trajectory rather than a distribution. Time-limited MIP solves are not proven optimal, and their
+results depend on the solver, the limit, and the hardware. FHOPS windows place no value on work in
+progress at the end of a window. A time-limited earliness stage can therefore leave work deferred
+beyond the locked span, which penalises long windows with short lock spans. FHOPS~1.0.1 can also
+export assignments with negligible planned production (below $10^{-3}$~m$^3$), which replay as
+sequencing violations of negligible volume \pending{reference FHOPS issue and the
+threshold used}. Absolute computing times depend on hardware. \pending{Add or remove limitations
+once the results are known.}
+
+\section{Conclusions}
+\pending{Three to four sentences answering the research questions, plus future work: uncertainty,
+real operational data, other harvesting systems and regions.}
