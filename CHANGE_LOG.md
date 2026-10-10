@@ -1,3 +1,8 @@
+# 2026-10-10 — CRediT: formal analysis G.P. only (#15, branch `issue-15-credit-final`)
+
+- G.P.: R.J. will not interpret the re-run results, so the conditional formal-analysis note was
+  removed from `sections/statements.tex`.
+
 # 2026-10-10 — Author contributions (CRediT) (#15, branch `issue-15-credit`)
 
 - `sections/statements.tex`: CRediT statement agreed with G.P. G.P. holds funding acquisition for
