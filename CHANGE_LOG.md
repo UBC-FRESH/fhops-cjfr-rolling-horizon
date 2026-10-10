@@ -1,3 +1,10 @@
+# 2026-10-10 — Author contributions (CRediT) (#15, branch `issue-15-credit`)
+
+- `sections/statements.tex`: CRediT statement agreed with G.P. G.P. holds funding acquisition for
+  both NSERC and BRIMM. Formal analysis for R.J. is pending her sign-off role. The table and the
+  ScholarOne lead/supporting convention are in `notes/open-questions.md`; checklist item 9 is done.
+- Commands: `cd manuscript && tectonic -o build main.tex` (0 errors).
+
 # 2026-10-10 — Competing interests: FHOPS development role (#13, branch `issue-13-competing-interests`)
 
 - G.P. confirmed the disclosure. The title page (`metadata.tex`) and cover letter now state that

@@ -12,7 +12,7 @@ Source: `notes/cjfr-guidelines.md`. Status: ✅ done · ⏳ pending results · �
 | 6 | Title page: names, affiliations (dept, institution, city, province, country), corresponding e-mail | ✅ | `metadata.tex` (same as the SoftwareX manuscript) |
 | 7 | Competing interests statement (title page and submission form) | ✅ | `metadata.tex`: G.P. leads FHOPS development (non-financial); none other. Repeat in ScholarOne |
 | 8 | Funding statement (agency in full, grant numbers) | ✅ | `metadata.tex` (NSERC RGPIN-2023-04197, FRESH, BRIMM) |
-| 9 | Author contributions (CRediT, initials) | ❗ | draft in `sections/statements.tex`; also entered in ScholarOne |
+| 9 | Author contributions (CRediT, initials) | ✅ | `sections/statements.tex` (agreed 2026-10-10; R.J. formal analysis conditional). Enter in ScholarOne with levels: lead = first-named in `notes/open-questions.md` |
 | 10 | Data availability statement (repository, DOI, link) | ❗ | text done. Make both repos public, cut GitHub releases (Zenodo integration), insert DOIs |
 | 11 | Generative AI disclosure (tool name and version; writing help in Acknowledgements, research use in Methods) | ❗ | draft in Acknowledgements; authors to confirm; add a Methods sentence if required |
 | 12 | Harvard references, alphabetical, DOIs where possible | ✅/❗ | `cjfr-apalike-doi.bst`; 19 DOIs added. Thesis URL resolved. Still to resolve: FHOPS archive DOI, Zenodo version check |
