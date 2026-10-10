@@ -1,3 +1,10 @@
+# 2026-10-10 — AI disclosure: Kimi K3 for the original runner (#22, branch `issue-22-kimi`)
+
+- G.P.: Kimi K3 assisted with coding the original rolling-horizon runner. The Methods sentence now
+  separates Kimi K3 (original runner) from Claude Opus 5.5 (probe, calibration, runner extensions,
+  analysis scripts). Cover letter, checklist, open questions and `AGENTS.md` updated.
+- Commands: `cd manuscript && tectonic -o build main.tex`; `cd submission && tectonic -o ../manuscript/build cover-letter.tex` (0 errors).
+
 # 2026-10-10 — AI disclosure: GPT-5.x for FHOPS development (#22, branch `issue-22-fhops-gpt`)
 
 - G.P.: OpenAI GPT-5.x models (several versions) assisted the design, implementation and testing of
