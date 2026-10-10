@@ -1,6 +1,9 @@
 # Open questions and decisions
 
 ## Decided
+- 2026-10-10: Title page uses the SoftwareX affiliation for all authors (Faculty of Forestry &
+  Environmental Stewardship, UBC, 2424 Main Mall, Vancouver, BC V6T 1Z4). Corresponding author
+  G. Paradis, gregory.paradis@ubc.ca, +1 604 822 1890.
 - 2026-10-10: Funding statement from the SoftwareX acknowledgements: NSERC Discovery Grant
   RGPIN-2023-04197 (G.P.; part of R.J.'s stipend), FRESH lab funds (G.P.), BRIMM (K.C.'s salary).
 - 2026-10-10: Thesis citation: UBC Open Collections item 1.0452424
@@ -20,7 +23,6 @@
   Limitations).
 
 ## Needs author input (before submission)
-- Corresponding e-mail and departments (title page).
 - CRediT roles (draft in `sections/statements.tex`).
 - Competing-interest wording (G.P. leads FHOPS development).
 - AI-use disclosure wording (draft in Acknowledgements).

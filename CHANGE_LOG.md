@@ -1,3 +1,10 @@
+# 2026-10-10 — Title page: affiliation and corresponding author (#11, branch `issue-11-corresponding-author`)
+
+- `metadata.tex` and `submission/cover-letter.tex`: affiliation and corresponding-author details
+  copied from the SoftwareX manuscript (`fhops-manuscript/manuscript/fhops-softx.tex`, read-only).
+  Checklist item 6 and open questions updated.
+- Commands: `cd manuscript && tectonic -o build main.tex`; `cd submission && tectonic -o ../manuscript/build cover-letter.tex` (0 errors).
+
 # 2026-10-10 — Fuller introduction and methods, funding, thesis URL, data deposit (#9, branch `issue-9-expand-text`)
 
 - G.P. flagged the 2546-word body as too short. Response: the gap was the unwritten results and
