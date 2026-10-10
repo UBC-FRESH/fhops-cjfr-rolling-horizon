@@ -119,11 +119,15 @@ ran at a median of \GurobiWorkRateMedian\ work units\,s$^{-1}$ (5th--95th percen
 somewhat less solver effort than the same time limit gave in the calibration. The software stack was FHOPS~1.0.1,
 Pyomo~6.10.1, Python~3.12.3, and gurobipy~13.0.3.
 
-LLM coding agents assisted with writing parts of the experiment and analysis code at various
-stages, for example the solver calibration scripts, extensions to the rolling-horizon runner, and
-the scripts that compute the performance measures and generate the figures and tables. The
-authors reviewed the code and checked its outputs against the raw run files. All scripts are
-released with the data (see Data availability).
+Parts of the experiment and analysis code were written with the assistance of a generative AI
+coding agent (Claude Opus 5.5, Anthropic, used through OpenCode) under the direction of G.P. This
+included the solver probe and time-limit calibration scripts, extensions to the rolling-horizon
+runner (solver selection, worker pools, solver logging), and the scripts that compute the
+performance measures and generate all figures and tables. The authors reviewed the code, checked
+its outputs against the raw run files, and take responsibility for the results. All scripts are
+released with the data (see Data availability). \pending{CSP asks for \emph{all} AI tools used in
+the research: name any other tool used for this project's code, e.g.\ for the re-run runner
+written 6--7 October 2026, or confirm there was none.}
 
 \subsection{Performance measures}
 

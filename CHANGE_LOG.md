@@ -1,3 +1,11 @@
+# 2026-10-10 — AI-use declarations follow the CSP wording (#22, branch `issue-22-csp-ai`)
+
+- G.P.: comply with the exact CSP rule (tool name and model/version). The Acknowledgements, Methods
+  and cover letter name Claude Opus 5.5 (Anthropic, via OpenCode). A pending note in Methods asks
+  whether any other AI tool was used for this project's code. `AGENTS.md` now says to follow the
+  journal's rule, with G.P.'s generic preference used only where a journal allows it.
+- Commands: `cd manuscript && tectonic -o build main.tex`; `cd submission && tectonic -o ../manuscript/build cover-letter.tex` (0 errors).
+
 # 2026-10-10 — Generic AI-use declarations (#20, branch `issue-20-generic-ai`)
 
 - G.P. policy: AI-use statements are generic, with no vendor, product or model names. Acknowledgements,
