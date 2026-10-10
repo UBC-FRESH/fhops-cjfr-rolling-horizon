@@ -9,17 +9,19 @@
 - [x] Repository created; contract, changelog, roadmap.
 
 ## Phase 1 — Re-run feasibility (in `jaffray-masc-fhops-model`)
-- [ ] `fhops==1.0.1` venv; harness `--smoke`.
-- [ ] Probe: one size-40 MIP window at 1800 s (time, peak memory).
+- [x] `fhops==1.0.1` venv; harness `--smoke` (10/10 ok).
+- [x] Probe: size-18/40 MIP windows at 1800 s on HiGHS and Gurobi (time, peak memory).
+- [ ] Time-limit calibration (Gurobi, 7200 s + 1800 s, incumbent/bound trajectories).
+- [ ] Decide MIP backend, per-window limit (time or work limit) and worker count.
 - [ ] Wall-clock estimate and launch command → **checkpoint (G. Paradis go)**.
 
 ## Phase 2 — Grid run
 - [ ] Launch with `nohup`; summarise at milestones only.
 
 ## Phase 3 — Manuscript skeleton (while the grid runs)
-- [ ] CJFR LaTeX skeleton (title page, abstract, keywords, Introduction, Materials and methods,
+- [x] CJFR LaTeX skeleton (title page, abstract, keywords, Introduction, Materials and methods,
       Results/Discussion placeholders, limitations, statements, references); builds to PDF.
-- [ ] `notes/ch4-to-cjfr-map.md`.
+- [x] `notes/ch4-to-cjfr-map.md`.
 
 ## Phase 4 — Analysis
 - [ ] Scripts: stitched-plan metrics vs full-horizon baselines; figures/tables from `summary.csv`.

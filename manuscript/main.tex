@@ -1,0 +1,61 @@
+% CJFR research article: rolling-horizon machine scheduling with FHOPS 1.0.1
+% Build: cd manuscript && /tmp/opencode/tex/tectonic -o build main.tex
+\documentclass[12pt,letterpaper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\usepackage[margin=1in]{geometry}
+\usepackage[leqno]{amsmath} % CJFR: equation numbers flush left
+\usepackage{amssymb}
+\usepackage{setspace}
+\usepackage[mathlines]{lineno}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{xcolor}
+\usepackage[authoryear,round]{natbib}
+\usepackage[hidelinks]{hyperref}
+\usepackage{url}
+
+\input{metadata}
+
+\begin{document}
+\doublespacing
+\linenumbers
+\setlength{\emergencystretch}{2em}
+
+% ---------------------------------------------------------------- title page
+\noindent{\Large\bfseries \papertitle\par}
+\vspace{1.5em}
+
+\noindent Rosalia Jaffray$^{1}$, Kathleen Coupland$^{1}$, and Gregory Paradis$^{1,*}$
+
+\vspace{1em}
+\noindent $^{1}$\affiliation
+
+\vspace{1em}
+\noindent $^{*}$Corresponding author: Gregory Paradis (\corremail)
+
+\vspace{1em}
+\noindent\textbf{Competing interests:} \competinginterests
+
+\noindent\textbf{Funding:} \fundingstatement
+\clearpage
+
+% ---------------------------------------------------------------- abstract
+\input{sections/abstract}
+
+% ---------------------------------------------------------------- body
+\input{sections/introduction}
+\input{sections/methods}
+\input{sections/results}
+\input{sections/discussion}
+
+% ---------------------------------------------------------------- statements
+\input{sections/statements}
+
+% ---------------------------------------------------------------- references
+\bibliographystyle{apalike}
+\bibliography{references}
+
+\end{document}

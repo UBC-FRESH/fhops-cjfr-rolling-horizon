@@ -1,0 +1,103 @@
+\section{Materials and methods}
+
+\subsection{Case studies}
+
+We used nine semi-synthetic scenarios: three study areas (North Island, Kamloops, and Prince
+George timber supply areas, BC) crossed with three problem sizes (6, 18, and 40 harvest blocks;
+Table~\ref{tab:scenarios}) \citep{jaffray2026zenodo}. Block geometry, area, and stand attributes
+come from an overlay of the provincial Forest Harvest Authorizations and Vegetation Resources
+Inventory layers \citep{bcgov_fha,bcgov_vri}. Average ground slope per block was derived from a
+digital elevation model. Every block is harvested with the same ground-based system: feller-buncher,
+grapple skidder, processor, then loader. Machine productivity (m$^3$\,day$^{-1}$, per machine and
+block) was predicted from stand and terrain attributes with the productivity models bundled with
+FHOPS \pending{cite Lahrsen 2025, ADV6N7, Berry 2019, and Barko 450 TN-46 sources}, with a floor of
+1~m$^3$\,day$^{-1}$. Fleets of 6, 12, and 24 machines were split as evenly as possible across the
+four roles. Each block has its own landing, which at most two machines can work at once. The
+planning horizon is 112 days with three 8-h shifts per day, 7 days per week, and full machine
+availability. Blocks can be harvested at any time within the horizon. The scenarios differ in
+total volume relative to fleet capacity, so in some scenarios not all volume can be harvested
+within 112 days (Table~\ref{tab:scenarios}). Delivered volume, rather than completion time, is
+therefore the primary measure of plan quality.
+
+\begin{table}[htbp]
+  \centering
+  \caption{Scenario characteristics. Machines are given as total
+  (feller-buncher/grapple skidder/processor/loader). Volume is the total volume to be harvested;
+  slope and stem size are block means. All scenarios have one landing per block (capacity two
+  machines), a 112-day horizon, and three 8-h shifts per day.}
+  \label{tab:scenarios}
+  \small
+  \setlength{\tabcolsep}{4pt}
+  \input{tables/scenarios}
+\end{table}
+
+\subsection{Scheduling model and solution methods}
+
+FHOPS represents each scenario as a shift-level machine scheduling problem: which machine works on
+which block in each shift. The objective maximizes delivered volume, subject to machine
+availability, landing capacity, and the precedence between harvesting phases. A downstream phase
+can only process volume that the upstream phase has already staged at the landing. The
+mixed-integer linear programming (MIP) formulation is documented with the software
+\citep{fhops2026formulation} and in \fhopspaper; we do not restate it here. The scenarios carry no
+mobilisation distances, so moving a machine between blocks has no cost. \pending{Confirm the
+objective terms active in these scenarios (production weight 1.0; mobilisation weight 0.5 has no
+effect without distances).}
+
+Each window was solved with one of two methods. (i) Simulated annealing (SA), the FHOPS
+metaheuristic: 500 iterations per window, random seed 42. (ii) The FHOPS operational MIP, solved
+with \mipbackend\ from a cold start (no heuristic warm start) on one thread, with a limit of
+\miptimelimit\ per window. In rolling windows FHOPS also runs a lexicographic second stage. It
+favours earlier production without worsening the first-stage objective, so that a window does not
+postpone work beyond its locked span \citep{fhops2026v101}. This stage was limited to
+\earlinesslimit. \pending{Justify the limits with the time-limit calibration
+(incumbent/bound trajectories), and state whether a deterministic work limit was used.}
+
+\subsection{Rolling-horizon procedure with state carry-forward}
+
+For a master horizon of $H = 112$ days, a planning window of $\theta$ days, and a re-optimization
+interval (lock span) of $f \le \theta$ days, FHOPS~1.0.1 proceeds as follows
+\citep{fhops2026v101}:
+\begin{enumerate}
+  \item Solve the subproblem for days $[t, \min(t+\theta-1, H)]$, starting at $t=1$.
+  \item Lock the decisions for days $[t, t+f-1]$ and append them to the stitched plan.
+  \item Replay the stitched plan with the deterministic playback engine to obtain the carried
+        state: the volume remaining in each block, the remaining output, staged inventory, and
+        shift counts of each phase, and the last block of each machine.
+  \item Set $t \leftarrow t+f$ and repeat from that state until $t > H$.
+\end{enumerate}
+A window for which the solver returns no solution locks nothing for its span and is recorded as
+such. A window with nothing left to plan is recorded as skipped. A window that returns a plan
+delivering no volume is recorded as empty. Earlier FHOPS releases reset every window to the
+initial scenario state, and \citet{jaffray2026thesis} used one of them. Re-planning the full block
+volume in every window, with staged inventory reset, inflated the apparent effect of the
+re-optimization interval. The results reported here supersede those values.
+
+\subsection{Experimental design}
+
+The full factorial design crossed the nine scenarios with
+$\theta \in \{2, 4, 8, 16\}$~weeks, $f \in \{1, 7, 14\}$~days, and both solution methods: 216
+rolling-horizon runs. These levels represent daily, weekly, and biweekly re-planning cycles and
+horizons from two weeks to the full season. For each scenario and method we also solved one
+full-horizon baseline ($\theta = f = H$), giving 18 baselines. Inputs were identical across
+windows, so differences between runs come only from the rolling-horizon configuration. Runs were
+executed in parallel, one process per run, \pending{hardware and concurrency}.
+
+\subsection{Performance measures}
+
+Each run was scored on its stitched plan, replayed against the full 112-day scenario with FHOPS
+deterministic playback. We report:
+\begin{itemize}
+  \item delivered volume (m$^3$ output by the final phase) and remaining volume;
+  \item relative delivered volume: the run's delivered volume divided by that of the reference
+        plan, either the same-method full-horizon baseline or the best stitched plan found for
+        the scenario \pending{choose reference};
+  \item sequencing violations in the replayed plan, counted in total and for those whose volume
+        exceeds \pending{threshold}~m$^3$;
+  \item block-to-block machine moves and schedule continuity (the share of block--machine
+        assignments unchanged between consecutive working days of a block), computed from the
+        stitched assignments;
+  \item computing effort: total wall time over all windows, and the number of windows that
+        reached the limit, returned no solution, or were empty.
+\end{itemize}
+The design is deterministic, with one run per configuration, so we compare configurations
+descriptively rather than with inferential tests.
