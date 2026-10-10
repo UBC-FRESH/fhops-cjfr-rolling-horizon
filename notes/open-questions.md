@@ -8,7 +8,7 @@
   |---|---|
   | Conceptualization | R.J., G.P. |
   | Data curation | R.J. (scenarios), G.P. (re-run outputs) |
-  | Formal analysis | G.P. (+R.J. if she interprets the re-run results at sign-off) |
+  | Formal analysis | G.P. (R.J. will not interpret the re-run results; G.P., 2026-10-10) |
   | Funding acquisition | G.P. |
   | Investigation | R.J. (original experiments), G.P. (re-run, calibration) |
   | Methodology | R.J., G.P. |
