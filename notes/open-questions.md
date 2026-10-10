@@ -1,10 +1,9 @@
 # Open questions and decisions
 
 ## Decided
-- 2026-10-10: AI disclosure is generic (G.P. policy): "LLM coding and writing agents at various
-  stages" with examples, no vendor or model names (see `AGENTS.md`). This deviates from the CSP
-  wording asking for tool names and versions. Use is still declared; be ready to answer an editor's
-  query.
+- 2026-10-10: AI disclosure follows the CSP wording exactly and names Claude Opus 5.5 (Anthropic,
+  via OpenCode) in the Acknowledgements and Methods. This supersedes the generic version (#20).
+  Open: any other AI tool used for this project's code (e.g. the runner of 6–7 Oct)?
 - 2026-10-10: CRediT roles (G.P.). G.P. acquired both the NSERC and the BRIMM funding. For the
   ScholarOne levels, the first-named author in each row is lead and the others are supporting.
 
