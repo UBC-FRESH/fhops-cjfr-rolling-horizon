@@ -56,6 +56,13 @@ CJFR format: double-spaced, single column, page and continuous line numbers, Let
 Harvard (author year) citations, abstract ≤ 200 words, ≤ 6000 words Introduction–Discussion,
 ≤ 50 references.
 
+## AI-use declarations (G.P. policy, 2026-10-10)
+- Declarations in the paper, cover letter and submission forms stay **generic**: "LLM coding and
+  writing agents were used at various stages", with use-case examples. Do **not** name vendors,
+  products, models or versions, and do not list which model did which task.
+- Keep the generic statement truthful: it must cover every kind of use (code, analysis, text,
+  references), and the authors must actually review what it says they reviewed.
+
 ## Workflow
 - Issue → branch → PR → squash merge (subject ends in `(#<PR>)`). Update `ROADMAP.md` checkboxes
   and `CHANGE_LOG.md` in the same PR.
