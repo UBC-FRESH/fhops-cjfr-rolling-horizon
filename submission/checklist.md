@@ -9,7 +9,7 @@ Source: `notes/cjfr-guidelines.md`. Status: ✅ done · ⏳ pending results · �
 | 3 | Keywords after abstract | ✅ | `sections/abstract.tex` |
 | 4 | Double-spaced, single column, page numbers, continuous line numbers, Letter | ✅ | `main.tex` (setspace, lineno) |
 | 5 | Order: title page, abstract, keywords, body, acknowledgements, references | ✅ | `main.tex` |
-| 6 | Title page: names, affiliations (dept, institution, city, province, country), corresponding e-mail | ❗ | department and e-mail pending in `metadata.tex` |
+| 6 | Title page: names, affiliations (dept, institution, city, province, country), corresponding e-mail | ✅ | `metadata.tex` (same as the SoftwareX manuscript) |
 | 7 | Competing interests statement (title page and submission form) | ❗ | draft in `metadata.tex` |
 | 8 | Funding statement (agency in full, grant numbers) | ✅ | `metadata.tex` (NSERC RGPIN-2023-04197, FRESH, BRIMM) |
 | 9 | Author contributions (CRediT, initials) | ❗ | draft in `sections/statements.tex`; also entered in ScholarOne |
