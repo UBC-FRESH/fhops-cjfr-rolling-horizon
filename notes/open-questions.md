@@ -1,6 +1,8 @@
 # Open questions and decisions
 
 ## Decided
+- 2026-10-10: AI disclosure approved: writing help in Acknowledgements, code in Methods (Claude Opus 5.5
+  via OpenCode).
 - 2026-10-10: CRediT roles (G.P.). G.P. acquired both the NSERC and the BRIMM funding. For the
   ScholarOne levels, the first-named author in each row is lead and the others are supporting.
 
@@ -43,7 +45,8 @@
   Limitations).
 
 ## Needs author input (before submission)
-- AI-use disclosure wording (draft in Acknowledgements).
+- Before submission: G.P. spot-checks `scripts/analyze_rerun.py` outputs against a few run JSONs, as
+  the Methods AI-disclosure sentence states.
 - Suggested referees (optional).
 - Data deposit (decided 2026-10-10, G.P.): open GitHub repos in UBC-FRESH. A versioned GitHub
   release triggers a Zenodo archive and DOI. Still to do: make both repos public, cut the releases
