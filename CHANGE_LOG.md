@@ -1,3 +1,10 @@
+# 2026-10-10 — Generative AI disclosure (#18, branch `issue-18-ai-disclosure`)
+
+- Acknowledgements: writing-assistance disclosure. Methods (end of Experimental design): code
+  assistance disclosure. Both use the wording G.P. approved on 2026-10-10. Checklist item 11 notes
+  the code review G.P. must do before submission.
+- Commands: `cd manuscript && tectonic -o build main.tex` (0 errors); `python scripts/wordcount.py`.
+
 # 2026-10-10 — CRediT: formal analysis G.P. only (#15, branch `issue-15-credit-final`)
 
 - G.P.: R.J. will not interpret the re-run results, so the conditional formal-analysis note was
