@@ -49,8 +49,20 @@ with \mipbackend\ from a cold start (no heuristic warm start) on one thread, wit
 \miptimelimit\ per window. In rolling windows FHOPS also runs a lexicographic second stage. It
 favours earlier production without worsening the first-stage objective, so that a window does not
 postpone work beyond its locked span \citep{fhops2026v101}. This stage was limited to
-\earlinesslimit. \pending{Justify the limits with the time-limit calibration
-(incumbent/bound trajectories), and state whether a deterministic work limit was used.}
+\earlinesslimit.
+
+The limits were set from a calibration on the first window of eight representative configurations
+(sizes 6--40, windows of 14--112 days). Each was solved with a 7200-s first stage and an 1800-s
+second stage, and the incumbent and bound were recorded over time. At 1800~s the first-stage
+incumbent was within 0.4\% of its 7200-s value in six of the seven windows not solved to
+optimality, and within 1.1\% in the largest (40 blocks, 112 days). The remaining optimality gaps
+(0.4--5.2\% at 1800~s) narrowed little by 7200~s. Shorter limits were not adequate for the largest
+window: its first non-empty incumbent appeared only after about 1350~s. The second stage converged
+more slowly. At 300~s its objective was up to 23\% below its 1800-s value, and at 900~s within 3\%
+in all but one window. We used Gurobi for the MIP arm because of a comparison with the
+open-source solver HiGHS~1.15.1 \pending{cite HiGHS} on six windows (sizes 18 and 40), with an
+1800-s first stage and a 300-s second stage. HiGHS returned only the empty plan on three of them;
+Gurobi returned non-empty plans on all six. \pending{Point to the supplementary calibration table (Table S1).}
 
 \subsection{Rolling-horizon procedure with state carry-forward}
 
@@ -80,7 +92,11 @@ rolling-horizon runs. These levels represent daily, weekly, and biweekly re-plan
 horizons from two weeks to the full season. For each scenario and method we also solved one
 full-horizon baseline ($\theta = f = H$), giving 18 baselines. Inputs were identical across
 windows, so differences between runs come only from the rolling-horizon configuration. Runs were
-executed in parallel, one process per run, \pending{hardware and concurrency}.
+executed in parallel, one single-threaded process per run, on a Linux server with 36 physical
+cores (72 logical) and 754~GB of memory. MIP runs were limited to 36 concurrent processes, one per
+physical core, so that each time-limited solve had a full core. SA runs, which stop after a fixed
+number of iterations, used the remaining logical cores. The software stack was FHOPS~1.0.1,
+Pyomo~6.10.1, Python~3.12.3, and gurobipy~13.0.3.
 
 \subsection{Performance measures}
 

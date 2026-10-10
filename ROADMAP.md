@@ -11,12 +11,13 @@
 ## Phase 1 — Re-run feasibility (in `jaffray-masc-fhops-model`)
 - [x] `fhops==1.0.1` venv; harness `--smoke` (10/10 ok).
 - [x] Probe: size-18/40 MIP windows at 1800 s on HiGHS and Gurobi (time, peak memory).
-- [ ] Time-limit calibration (Gurobi, 7200 s + 1800 s, incumbent/bound trajectories).
-- [ ] Decide MIP backend, per-window limit (time or work limit) and worker count.
-- [ ] Wall-clock estimate and launch command → **checkpoint (G. Paradis go)**.
+- [x] Time-limit calibration (Gurobi, 7200 s + 1800 s, incumbent/bound trajectories).
+- [x] Decided (2026-10-10, option B): Gurobi, 1800 s + 900 s earliness, 36 MIP + 34 SA workers.
+- [x] Wall-clock estimate and launch command → go given 2026-10-10.
 
 ## Phase 2 — Grid run
-- [ ] Launch with `nohup`; summarise at milestones only.
+- [x] Launched 2026-10-10 17:27 UTC (`data/output/rerun_v101_gurobi/`, worst case about 4.5 days).
+- [ ] Grid complete; `--summarize`.
 
 ## Phase 3 — Manuscript skeleton (while the grid runs)
 - [x] CJFR LaTeX skeleton (title page, abstract, keywords, Introduction, Materials and methods,
