@@ -1,3 +1,10 @@
+# 2026-10-10 — Competing interests: FHOPS development role (#13, branch `issue-13-competing-interests`)
+
+- G.P. confirmed the disclosure. The title page (`metadata.tex`) and cover letter now state that
+  Gregory Paradis leads development of FHOPS (a non-financial interest) and that there are no other
+  competing interests. Checklist item 7 is done.
+- Commands: `cd manuscript && tectonic -o build main.tex`; `cd submission && tectonic -o ../manuscript/build cover-letter.tex` (0 errors).
+
 # 2026-10-10 — Title page: affiliation and corresponding author (#11, branch `issue-11-corresponding-author`)
 
 - `metadata.tex` and `submission/cover-letter.tex`: affiliation and corresponding-author details

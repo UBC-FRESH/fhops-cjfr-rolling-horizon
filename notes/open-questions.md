@@ -1,6 +1,7 @@
 # Open questions and decisions
 
 ## Decided
+- 2026-10-10: Competing interests disclose that G.P. leads FHOPS development (non-financial).
 - 2026-10-10: Title page uses the SoftwareX affiliation for all authors (Faculty of Forestry &
   Environmental Stewardship, UBC, 2424 Main Mall, Vancouver, BC V6T 1Z4). Corresponding author
   G. Paradis, gregory.paradis@ubc.ca, +1 604 822 1890.
@@ -24,7 +25,6 @@
 
 ## Needs author input (before submission)
 - CRediT roles (draft in `sections/statements.tex`).
-- Competing-interest wording (G.P. leads FHOPS development).
 - AI-use disclosure wording (draft in Acknowledgements).
 - Suggested referees (optional).
 - Data deposit (decided 2026-10-10, G.P.): open GitHub repos in UBC-FRESH. A versioned GitHub
