@@ -1,8 +1,10 @@
 # Open questions and decisions
 
 ## Decided
-- 2026-10-10: AI disclosure approved: writing help in Acknowledgements, code in Methods (Claude Opus 5.5
-  via OpenCode).
+- 2026-10-10: AI disclosure is generic (G.P. policy): "LLM coding and writing agents at various
+  stages" with examples, no vendor or model names (see `AGENTS.md`). This deviates from the CSP
+  wording asking for tool names and versions. Use is still declared; be ready to answer an editor's
+  query.
 - 2026-10-10: CRediT roles (G.P.). G.P. acquired both the NSERC and the BRIMM funding. For the
   ScholarOne levels, the first-named author in each row is lead and the others are supporting.
 

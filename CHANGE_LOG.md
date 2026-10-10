@@ -1,3 +1,11 @@
+# 2026-10-10 — Generic AI-use declarations (#20, branch `issue-20-generic-ai`)
+
+- G.P. policy: AI-use statements are generic, with no vendor, product or model names. Acknowledgements,
+  Methods and the cover letter were rewritten accordingly. `AGENTS.md` gains an "AI-use declarations"
+  section. The checklist and open questions note the deviation from CSP's request for tool names and
+  versions.
+- Commands: `cd manuscript && tectonic -o build main.tex` (0 errors).
+
 # 2026-10-10 — Generative AI disclosure (#18, branch `issue-18-ai-disclosure`)
 
 - Acknowledgements: writing-assistance disclosure. Methods (end of Experimental design): code
