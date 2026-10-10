@@ -25,9 +25,11 @@
 - [x] `notes/ch4-to-cjfr-map.md`.
 
 ## Phase 4 — Analysis
-- [ ] Scripts: stitched-plan metrics vs full-horizon baselines; figures/tables from `summary.csv`.
+- [x] Scripts: stitched-plan metrics vs full-horizon baselines; figures/tables (`scripts/analyze_rerun.py`, tested on smoke).
+- [ ] Run on the completed grid; review figures.
 - [ ] Ch. 4 conclusions confirmed or revised, explicitly.
 - [ ] Results and Discussion written; author sign-off memo.
 
 ## Phase 5 — Submission package
-- [ ] PDF, source, figures, cover letter draft, CJFR checklist; hand-off for upload.
+- [x] Drafts: cover letter, CJFR checklist, supplement (S1–S2), DOIs, DOI-printing bst.
+- [ ] PDF, source, figures, flattened LaTeX package; resolve author-input items; hand-off for upload.

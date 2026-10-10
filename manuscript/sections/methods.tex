@@ -10,7 +10,9 @@ Inventory layers \citep{bcgov_fha,bcgov_vri}. Average ground slope per block was
 digital elevation model. Every block is harvested with the same ground-based system: feller-buncher,
 grapple skidder, processor, then loader. Machine productivity (m$^3$\,day$^{-1}$, per machine and
 block) was predicted from stand and terrain attributes with the productivity models bundled with
-FHOPS \pending{cite Lahrsen 2025, ADV6N7, Berry 2019, and Barko 450 TN-46 sources}, with a floor of
+FHOPS: feller-bunchers after \citet{lahrsen2025thesis}, grapple skidders after \citet{kosicki2005adv6n7},
+processors after \citet{berry2019processor}, and live-heel loaders after \citet{harvey1982tn46},
+with a floor of
 1~m$^3$\,day$^{-1}$. Fleets of 6, 12, and 24 machines were split as evenly as possible across the
 four roles. Each block has its own landing, which at most two machines can work at once. The
 planning horizon is 112 days with three 8-h shifts per day, 7 days per week, and full machine
@@ -38,14 +40,14 @@ which block in each shift. The objective maximizes delivered volume, subject to 
 availability, landing capacity, and the precedence between harvesting phases. A downstream phase
 can only process volume that the upstream phase has already staged at the landing. The
 mixed-integer linear programming (MIP) formulation is documented with the software
-\citep{fhops2026formulation} and in \fhopspaper; we do not restate it here. The scenarios carry no
-mobilisation distances, so moving a machine between blocks has no cost. \pending{Confirm the
-objective terms active in these scenarios (production weight 1.0; mobilisation weight 0.5 has no
-effect without distances).}
+\citep{fhops2026formulation} and in \fhopspaper; we do not restate it here. The objective rewards
+volume delivered by the final phase and penalises volume left undelivered, both with weight 1. The
+scenarios define no inter-block distances, so the mobilisation term is zero and machines move
+between blocks at no cost. Landing capacity is a hard constraint.
 
 Each window was solved with one of two methods. (i) Simulated annealing (SA), the FHOPS
-metaheuristic: 500 iterations per window, random seed 42. (ii) The FHOPS operational MIP, solved
-with \mipbackend\ from a cold start (no heuristic warm start) on one thread, with a limit of
+metaheuristic: 500 iterations per window, random seed 42. (ii) The FHOPS operational MIP, built
+with Pyomo \citep{bynum2021pyomo} and solved with \mipbackend\ \citep{gurobi2026manual} from a cold start (no heuristic warm start) on one thread, with a limit of
 \miptimelimit\ per window. In rolling windows FHOPS also runs a lexicographic second stage. It
 favours earlier production without worsening the first-stage objective, so that a window does not
 postpone work beyond its locked span \citep{fhops2026v101}. This stage was limited to
@@ -60,15 +62,15 @@ optimality, and within 1.1\% in the largest (40 blocks, 112 days). The remaining
 window: its first non-empty incumbent appeared only after about 1350~s. The second stage converged
 more slowly. At 300~s its objective was up to 23\% below its 1800-s value, and at 900~s within 3\%
 in all but one window. We used Gurobi for the MIP arm because of a comparison with the
-open-source solver HiGHS~1.15.1 \pending{cite HiGHS} on six windows (sizes 18 and 40), with an
+open-source solver HiGHS~1.15.1 \citep{huangfu2018highs} on six windows (sizes 18 and 40), with an
 1800-s first stage and a 300-s second stage. HiGHS returned only the empty plan on three of them;
-Gurobi returned non-empty plans on all six. \pending{Point to the supplementary calibration table (Table S1).}
+Gurobi returned non-empty plans on all six. Supplementary Tables S1 and S2 give the calibration and the solver comparison.\footnote{Supplementary material is available with the article through the journal Web site.}
 
 \subsection{Rolling-horizon procedure with state carry-forward}
 
 For a master horizon of $H = 112$ days, a planning window of $\theta$ days, and a re-optimization
-interval (lock span) of $f \le \theta$ days, FHOPS~1.0.1 proceeds as follows
-\citep{fhops2026v101}:
+interval (lock span) of $f \le \theta$ days, FHOPS~1.0.1 proceeds as follows (Fig.~\ref{fig:rolling};
+\citealp{fhops2026v101}):
 \begin{enumerate}
   \item Solve the subproblem for days $[t, \min(t+\theta-1, H)]$, starting at $t=1$.
   \item Lock the decisions for days $[t, t+f-1]$ and append them to the stitched plan.
@@ -83,6 +85,17 @@ delivering no volume is recorded as empty. Earlier FHOPS releases reset every wi
 initial scenario state, and \citet{jaffray2026thesis} used one of them. Re-planning the full block
 volume in every window, with staged inventory reset, inflated the apparent effect of the
 re-optimization interval. The results reported here supersede those values.
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=\textwidth]{figures/fig_rolling.pdf}
+  \caption{Rolling-horizon procedure with state carry-forward. Each window of $\theta$ days is
+  solved from the state left by the decisions already locked; its first $f$ days are locked and
+  appended to the stitched plan, and the rest is re-planned by the next window. The carried state
+  is obtained by replaying the stitched plan with deterministic playback. $H$, master horizon
+  (112 days).}
+  \label{fig:rolling}
+\end{figure}
 
 \subsection{Experimental design}
 
@@ -104,16 +117,23 @@ Each run was scored on its stitched plan, replayed against the full 112-day scen
 deterministic playback. We report:
 \begin{itemize}
   \item delivered volume (m$^3$ output by the final phase) and remaining volume;
-  \item relative delivered volume: the run's delivered volume divided by that of the reference
-        plan, either the same-method full-horizon baseline or the best stitched plan found for
-        the scenario \pending{choose reference};
-  \item sequencing violations in the replayed plan, counted in total and for those whose volume
-        exceeds \pending{threshold}~m$^3$;
-  \item block-to-block machine moves and schedule continuity (the share of block--machine
-        assignments unchanged between consecutive working days of a block), computed from the
-        stitched assignments;
+  \item relative delivered volume against two references: the same-method full-horizon baseline,
+        which measures the cost of decomposition for a given method; and the best plan found for
+        the scenario by any run, which allows comparison across methods and covers baselines that
+        are themselves limited by solver time;
+  \item sequencing violations in the replayed plan, that is, slots in which a phase was scheduled
+        to process more volume than its upstream phases had staged. We count them twice: with the
+        FHOPS volume tolerance of $10^{-6}$~m$^3$, and with a tolerance of $10^{-3}$~m$^3$. The
+        second count excludes artefacts from MIP assignments with negligible planned production;
+  \item block-to-block machine moves and schedule continuity, computed from the playback records
+        that produced volume. Continuity is the share of the machines working a block on one
+        working day that also work it on the block's next working day, pooled over blocks and days
+        \citep[adapted from][]{vanhoucke2006work}. Moves are free in these scenarios, so neither
+        method is rewarded for reducing them, and both measures describe incidental schedule
+        structure rather than an optimized property;
   \item computing effort: total wall time over all windows, and the number of windows that
-        reached the limit, returned no solution, or were empty.
+        reached a time limit, returned no solution, or were empty.
 \end{itemize}
 The design is deterministic, with one run per configuration, so we compare configurations
-descriptively rather than with inferential tests.
+descriptively rather than with inferential tests. All figures, tables, and numbers in the results
+are generated by scripts from the committed run outputs (see Data availability).

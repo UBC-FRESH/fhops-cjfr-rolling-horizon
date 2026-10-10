@@ -1,3 +1,50 @@
+# 2026-10-10 — Analysis pipeline and submission-readiness pass (#5, branch `issue-5-analysis-readiness`)
+
+- **`scripts/analyze_rerun.py`** (new) replays each stitched plan with FHOPS playback and computes:
+  delivered and remaining volume; relative delivered volume against the same-method baseline and
+  against the best known plan; sequencing violations raw and with a 1e-3 m³ tolerance
+  (`SEQUENCING_TOLERANCE` raised for one replay); machine moves and continuity from records that
+  produced volume; window outcomes (stage-1 and earliness time-limit hits, no_solution, skipped,
+  empty); solve and wall time. Writes `results/rerun/runs_metrics.csv`, Tables 2–3
+  (`baselines.tex`, `window_outcomes.tex`), Figs. 2–3 (`fig_delivered.pdf`, `fig_effort.pdf`) and
+  `generated/numbers.tex`. Tested on the Gurobi smoke run (`--out-tag smoke`; smoke assets are
+  gitignored).
+  - First attempt at "material" violations (removing rows below 1e-3 m³) *increased* the counts,
+    because the removed rows were upstream prerequisites. Replaced by the tolerance replay
+    (violations 1, 1 → 0, 0 on the smoke run).
+- **`scripts/make_supplement_tables.py`** (new) builds Tables S1 (calibration) and S2 (HiGHS vs
+  Gurobi) from `results/calibration` and `results/solver_probe`. **`manuscript/supplement.tex`**
+  (new).
+- **Fig. 1** (rolling procedure with carry-forward): TikZ source `manuscript/figures/src/fig_rolling.tex`,
+  built by `scripts/build_figures.sh`.
+- **References:** 19 Crossref-verified DOIs; new entries for the productivity-model sources (Lahrsen
+  2025; Kosicki 2005 ADV6N7; Berry 2019; Harvey 1982 TN-46; citations taken from the FHOPS data
+  files), HiGHS (Huangfu and Hall 2018), Gurobi manual and Pyomo (Bynum et al. 2021). Journal-name
+  capitalisation fixed. New `cjfr-apalike-doi.bst` (apalike plus DOIs; renamed as the apalike
+  licence requires).
+- **Text:**
+  - Methods: productivity sources cited; objective terms stated (delivered minus undelivered; no
+    mobilisation term because the scenarios have no distances; landing capacity hard); Pyomo,
+    Gurobi and HiGHS cited; supplementary footnote; performance measures finalised (both
+    references, two violation counts, continuity definition, moves descriptive only).
+  - Results: Table and figure environments that pick up the generated assets when they exist.
+  - Discussion: "Why carry-forward matters" and "Solver choice and tractability" drafted from
+    the mechanism and the calibration/probe evidence; limitations extended.
+  - Data availability: repositories, licence and solver note.
+- **`scripts/wordcount.py`** (new): body 2546/6000 and abstract 142/200 words (placeholders
+  excluded). 32 references cited.
+- **Submission drafts:** `submission/cover-letter.tex`, `submission/checklist.md` (23 items).
+- **Notes:** `notes/open-questions.md` (new); `notes/ch4-to-cjfr-map.md` and `AGENTS.md` updated
+  (Gurobi, results path, build sequence).
+- Commands:
+  - `/tmp/opencode/venv-fhops101/bin/pip install matplotlib`
+  - `python scripts/analyze_rerun.py --rerun-dir ../jaffray-masc-fhops-model/data/output/rerun_v101_gurobi_smoke --out-tag smoke --workers 4`
+  - `python scripts/make_supplement_tables.py`
+  - `scripts/build_figures.sh`
+  - `python scripts/wordcount.py`
+  - `cd manuscript && tectonic -o build main.tex` and `supplement.tex`: 0 errors, no overfull boxes
+  - `cd submission && tectonic -o ../manuscript/build cover-letter.tex`
+
 # 2026-10-10 — Methods: MIP backend, limits and hardware (#3, branch `issue-3-solver-settings`)
 
 - `metadata.tex`: `\mipbackend` = Gurobi 13.0.3, `\miptimelimit` = 1800 s, `\earlinesslimit` =
