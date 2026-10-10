@@ -1,0 +1,47 @@
+% Cover letter draft for the CJFR submission. Build: tectonic -o ../manuscript/build cover-letter.tex
+\documentclass[11pt,letterpaper]{letter}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage[margin=1in]{geometry}
+\usepackage{xcolor}
+\usepackage[hidelinks]{hyperref}
+\newcommand{\pending}[1]{\textcolor{red!70!black}{[\textsc{Pending:} #1]}}
+\signature{Gregory Paradis\\on behalf of all authors}
+\address{Faculty of Forestry\\University of British Columbia\\Vancouver, BC, Canada\\\pending{e-mail}}
+\begin{document}
+\begin{letter}{Editor-in-Chief\\Canadian Journal of Forest Research}
+\opening{Dear Editor,}
+
+Please consider our manuscript ``Rolling-horizon machine scheduling for forest harvesting
+operations: planning horizon, re-optimization frequency, and solver choice evaluated with state
+carry-forward in FHOPS'' by Rosalia Jaffray, Kathleen Coupland, and Gregory Paradis for
+publication as a Research Article in the \emph{Canadian Journal of Forest Research}.
+
+Rolling-horizon optimization is the standard way to schedule harvesting machines over a season,
+yet planners have little evidence on how long each planning window should be and how often the
+plan should be re-optimized. We evaluate both choices in a full factorial experiment on nine
+semi-synthetic British Columbia case studies (234 runs), using the open-source Forest Harvesting
+Operations Planning System (FHOPS) with two solution methods. Two features distinguish the study.
+First, every window starts from the operational state left by the decisions already implemented:
+remaining block volume, inventory staged between harvesting phases, and machine positions.
+Second, every run is scored on its stitched, implemented schedule, replayed against the full
+problem. \pending{One or two sentences on the main findings and their practical meaning.}
+
+The manuscript re-evaluates, with a corrected procedure, a design first reported in the first
+author's MASc thesis (University of British Columbia, 2026). The earlier evaluation used a FHOPS
+release that did not carry state between windows and scored runs by the last window's
+objective. The present results supersede it, and the manuscript says so explicitly. The FHOPS
+software itself is described in a separate manuscript under review at \emph{SoftwareX}. That
+manuscript does not report any rolling-horizon results, so there is no overlap in results.
+
+All data, code, and run outputs will be openly available (see the Data availability statement).
+We used a generative AI tool, disclosed in the Acknowledgements, for scripting and editing
+assistance; the authors verified all outputs. The authors declare no competing interests other
+than \pending{confirm: G.P. leads development of the open-source FHOPS software}. The manuscript
+is not under consideration elsewhere, and all authors have approved the submission.
+
+\pending{Suggested referees (no collaborators): names, affiliations, e-mail addresses.}
+
+\closing{Sincerely,}
+\end{letter}
+\end{document}

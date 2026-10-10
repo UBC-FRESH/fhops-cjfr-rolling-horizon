@@ -1,0 +1,48 @@
+% CJFR supplementary material (uploaded as a separate file; numbered S1, S2, ...)
+% Build: cd manuscript && /tmp/opencode/tex/tectonic -o build supplement.tex
+\documentclass[11pt,letterpaper]{article}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\usepackage[margin=0.8in,landscape]{geometry}
+\usepackage{booktabs}
+\usepackage{xcolor}
+\usepackage[hidelinks]{hyperref}
+\input{metadata}
+\renewcommand{\thetable}{S\arabic{table}}
+\renewcommand{\thefigure}{S\arabic{figure}}
+
+\begin{document}
+\noindent{\large\bfseries Supplementary material for: \papertitle\par}
+\vspace{0.5em}
+\noindent Rosalia Jaffray, Kathleen Coupland, and Gregory Paradis
+
+\begin{table}[h]
+  \centering
+  \caption{Calibration of the per-window MIP time limits (Gurobi 13.0.3, one thread, first
+  rolling window of each configuration, lock span 7 days). Stage 1 (delivered-volume objective)
+  ran for 7200~s and the earliness stage for 1800~s. Shortfall: relative difference between the
+  incumbent objective at the given time and the incumbent at the end of the stage. Gap: relative
+  MIP optimality gap reported by the solver. n/a: no incumbent was logged before that time (for
+  the 112-day, 40-block window the first non-empty stage-1 incumbent appeared after about
+  1350~s). Source: \texttt{results/calibration/}.}
+  \label{tab:calibration}
+  \small
+  \input{tables/calibration}
+\end{table}
+
+\begin{table}[h]
+  \centering
+  \caption{First-window volumes with the open-source HiGHS~1.15.1 and with Gurobi~13.0.3 (one
+  thread, stage 1 limited to 1800~s, earliness stage to 300~s). Planned: volume delivered by the
+  window plan. Locked: volume delivered in the locked first 7 days. A value of 0 means the solver
+  returned only the empty plan within the limit. Source: \texttt{results/solver\_probe/}.}
+  \label{tab:solverprobe}
+  \small
+  \input{tables/solver_probe}
+\end{table}
+
+\pending{Table S3: per-run results of all 234 runs, generated from
+\texttt{results/rerun/runs\_metrics.csv}.}
+
+\end{document}

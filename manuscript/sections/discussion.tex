@@ -5,43 +5,79 @@
 \subsection{Planning horizon and re-optimization frequency}
 \pending{Interpretation against rolling-horizon theory \citep{baker1979analytic,sethi1991theory,
 sahin2008master} and forest operations studies \citep{beaudoin2008hierarchical,frisk2016detailed,
-arora2023detailed}. State explicitly which conclusions of \citet{jaffray2026thesis} hold and which
-are revised: (a) re-optimization frequency dominates solution quality; (b) horizons beyond about
-8 weeks give diminishing returns; (c) weekly re-optimization over 4--8-week horizons is a practical
-sweet spot; (d) horizon length mainly drives computing effort.}
+arora2023detailed}.}
+
+\pending{Table~4 (or a paragraph): each conclusion of \citet{jaffray2026thesis} stated as
+confirmed, qualified, or revised, with the supporting result. (a) Re-optimization frequency is
+the dominant driver of solution quality. (b) Horizons beyond about 8 weeks give diminishing
+returns. (c) Weekly re-optimization over 4--8-week horizons is a practical compromise. (d)
+Horizon length mainly drives computing effort. (e) With daily re-optimization, all horizons give
+near-identical solutions.}
 
 \subsection{Why state carry-forward and stitched-plan evaluation matter}
-\pending{Rolling-horizon evaluations must carry the operational state (remaining volume, staged
-inventory between phases, machine positions) between windows and score the implemented stitched
-schedule. Evidence: the size and direction of the differences from the earlier evaluation, without
-reporting its values as results.}
+A rolling-horizon evaluation measures the planning procedure only if each window starts from the
+state its predecessors left. In a multi-phase harvesting system that state has three parts. Block
+volume already harvested must not be planned again. Volume felled but not yet skidded, or skidded
+but not yet processed, must stay available to the downstream phases. Machines must start where
+they stopped. If a window instead starts from the initial scenario, three things go wrong. It
+re-plans volume that earlier windows have already harvested. It must rebuild the inventory
+between phases from zero, so downstream machines wait at the start of every window. And it moves
+machines at no cost at every window boundary. The stitched plan then double-counts work, starves
+downstream phases, and contains sequencing violations that the individual windows never show.
+These distortions grow with the number of windows, so they are largest for the shortest lock
+spans. That is exactly the parameter whose effect is being measured. Scoring a run by the
+objective of a single window, such as the last, adds a second problem: that objective describes
+one subproblem over a shrinking remainder of the horizon, not the implemented schedule. With state
+carried forward and the stitched plan replayed against the full problem, every configuration is
+judged on the schedule a planner would actually have executed. \pending{Quantify how the corrected
+procedure changes the picture relative to \citet{jaffray2026thesis}, qualitatively and without
+reporting the superseded values as results.}
 
 \subsection{Solver choice and tractability}
-\pending{Cold-start exact solves on large windows; empty incumbents; the earliness stage and work
-deferred past the locked span; the case for heuristics or warm-started MIP at operational scale
-\citep{frisk2016detailed,audy2023planning}.}
+Exact solutions of the operational MIP were within reach only for the smallest problems. The
+6-block, 112-day calibration window was solved to optimality in seconds. Every 18- and 40-block
+window, however, used its full time limit (Table~S1). For 40 blocks and a full-season window, the
+root linear relaxation alone took about 650~s, and the first non-empty incumbent appeared after
+about 1350~s. The choice of solver mattered as much as the time limit. With the same limits, the
+open-source HiGHS solver returned only the empty plan on half of the test windows, whereas Gurobi
+always returned a non-empty plan (Table~S2). A rolling-horizon study with cold-started exact
+solves can therefore confound the effect of the planning horizon with solver failures on large
+windows. This is why we report window outcomes for every run (Table~\ref{tab:windows}). The
+lexicographic earliness stage also needs time. A window that leaves work beyond its lock span
+penalises long horizons with short lock spans, because the locked days are under-used. For
+operational use, these results favour warm-starting the MIP from a heuristic plan, deterministic
+work limits rather than wall-clock limits, or heuristics alone for the largest instances
+\citep{frisk2016detailed,audy2023planning}. \pending{Add the grid evidence: share of time-limited
+windows by size and $\theta$; SA versus MIP delivered volume and wall time.}
 
 \subsection{Practical implications}
 \pending{Guidance on configuring rolling-horizon planning, carried over from the thesis
 discussion where the new results support it: directional long-range plans
-\citep{myers2004analysis,beaudoin2008hierarchical}; open tools lowering the perceived risk of
+\citep{myers2004analysis,beaudoin2008hierarchical}; open tools that lower the perceived risk of
 changing practice \citep{de2023perceptions}; dependence on scale and context.}
 
 \subsection{Limitations}
 This evaluation is deterministic. It isolates the structural effects of the rolling-horizon
-configuration and leaves out weather, breakdowns, and forecast error, which are the usual reason
-for re-planning. Extending it with the stochastic playback in FHOPS is the natural next step. The
-case studies are semi-synthetic. They use real BC inventory and terrain data but one harvesting
-system, synthetic fleets, one landing per block, no mobilisation costs, and no block time windows.
+configuration and leaves out weather, breakdowns, and forecast error, which are the usual reasons
+for re-planning. Extending it with the stochastic playback in FHOPS is the natural next step.
+
+The case studies are semi-synthetic. They use real BC inventory and terrain data but one
+harvesting system, synthetic fleets, one landing per block, and no block time windows. They have
+no inter-block distances, so machine moves are free. Neither method therefore has a reason to keep
+machines on a block, and continuity and move counts describe incidental schedule structure.
+
 SA was run with one seed and a fixed iteration budget, so its results show the behaviour of one
-trajectory rather than a distribution. Time-limited MIP solves are not proven optimal, and their
-results depend on the solver, the limit, and the hardware. FHOPS windows place no value on work in
-progress at the end of a window. A time-limited earliness stage can therefore leave work deferred
-beyond the locked span, which penalises long windows with short lock spans. FHOPS~1.0.1 can also
-export assignments with negligible planned production (below $10^{-3}$~m$^3$), which replay as
-sequencing violations of negligible volume \pending{reference FHOPS issue and the
-threshold used}. Absolute computing times depend on hardware. \pending{Add or remove limitations
-once the results are known.}
+trajectory rather than a distribution. The MIP solves are time-limited and not proven optimal.
+Their results depend on the solver, the limits, the hardware, and the load on the machine, and
+reproducing them exactly requires the commercial Gurobi solver. The limits were calibrated on
+first windows only; later windows start from partly harvested states and may be easier or harder.
+
+FHOPS windows place no value on work in progress at the end of a window. A time-limited earliness
+stage can therefore leave work deferred beyond the locked span. FHOPS~1.0.1 can also export MIP
+assignments with negligible planned production, which replay as sequencing violations of
+negligible volume; we report violations with a $10^{-3}$~m$^3$ tolerance alongside the raw count.
+Absolute computing times depend on hardware. \pending{Add or remove limitations once the results
+are known.}
 
 \section{Conclusions}
 \pending{Three to four sentences answering the research questions, plus future work: uncertainty,

@@ -16,10 +16,10 @@ Fates: **kept** (little change), **rewritten** (content kept, text redone), **dr
 | §4.1 RQ3 (different horizons converge to similar solutions?) | dropped as separate RQ | Covered descriptively under RQ1. Could be revived with a plan-similarity metric if needed. |
 | §4.1 RQ4 (frequent re-optimization vs longer windows) | kept | RQ2 |
 | — (new) RQ4: problem size, solver choice, computing time | new | Replaces the thesis's solver-performance narrative |
-| §4.2.1 Study design, FHOPS, Pyomo/HiGHS, SA 500 iters, seed fixed | rewritten | Methods §2.2. FHOPS 1.0.1. MIP backend and limit pending calibration. |
+| §4.2.1 Study design, FHOPS, Pyomo/HiGHS, SA 500 iters, seed fixed | rewritten | Methods §2.2. FHOPS 1.0.1; MIP on Gurobi (1800 s + 900 s earliness), justified by the calibration (Table S1) and the HiGHS comparison (Table S2). |
 | §4.2.1 "FHOPS (v1.0.0), HiGHS 1.13.1, Pyomo 6.10.0" | dropped | Re-run uses FHOPS 1.0.1, highspy 1.15.1 / Gurobi 13.0.3, Pyomo 6.10.1 |
 | §4.2.1 rolling definition (θ, f_roll) | rewritten | Methods §2.3 with carry-forward steps |
-| §4.2.1 Hardware "72 CPU cores, 768 GB" | rewritten (pending) | Host has 36 physical / 72 logical cores. Concurrency to be stated. |
+| §4.2.1 Hardware "72 CPU cores, 768 GB" | rewritten | 36 physical / 72 logical cores, 754 GB; 36 MIP + 34 SA workers (Methods §2.4) |
 | §4.2.2 Data inputs (FHA, VRI, DEM slope) | kept | Methods §2.1 |
 | §4.2.3 Dataset table (blocks/machines) | rewritten | Table 1, generated from the scenario bundles (`scripts/make_table_scenarios.py`) with volumes, slopes, stem sizes |
 | §4.2.4 Factorial design; "108 runs" | rewritten | 216 runs (×2 methods) + 18 baselines |
@@ -43,3 +43,5 @@ Fates: **kept** (little change), **rewritten** (content kept, text redone), **dr
 | Figure: runtime vs horizon | pending re-run | Regenerate from re-run summary |
 | Figure: continuity vs objective deviation | dropped/rewritten | Replace with continuity vs relative delivered volume |
 | Thesis claim "repeated runs identical (MIP) / minimal variation (SA)" | pending | Time-limited MIP is load-dependent. Only true with a deterministic work limit. |
+| §4.2.1 "per-solve time limit 1800 s" (no rationale) | kept, now justified | Calibration paragraph in Methods §2.2; Table S1 |
+| §4.2.5 Continuity definition (block–machine assignments unchanged between consecutive days) | rewritten | Computed on playback records with volume; descriptive only because moves are free (Methods §2.5) |

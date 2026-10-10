@@ -16,8 +16,10 @@ the root `AGENTS.md`; it applies to all subdirectories. It follows the conventio
 - **No Chapter 4 numbers.** The thesis Chapter 4 results were produced with FHOPS 1.0.0a2, which
   carried no state between rolling-horizon windows, and were scored by the last window's
   objective. They are not publishable. Every number in this paper must trace to a committed result
-  file of the FHOPS 1.0.1 re-run (`UBC-FRESH/jaffray-masc-fhops-model`, `data/output/rerun_v101/`,
-  issue #1 there) through a committed script.
+  file of the FHOPS 1.0.1 re-run (`UBC-FRESH/jaffray-masc-fhops-model`,
+  `data/output/rerun_v101_gurobi/`, issue #1 there) through a committed script
+  (`scripts/analyze_rerun.py` → `results/rerun/`, `manuscript/tables/`, `manuscript/figures/`,
+  `manuscript/generated/numbers.tex`). Quote numbers in the text through the generated macros.
 - **Generated assets are never hand-edited.** Tables and figures under `manuscript/figures/` and
   `manuscript/tables/` are produced by `scripts/`; fix the script or its input and regenerate.
 - **Author list:** Rosalia Jaffray, Kathleen Coupland, Gregory Paradis (corresponding). Do not
@@ -30,7 +32,7 @@ the root `AGENTS.md`; it applies to all subdirectories. It follows the conventio
 | `manuscript/` | LaTeX source: `main.tex`, `sections/`, `references.bib`, `figures/`, `tables/`. |
 | `scripts/` | Figure/table generators reading the re-run `summary.csv` (and per-run JSON). |
 | `results/` | Committed copies of the result files the paper cites (with provenance). |
-| `notes/` | Living notes: thesis-to-paper map, CJFR checklist, open questions. |
+| `notes/` | Living notes: thesis-to-paper map (`ch4-to-cjfr-map.md`), CJFR rules (`cjfr-guidelines.md`), `open-questions.md`. |
 | `submission/` | Cover letter and the CJFR submission checklist. |
 
 ## Read-only sources (never modify)
@@ -41,8 +43,15 @@ the root `AGENTS.md`; it applies to all subdirectories. It follows the conventio
 
 ## Build
 ```
-cd manuscript && /tmp/opencode/tex/tectonic -o build main.tex
+python scripts/make_table_scenarios.py          # Table 1 (scenario bundles)
+python scripts/make_supplement_tables.py        # Tables S1-S2 (calibration, solver probe)
+python scripts/analyze_rerun.py                 # results/rerun, Tables 2-3, Figs. 2-3, numbers.tex
+scripts/build_figures.sh                        # Fig. 1 (TikZ)
+cd manuscript && /tmp/opencode/tex/tectonic -o build main.tex && /tmp/opencode/tex/tectonic -o build supplement.tex
+python scripts/wordcount.py                     # CJFR limits
 ```
+Python: the FHOPS 1.0.1 venv (`/tmp/opencode/venv-fhops101`, plus matplotlib). Assets with a
+`_smoke` suffix come from the smoke run and are for pipeline testing only; never cite them.
 CJFR format: double-spaced, single column, page and continuous line numbers, Letter paper,
 Harvard (author year) citations, abstract ≤ 200 words, ≤ 6000 words Introduction–Discussion,
 ≤ 50 references.
