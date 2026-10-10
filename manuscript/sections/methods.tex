@@ -106,9 +106,14 @@ horizons from two weeks to the full season. For each scenario and method we also
 full-horizon baseline ($\theta = f = H$), giving 18 baselines. Inputs were identical across
 windows, so differences between runs come only from the rolling-horizon configuration. Runs were
 executed in parallel, one single-threaded process per run, on a Linux server with 36 physical
-cores (72 logical) and 754~GB of memory. MIP runs were limited to 36 concurrent processes, one per
-physical core, so that each time-limited solve had a full core. SA runs, which stop after a fixed
-number of iterations, used the remaining logical cores. The software stack was FHOPS~1.0.1,
+cores (72 logical) and 754~GB of memory. The MIP runs were executed first, 36 at a time (one per physical
+core) with no other load, so that each time-limited solve had a full core. The SA runs stop after a
+fixed number of iterations, so their results do not depend on machine load; they were run
+afterwards. With 36 concurrent solves, Gurobi
+ran at a median of \GurobiWorkRateMedian\ work units\,s$^{-1}$ (5th--95th percentile
+\GurobiWorkRateLow--\GurobiWorkRateHigh; \GurobiSolvesLogged\ solves longer than 100~s), against
+0.9--1.2 in the calibration, which ran eight solves at a time. Each grid window therefore received
+somewhat less solver effort than the same time limit gave in the calibration. The software stack was FHOPS~1.0.1,
 Pyomo~6.10.1, Python~3.12.3, and gurobipy~13.0.3.
 
 \subsection{Performance measures}

@@ -1,3 +1,17 @@
+# 2026-10-10 — Methods: MIP-only grid phase; Gurobi work rate from solver logs (#7, branch `issue-7-concurrency-fix`)
+
+- The first grid launch put 36 MIP and 34 SA processes on 36 physical cores. Gurobi ran at a median
+  of 0.46 work units/s, against 0.9–1.2 in the calibration. The grid was restarted MIP-only (36
+  workers); SA runs follow afterwards (experiment repo, `notes/rolling_rerun_v101.md`). With MIP
+  alone the interim rate is 0.62–0.90.
+- Methods now describe the MIP-first, SA-after execution and report the measured work rate through
+  generated macros (`\GurobiWorkRateMedian`, `\GurobiWorkRateLow`, `\GurobiWorkRateHigh`,
+  `\GurobiSolvesLogged`). Placeholders come from `\providecommand` in `metadata.tex`;
+  `generated/numbers.tex` is now loaded in the preamble of `main.tex`.
+- `scripts/analyze_rerun.py`: new `gurobi_work_rates()` parses the per-run Gurobi logs into
+  `results/rerun/gurobi_work_rates.csv` and the macros above.
+- Commands: `python scripts/analyze_rerun.py --rerun-dir ../jaffray-masc-fhops-model/data/output/rerun_v101_gurobi_smoke --out-tag smoke --workers 4`; `cd manuscript && tectonic -o build main.tex` (0 errors).
+
 # 2026-10-10 — Analysis pipeline and submission-readiness pass (#5, branch `issue-5-analysis-readiness`)
 
 - **`scripts/analyze_rerun.py`** (new) replays each stitched plan with FHOPS playback and computes:
