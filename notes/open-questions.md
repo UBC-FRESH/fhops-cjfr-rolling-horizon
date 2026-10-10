@@ -1,6 +1,25 @@
 # Open questions and decisions
 
 ## Decided
+- 2026-10-10: CRediT roles (G.P.). G.P. acquired both the NSERC and the BRIMM funding. For the
+  ScholarOne levels, the first-named author in each row is lead and the others are supporting.
+
+  | Role | Authors |
+  |---|---|
+  | Conceptualization | R.J., G.P. |
+  | Data curation | R.J. (scenarios), G.P. (re-run outputs) |
+  | Formal analysis | G.P. (+R.J. if she interprets the re-run results at sign-off) |
+  | Funding acquisition | G.P. |
+  | Investigation | R.J. (original experiments), G.P. (re-run, calibration) |
+  | Methodology | R.J., G.P. |
+  | Project administration | G.P. |
+  | Resources | G.P. |
+  | Software | G.P. |
+  | Supervision | K.C., G.P. |
+  | Validation | G.P. |
+  | Visualization | G.P. |
+  | Writing – original draft | R.J. (thesis Ch. 4), G.P. (this manuscript) |
+  | Writing – review & editing | R.J., K.C., G.P. |
 - 2026-10-10: Competing interests disclose that G.P. leads FHOPS development (non-financial).
 - 2026-10-10: Title page uses the SoftwareX affiliation for all authors (Faculty of Forestry &
   Environmental Stewardship, UBC, 2424 Main Mall, Vancouver, BC V6T 1Z4). Corresponding author
@@ -24,7 +43,6 @@
   Limitations).
 
 ## Needs author input (before submission)
-- CRediT roles (draft in `sections/statements.tex`).
 - AI-use disclosure wording (draft in Acknowledgements).
 - Suggested referees (optional).
 - Data deposit (decided 2026-10-10, G.P.): open GitHub repos in UBC-FRESH. A versioned GitHub
