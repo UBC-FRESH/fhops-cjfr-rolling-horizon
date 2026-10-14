@@ -10,3 +10,6 @@ __pycache__/
 # smoke-run assets (pipeline tests only; never cited)
 *_smoke.*
 results/smoke/
+# interim analysis outputs (not for the paper)
+results/*interim*/
+manuscript/*/*_mip_interim*

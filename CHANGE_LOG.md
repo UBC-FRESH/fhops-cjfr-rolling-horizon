@@ -1,3 +1,17 @@
+# 2026-10-14 — Interim MIP analysis (#26, branch `issue-23-mip-analysis`)
+
+- `scripts/analyze_rerun.py`:
+  - `--methods {both,sa,mip}` restricts the analysis to one solver (interim use).
+  - `--baseline-dir` (repeatable; defaults to the two 7200 s size-40 baseline folders) replaces the
+    grid's full-horizon MIP baselines. The 1800 s grid records are kept in
+    `results/<tag>/supplementary_baselines_grid_1800s.csv`, not in the paper set.
+  - `rel_best` and `rel_baseline` are computed on the paper set only (`add_relatives`).
+  - Legend for lock-span colours is built explicitly (it was missing when SA panels were empty).
+- Interim outputs (not for the paper; gitignored): `results/mip_interim/`, `manuscript/*/*_mip_interim*`.
+- Commands:
+  - `python scripts/analyze_rerun.py --methods mip --out-tag mip_interim --workers 6`
+  - Result: 108 rolling MIP runs and 9 baselines; the size-40 baselines come from the 7200 s folders.
+
 # 2026-10-10 — AI disclosure: Kimi K3 for the original runner (#22, branch `issue-22-kimi`)
 
 - G.P.: Kimi K3 assisted with coding the original rolling-horizon runner. The Methods sentence now
