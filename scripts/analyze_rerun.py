@@ -169,18 +169,12 @@ def run_metrics(args: tuple[str, str, str]) -> dict:
     return row
 
 
-def collect(rerun_dir: Path, model_repo: Path, workers: int) -> pd.DataFrame:
-    jobs = []
-    for jp in sorted((rerun_dir / "runs").glob("*.json")):
-        run_id = jp.stem
-        ap = jp.with_name(f"{run_id}_assignments.csv")
-        data = json.loads(jp.read_text(encoding="utf-8"))
-        ctx, size = data["spec"]["context"], data["spec"]["size"]
-        sp = model_repo / "data" / "input" / "scenarios" / f"{ctx}_{size}" / "scenario.yaml"
-        jobs.append((str(jp), str(ap), str(sp)))
-    with ProcessPoolExecutor(max_workers=workers) as pool:
-        rows = list(pool.map(run_metrics, jobs))
-    df = pd.DataFrame(rows)
+def _spec(json_path: Path) -> dict:
+    return json.loads(json_path.read_text(encoding="utf-8"))["spec"]
+
+
+def add_relatives(df: pd.DataFrame) -> pd.DataFrame:
+    """Add ``rel_best``, ``rel_baseline`` and ``share_of_volume`` to a paper-set frame."""
     key = ["context", "size"]
     best = df.groupby(key)["delivered_m3"].transform("max")
     df["rel_best"] = df["delivered_m3"] / best.where(best > 0)
@@ -188,7 +182,49 @@ def collect(rerun_dir: Path, model_repo: Path, workers: int) -> pd.DataFrame:
     df["baseline_delivered_m3"] = [base.get((c, s, m), math.nan) for c, s, m in zip(df.context, df["size"], df.method)]
     df["rel_baseline"] = df["delivered_m3"] / df["baseline_delivered_m3"].where(df["baseline_delivered_m3"] > 0)
     df["share_of_volume"] = df["delivered_m3"] / df["total_volume_m3"]
-    return df.sort_values(["method", "size", "context", "baseline", "sub_days", "lock_days"]).reset_index(drop=True)
+    return df
+
+
+def collect(
+    main_dir: Path, override_dirs: list[Path], model_repo: Path, workers: int, methods: str
+) -> tuple[pd.DataFrame, pd.DataFrame]:
+    """Metrics for every selected run; returns (paper set, superseded grid baselines).
+
+    The main grid directory supplies every run. A full-horizon MIP baseline that also exists in an
+    override directory (the 7200 s re-runs) is replaced by the override in the paper set; the grid
+    record is kept as ``superseded`` for the supplementary table.
+    """
+    entries: list[tuple[Path, str, bool]] = []  # (json, source, in_paper_set)
+    overrides: set[str] = set()
+    for d in override_dirs:
+        if not (d / "runs").exists():
+            continue
+        for jp in sorted((d / "runs").glob("*.json")):
+            sp = _spec(jp)
+            if sp["baseline"] and sp["solver"] == "mip" and methods in ("both", "mip"):
+                overrides.add(jp.stem)
+                entries.append((jp, d.name, True))
+    for jp in sorted((main_dir / "runs").glob("*.json")):
+        sp = _spec(jp)
+        if methods not in ("both", sp["solver"]):
+            continue
+        is_superseded = jp.stem in overrides and sp["baseline"]
+        entries.append((jp, main_dir.name, not is_superseded))
+    jobs = []
+    for jp, source, paper in entries:
+        sp = _spec(jp)
+        sc = model_repo / "data" / "input" / "scenarios" / f"{sp['context']}_{sp['size']}" / "scenario.yaml"
+        jobs.append((str(jp), str(jp.with_name(f"{jp.stem}_assignments.csv")), str(sc)))
+    with ProcessPoolExecutor(max_workers=workers) as pool:
+        rows = list(pool.map(run_metrics, jobs))
+    for row, (_, source, paper) in zip(rows, entries):
+        row["source"] = source
+        row["paper_set"] = paper
+    df = pd.DataFrame(rows)
+    paper = add_relatives(df[df.paper_set].copy())
+    superseded = df[~df.paper_set].copy()
+    order = ["method", "size", "context", "baseline", "sub_days", "lock_days"]
+    return paper.sort_values(order).reset_index(drop=True), superseded.sort_values(order).reset_index(drop=True)
 
 
 # ----------------------------------------------------------------------------- solver logs
@@ -309,9 +345,9 @@ def fig_delivered(df: pd.DataFrame, out: Path) -> None:
                 ax.set_ylabel("Delivered / best known")
             if i == 1:
                 ax.set_xlabel(r"Planning horizon $\theta$ (weeks)")
-    handles, labels = axes[0, 0].get_legend_handles_labels()
     from matplotlib.lines import Line2D
 
+    handles = [Line2D([], [], color=colors[lock], lw=1.2, label=f"$f$ = {lock} d") for lock in LOCKS]
     handles += [Line2D([], [], color="k", marker=m, ls="", ms=4, label=AREAS[c]) for c, m in markers.items()]
     handles += [Line2D([], [], color="k", marker="o", mfc="none", ls="", ms=6, label="Full horizon")]
     fig.legend(handles=handles, loc="lower center", ncol=7, fontsize=7, frameon=False)
@@ -391,19 +427,33 @@ def numbers(df: pd.DataFrame, out: Path, rates: pd.DataFrame | None = None) -> N
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
+    out = ROOT.parent / "jaffray-masc-fhops-model" / "data" / "output"
+    parser.add_argument("--rerun-dir", type=Path, default=out / "rerun_v101_gurobi", help="main grid directory")
     parser.add_argument(
-        "--rerun-dir", type=Path, default=ROOT.parent / "jaffray-masc-fhops-model" / "data" / "output" / "rerun_v101_gurobi"
+        "--baseline-dir",
+        type=Path,
+        action="append",
+        default=None,
+        help="directory of full-horizon MIP baselines that replace the grid's (repeatable)",
     )
     parser.add_argument("--model-repo", type=Path, default=ROOT.parent / "jaffray-masc-fhops-model")
+    parser.add_argument("--methods", choices=["both", "sa", "mip"], default="both")
     parser.add_argument("--out-tag", default="rerun", help="results/<tag>/ and asset suffix ('rerun' for the paper)")
     parser.add_argument("--workers", type=int, default=8)
     args = parser.parse_args()
+    if args.baseline_dir is None:
+        args.baseline_dir = [
+            out / "rerun_v101_gurobi_sensitivity_ni40_baseline_7200s",
+            out / "rerun_v101_gurobi_sensitivity_size40_baselines_7200s",
+        ]
 
     res = ROOT / "results" / args.out_tag
     res.mkdir(parents=True, exist_ok=True)
-    df = collect(args.rerun_dir, args.model_repo, args.workers)
+    df, superseded = collect(args.rerun_dir, args.baseline_dir, args.model_repo, args.workers, args.methods)
     df.to_csv(res / "runs_metrics.csv", index=False)
-    if (args.rerun_dir / "summary.csv").exists():
+    if not superseded.empty:
+        superseded.to_csv(res / "supplementary_baselines_grid_1800s.csv", index=False)
+    if args.methods == "both" and (args.rerun_dir / "summary.csv").exists():
         shutil.copy2(args.rerun_dir / "summary.csv", res / "summary.csv")
     suffix = "" if args.out_tag == "rerun" else f"_{args.out_tag}"
     tables = ROOT / "manuscript" / "tables"
@@ -418,8 +468,11 @@ def main() -> int:
     rates = gurobi_work_rates(args.rerun_dir)
     rates.to_csv(res / "gurobi_work_rates.csv", index=False)
     numbers(df, generated / f"numbers{suffix}.tex", rates)
-    cols = ["run_id", "delivered_m3", "rel_baseline", "rel_best", "violations", "violations_material", "moves", "continuity"]
+    cols = ["run_id", "source", "delivered_m3", "rel_baseline", "rel_best", "violations", "violations_material", "moves", "continuity"]
     print(df[cols].round(3).to_string(index=False))
+    if not superseded.empty:
+        print("\nSuperseded grid baselines (1800 s, supplementary):")
+        print(superseded[["run_id", "delivered_m3"]].round(0).to_string(index=False))
     return 0
 
 
