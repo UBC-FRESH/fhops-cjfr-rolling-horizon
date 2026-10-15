@@ -47,10 +47,10 @@ python scripts/make_table_scenarios.py          # Table 1 (scenario bundles)
 python scripts/make_supplement_tables.py        # Tables S1-S2 (calibration, solver probe)
 python scripts/analyze_rerun.py                 # results/rerun, Tables 2-3, Figs. 2-3, numbers.tex
 scripts/build_figures.sh                        # Fig. 1 (TikZ)
-cd manuscript && /tmp/opencode/tex/tectonic -o build main.tex && /tmp/opencode/tex/tectonic -o build supplement.tex
+cd manuscript && ~/bin/tectonic -o build main.tex && ~/bin/tectonic -o build supplement.tex
 python scripts/wordcount.py                     # CJFR limits
 ```
-Python: the FHOPS 1.0.1 venv (`/tmp/opencode/venv-fhops101`, plus matplotlib). Assets with a
+Python: the FHOPS 1.0.1 venv (`~/venvs/fhops101-grb (fhops 1.0.1 + matplotlib)`, plus matplotlib). Assets with a
 `_smoke` suffix come from the smoke run and are for pipeline testing only; never cite them.
 CJFR format: double-spaced, single column, page and continuous line numbers, Letter paper,
 Harvard (author year) citations, abstract ≤ 200 words, ≤ 6000 words Introduction–Discussion,
