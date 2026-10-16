@@ -18,3 +18,5 @@ manuscript/*/*_mip_interim*
 tmp/
 results/*interim*/
 manuscript/*/*_interim*
+.coverage
+.pytest_cache/
