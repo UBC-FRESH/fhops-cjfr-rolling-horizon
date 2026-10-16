@@ -221,3 +221,21 @@ Newest entries last. Each milestone gets a dated entry that matches the roadmap 
 - Commands:
   - `python scripts/analyze_rerun.py --methods mip --out-tag mip_interim --workers 6`
   - Result: 108 rolling MIP runs and 9 baselines; the size-40 baselines come from the 7200 s folders.
+
+## 2026-10-16
+
+### Workflow adoption starts: P0 activated, input audit of the re-run (P0)
+
+- Read the UBC-FRESH dev workflow at `ubc-fresh-dev-workflow` (commit `93b5cd9`): `AGENTS.md`, the session protocol, bounded moves, the workflow model, phase close-out, approval gates, issue standard, git conventions, quality gates, the green dashboard, testing policy, GitHub mapping, and ADR 0009.
+- Activated P0 on the maintainer's instruction of 2026-10-16 to start the analysis and follow the workflow. Parent issue #29. Child tasks #30 to #34, each linked as a sub-issue. Created the `phase` and `task` labels, which did not exist.
+- Commits: `a4ac180` (P0.1, roadmap and changelog in grammar, paths removed, plan of record), `3e71d6d` (P0.4, input audit), `4787208` (P0.2, ADR 0001 proposed).
+- Input audit: `python scripts/audit_rerun_inputs.py --workers 8` exit 0, 230 of 230 runs pass (117 MIP, 113 SA; the 3 size-40 MIP baselines are the 7200 s runs). Negative controls: a dropped window, a wrong row count, a 1 percent delivered-volume change, and an error key each fail as designed; the unmodified control passes.
+- Validator: `python ~/projects/ubc-fresh-dev-workflow/scripts/check_workflow.py .` reports zero findings for the roadmap, changelog, and public-safety rules. It still reports 24 errors and 4 warnings for missing framework files, which P0.2 adds.
+- Dashboard: not run. No dashboard exists in this repository until P0.2. Disclosed as a deviation in `notes/plans/workflow-adoption-and-analysis.md`, section 2.
+- Deviations, with remedies in the plan: no framework; analysis scripts without tests (P0.3); the interim analysis (PR #27) merged without tests; analysis work began before its phase existed, and the audit is recorded here as P0 evidence.
+- Four SA runs still running at 2026-10-16 (ni and pg, 40 blocks, 1-day lock, 56- and 112-day windows). They are audited when they finish, in P1.1.
+
+Commands:
+- `python scripts/audit_rerun_inputs.py --workers 8`
+- `python ~/projects/ubc-fresh-dev-workflow/scripts/check_workflow.py .`
+- `python ~/projects/ubc-fresh-dev-workflow/scripts/check_workflow.py --files tmp/issues/*.md` (all six issue bodies: 0 findings)
