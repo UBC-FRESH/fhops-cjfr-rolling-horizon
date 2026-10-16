@@ -239,3 +239,16 @@ Commands:
 - `python scripts/audit_rerun_inputs.py --workers 8`
 - `python ~/projects/ubc-fresh-dev-workflow/scripts/check_workflow.py .`
 - `python ~/projects/ubc-fresh-dev-workflow/scripts/check_workflow.py --files tmp/issues/*.md` (all six issue bodies: 0 findings)
+
+### Interim two-solver analysis, not for the paper (P0.5 preview)
+
+- `python scripts/analyze_rerun.py --methods both --out-tag both_interim --workers 8` (26 s): 212 rolling runs (108 MIP, 104 SA) and the 9 MIP baselines at 7200 s for size 40, with the 1800 s grid records kept as superseded. Outputs in `results/both_interim/` and `manuscript/*/*_interim*`, gitignored.
+- Median relative delivered volume (best known across both solvers): size 6, MIP 1.000 and SA 1.000; size 18, MIP 1.000 and SA 0.990; size 40, MIP 1.000 and SA 0.975. Minimum at size 40: MIP 0.879, SA 0.939.
+- Paired comparison, SA over MIP for the same configuration: SA is higher by more than 0.5 percent in 8 of 104 configurations, all at 14 or 112 days, and at 40 blocks it reaches 1.114 times MIP. MIP is higher in the rest.
+- Stage-1 time limit reached in windows: MIP 4.4 percent (size 6), 37.9 percent (size 18), 70.0 percent (size 40); SA 0 percent at every size. Median wall time per run: MIP 1.8, 5.5, and 10.2 h; SA 0.3, 1.5, and 4.4 h.
+- Sequencing violations, raw: MIP 58, of which 1 is material at the 1e-3 m3 tolerance; SA 0 raw.
+- These are interim. The best-known reference will change once the four remaining SA runs are in, and the SA-over-MIP pattern is a question for the analysis memo (P1.2), not a conclusion yet.
+
+Commands:
+- `python scripts/analyze_rerun.py --methods both --out-tag both_interim --workers 8`
+- Pandas summaries on `results/both_interim/runs_metrics.csv` (paired ratios, time-limit shares, median wall times), run inline and not committed.

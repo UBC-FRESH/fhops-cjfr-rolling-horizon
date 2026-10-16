@@ -16,3 +16,5 @@ manuscript/*/*_mip_interim*
 
 # scratch issue bodies (never committed)
 tmp/
+results/*interim*/
+manuscript/*/*_interim*
