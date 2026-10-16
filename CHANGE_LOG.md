@@ -261,3 +261,9 @@ Commands:
 
 Commands:
 - none (documentation of decisions). The analysis commands are in the earlier entries.
+
+### P0.2 adoption list and order recorded
+
+- Rendered the seed to a scratch directory outside the repository (32 files). `notes/plans/p0-2-framework-adoption.md` lists what is adopted as rendered, adapted, merged, or kept.
+- Changed the order: P0.3 (tests, types, docstrings for `scripts/`) lands before the framework commit, because the rendered `pyproject.toml` makes strict typing and the 95 percent coverage gate part of every run.
+- Commands: `python scripts/new_project.py --name "FHOPS CJFR Rolling Horizon" --slug fhops-cjfr-rolling-horizon --dest ~/scratch/seed-render --owner UBC-FRESH`
