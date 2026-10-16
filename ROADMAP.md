@@ -35,9 +35,9 @@ re-run reproducible and tested, and leave the paper ready for the results to be 
 - [ ] P0.2 Framework and gates (#31)
   - [ ] Obtain the decision on ADR 0001 (D1)
   - [ ] Adopt the seed framework and the two project gates
-- [ ] P0.3 Tests, typing, and docstrings for the analysis code (#32)
-  - [ ] Unit, contract, and negative-control tests for every script in `scripts/`
-  - [ ] `mypy --strict` and numpydoc docstrings
+- [x] P0.3 Tests, typing, and docstrings for the analysis code (#32)
+  - [x] Unit, contract, and negative-control tests for every script in `scripts/`
+  - [x] `mypy --strict` and numpydoc docstrings
 - [ ] P0.4 Input audit of the re-run (#33)
   - [x] Audit of 230 runs with negative controls (`results/audit/runs_audit.csv`)
   - [ ] Re-run after the four SA runs complete (P1.1)

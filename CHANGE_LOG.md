@@ -267,3 +267,25 @@ Commands:
 - Rendered the seed to a scratch directory outside the repository (32 files). `notes/plans/p0-2-framework-adoption.md` lists what is adopted as rendered, adapted, merged, or kept.
 - Changed the order: P0.3 (tests, types, docstrings for `scripts/`) lands before the framework commit, because the rendered `pyproject.toml` makes strict typing and the 95 percent coverage gate part of every run.
 - Commands: `python scripts/new_project.py --name "FHOPS CJFR Rolling Horizon" --slug fhops-cjfr-rolling-horizon --dest ~/scratch/seed-render --owner UBC-FRESH`
+
+### P0.3 complete: tests, typing, and docstrings for the analysis code
+
+- Every script in `scripts/` now passes `mypy --strict` and `ruff`, and has numpydoc docstrings.
+  `analyze_rerun.py` and `audit_rerun_inputs.py` use `TypedDict` records; `analyze_rerun.py` uses a
+  `Protocol` for the playback records it reads.
+- Tests: 38, in `tests/test_analyze_rerun.py`, `tests/test_audit_rerun_inputs.py`, and
+  `tests/test_tables_and_wordcount.py`. Branch coverage of `scripts/` is 96.5 percent, above the
+  95 percent gate.
+- Negative controls: the audit has four deliberately broken copies of a run (dropped window, wrong
+  row count, wrong delivered volume, error key), each of which fails as designed. The other tests
+  assert specific values, so a behaviour change fails them.
+- `pyproject.toml` (ruff, mypy strict, pytest coverage gate) and a minimal `docs/conf.py` stub are
+  in place. The stub is replaced by the full Sphinx config in P0.2.
+- The refactored analysis reproduces the interim numbers exactly (212 rolling runs; size-40 median
+  rel_best MIP 1.000, SA 0.975; MIP raw violations 58, material 1).
+
+Commands:
+- `python -m pytest` (38 passed; coverage 96.52 percent)
+- `python -m mypy` (no issues in 10 files)
+- `python -m ruff check scripts tests` (all checks passed)
+- `python scripts/analyze_rerun.py --methods both --out-tag both_interim --workers 8` (identical to the pre-refactor run)
