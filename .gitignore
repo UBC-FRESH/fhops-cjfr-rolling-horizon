@@ -13,3 +13,6 @@ results/smoke/
 # interim analysis outputs (not for the paper)
 results/*interim*/
 manuscript/*/*_mip_interim*
+
+# scratch issue bodies (never committed)
+tmp/

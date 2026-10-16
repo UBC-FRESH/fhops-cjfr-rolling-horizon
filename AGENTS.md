@@ -36,9 +36,9 @@ the root `AGENTS.md`; it applies to all subdirectories. It follows the conventio
 | `submission/` | Cover letter and the CJFR submission checklist. |
 
 ## Read-only sources (never modify)
-- Thesis: `/home/gep/projects/jaffray-rosalia-masc-thesis` (Ch. 4: `body_chapters/chap_4/`).
-- FHOPS: `/home/gep/projects/fhops` (main checkout, user work) and `/home/gep/projects/fhops-v101`.
-- SoftwareX paper: `/home/gep/projects/fhops-manuscript`.
+- Thesis: `<workspace>/jaffray-rosalia-masc-thesis` (Ch. 4: `body_chapters/chap_4/`).
+- FHOPS: `<workspace>/fhops` (main checkout, user work) and `<workspace>/fhops-v101`.
+- SoftwareX paper: `<workspace>/fhops-manuscript`.
 - Earlier T&F-template draft: `UBC-FRESH/jaffray-masc-modelling-paper` (private, Overleaf-synced).
 
 ## Build

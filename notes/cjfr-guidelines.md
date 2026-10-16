@@ -1,7 +1,7 @@
 # CJFR constraints (checked 2026-10-09)
 
 Sources: CSP general author guidelines + CJFR journal-specific section
-(`https://cdnsciencepub.com/journal/cjfr/authors`, saved copy `/home/gep/projects/tmp/cjfr-author-guidelines.txt`);
+(`https://cdnsciencepub.com/journal/cjfr/authors`, saved copy `<workspace>/tmp/cjfr-author-guidelines.txt`);
 CJFR French guidelines PDF "Last updated November 2025"; CSP submission-process and
 data-availability pages.
 
