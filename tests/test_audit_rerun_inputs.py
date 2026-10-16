@@ -44,7 +44,9 @@ def _iterations(lock: int, master: int) -> list[dict[str, int]]:
     return [{"start_day": 1 + i * lock} for i in range((master + lock - 1) // lock)]
 
 
-def _run_doc(spec: RunSpec, iterations: list[dict[str, int]], delivered: float, rows: int) -> dict[str, object]:
+def _run_doc(
+    spec: RunSpec, iterations: list[dict[str, int]], delivered: float, rows: int
+) -> dict[str, object]:
     return {
         "run_id": "ka_6_sub14_lock7_mip",
         "spec": dict(spec),
