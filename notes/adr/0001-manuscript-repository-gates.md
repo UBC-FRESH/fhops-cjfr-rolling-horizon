@@ -1,6 +1,6 @@
 # ADR 0001: Quality gates for the manuscript repository
 
-Status: proposed on 2026-10-16. Pending the maintainer's decision.
+Status: accepted on 2026-10-16, with option B as recommended. The maintainer approved this decision.
 Date: 2026-10-16
 Issues: P0.2 (to be created with the phase)
 Related: ADR 0006 and the quality-gates page of the UBC-FRESH dev workflow
@@ -35,3 +35,9 @@ decision. Option B adds gates and removes none.
   is red by design, and no merge happens.
 - CI runs the dashboard on pull requests, as in the seed. Branch protection is an approved settings
   change, not part of this ADR.
+
+## Decision
+
+Option B, accepted by the maintainer on 2026-10-16. The gates are the seed gates (lint, format,
+types, tests with the 95 percent branch-coverage gate, validator, docs), plus `manuscript` and
+`assets`. Option C was not chosen. Option A was not chosen because the paper's numbers are generated.

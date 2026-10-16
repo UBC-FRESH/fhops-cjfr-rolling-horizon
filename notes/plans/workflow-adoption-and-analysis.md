@@ -1,6 +1,6 @@
 # Plan: adopt the UBC-FRESH dev workflow and finish the analysis and manuscript
 
-Status: proposed for maintainer approval (see "Decisions" below). Date: 2026-10-16.
+Status: approved for D1, D2, D4, D5, and D6 on 2026-10-16. Date: 2026-10-16.
 Plan of record: `ROADMAP.md`, phases P0 to P2. Governing pages: `ubc-fresh-dev-workflow`
 (`docs/agents/session-protocol.rst`, `docs/agents/bounded-moves.rst`,
 `docs/reference/workflow-model.rst`, `docs/reference/phase-closeout.rst`,
@@ -91,6 +91,10 @@ repositories and their DOIs exist, with the approvals that the approval gates re
   statement are re-checked at ScholarOne entry.
 
 ## 4. Decisions, with recommended defaults
+
+Approvals, 2026-10-16: D1 (option B), D2, D4, D5, and D6 (activation of P0) approved as
+recommended. D3 was approved on 2026-10-13 and is applied: the three size-40 full-horizon MIP
+baselines use the 7200 s runs, and the 1800 s grid records are kept for the supplement.
 
 | # | Decision | Recommended default | Why |
 | --- | --- | --- | --- |

@@ -252,3 +252,12 @@ Commands:
 Commands:
 - `python scripts/analyze_rerun.py --methods both --out-tag both_interim --workers 8`
 - Pandas summaries on `results/both_interim/runs_metrics.csv` (paired ratios, time-limit shares, median wall times), run inline and not committed.
+
+### Approvals recorded: ADR 0001 accepted, decisions D1 to D6 (P0.2)
+
+- Maintainer approvals on 2026-10-16: D1 (gate set, option B), D2 (analysis now with the 113 SA runs, final run when the rest finish), D4 (relative delivered volume against the best known plan, with the same-method baseline as a second column), D5 (violations reported raw and at 1e-3 m3, with the second as the headline), and the activation of P0.
+- D3 (size-40 full-horizon baselines at 7200 s) was approved on 2026-10-13 and is applied in the analysis: `ka_40_baseline_mip`, `ni_40_baseline_mip` and `pg_40_baseline_mip` come from the 7200 s folders. The 1800 s grid records are in the supplementary table.
+- `notes/adr/0001-manuscript-repository-gates.md` is now accepted. The plan records each approval.
+
+Commands:
+- none (documentation of decisions). The analysis commands are in the earlier entries.
