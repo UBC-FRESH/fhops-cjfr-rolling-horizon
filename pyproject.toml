@@ -1,0 +1,38 @@
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+src = ["scripts", "tests"]
+extend-exclude = ["tmp", "_build"]
+
+[tool.ruff.lint]
+select = ["E", "W", "F", "I", "B", "UP", "D", "ANN", "N", "PT", "SIM", "RUF", "C4"]
+
+[tool.ruff.lint.pydocstyle]
+convention = "numpy"
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**" = ["D"]
+"docs/conf.py" = ["D", "ANN", "N"]
+
+[tool.mypy]
+python_version = "3.11"
+strict = true
+warn_unreachable = true
+mypy_path = "scripts"
+files = ["scripts", "tests", "docs/conf.py"]
+
+[[tool.mypy.overrides]]
+module = ["numpydoc", "numpydoc.*", "fhops", "fhops.*"]
+ignore_missing_imports = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "--cov=scripts --cov-branch --cov-report=term-missing --cov-fail-under=95"
+
+[tool.coverage.run]
+branch = true
+source = ["scripts"]
+
+[tool.coverage.report]
+show_missing = true
+exclude_also = ['if __name__ == "__main__":']

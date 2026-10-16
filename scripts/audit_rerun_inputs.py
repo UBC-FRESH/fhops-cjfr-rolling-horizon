@@ -26,6 +26,7 @@ import math
 import sys
 from concurrent.futures import ProcessPoolExecutor
 from pathlib import Path
+from typing import TypedDict, cast
 
 import pandas as pd
 
@@ -39,12 +40,56 @@ BASELINE_DIRS = [
 REPLAY_TOLERANCE = 1e-6
 
 
-def expected_windows(spec: dict[str, object]) -> int:
+class RunSpec(TypedDict):
+    """The ``spec`` block of a run JSON, with the fields the audit reads."""
+
+    baseline: bool
+    master_days: int
+    lock_days: int
+    solver: str
+    context: str
+    size: str
+    sub_days: int
+    mip_time_limit: int
+
+
+class Iteration(TypedDict):
+    """One rolling-horizon window record, with the fields the audit reads."""
+
+    start_day: int
+
+
+class AuditRow(TypedDict):
+    """One audit result row, with the identifiers, the checks, and the failure messages."""
+
+    run_id: str
+    source: str
+    solver: str
+    baseline: bool
+    size: str
+    context: str
+    sub_days: int
+    lock_days: int
+    mip_time_limit_s: int
+    windows: int
+    windows_ok: bool
+    starts_ok: bool
+    horizon_ok: bool
+    error_free: bool
+    rows_ok: bool
+    replay_ok: bool
+    saved_delivered_m3: float
+    replay_delivered_m3: float
+    failures: str
+    passed: bool
+
+
+def expected_windows(spec: RunSpec) -> int:
     """Return the number of windows a run should contain.
 
     Parameters
     ----------
-    spec : dict of str to object
+    spec : RunSpec
         The ``spec`` block of a run JSON, with ``master_days``, ``lock_days`` and ``baseline``.
 
     Returns
@@ -54,10 +99,10 @@ def expected_windows(spec: dict[str, object]) -> int:
     """
     if spec["baseline"]:
         return 1
-    return math.ceil(int(spec["master_days"]) / int(spec["lock_days"]))
+    return math.ceil(spec["master_days"] / spec["lock_days"])
 
 
-def audit_one(args: tuple[str, str, str]) -> dict[str, object]:
+def audit_one(args: tuple[str, str, str]) -> AuditRow:
     """Audit one run and return its findings as a flat row.
 
     Parameters
@@ -67,7 +112,7 @@ def audit_one(args: tuple[str, str, str]) -> dict[str, object]:
 
     Returns
     -------
-    dict of str to object
+    AuditRow
         One row per run: identifiers, the individual checks, and the failure messages.
     """
     from fhops.evaluation.metrics.kpis import compute_kpis
@@ -76,16 +121,20 @@ def audit_one(args: tuple[str, str, str]) -> dict[str, object]:
 
     json_path, assignments_path, scenario_path = args
     data = json.loads(Path(json_path).read_text(encoding="utf-8"))
-    spec = data["spec"]
+    spec = cast(RunSpec, data["spec"])
     failures: list[str] = []
-    iterations = data["plan_summary"].get("iterations", [])
+    iterations = [cast(Iteration, it) for it in data["plan_summary"].get("iterations", [])]
 
     windows_ok = len(iterations) == expected_windows(spec)
     if not windows_ok:
         failures.append(f"windows {len(iterations)} != {expected_windows(spec)}")
-    lock = int(spec["lock_days"])
-    master = int(spec["master_days"])
-    starts_ok = all(it["start_day"] == 1 + i * lock for i, it in enumerate(iterations)) if not spec["baseline"] else True
+    lock = spec["lock_days"]
+    master = spec["master_days"]
+    starts_ok = (
+        all(it["start_day"] == 1 + i * lock for i, it in enumerate(iterations))
+        if not spec["baseline"]
+        else True
+    )
     if not starts_ok:
         failures.append("window start days do not advance by the lock span")
     last = iterations[-1] if iterations else None
@@ -96,13 +145,22 @@ def audit_one(args: tuple[str, str, str]) -> dict[str, object]:
     if not error_free:
         failures.append(f"run carries an error: {data['error']}")
 
-    assignments = pd.read_csv(assignments_path) if Path(assignments_path).exists() else pd.DataFrame()
+    assignments = (
+        pd.read_csv(assignments_path) if Path(assignments_path).exists() else pd.DataFrame()
+    )
     rows_ok = int(data.get("n_locked_assignments") or 0) == len(assignments)
     if not rows_ok:
-        failures.append(f"n_locked_assignments {data.get('n_locked_assignments')} != CSV rows {len(assignments)}")
+        failures.append(
+            f"n_locked_assignments {data.get('n_locked_assignments')} != "
+            f"CSV rows {len(assignments)}"
+        )
 
     scenario = load_scenario(scenario_path)
-    replay_total = float(compute_kpis(Problem.from_scenario(scenario), assignments)["total_production"]) if len(assignments) else 0.0
+    replay_total = (
+        float(compute_kpis(Problem.from_scenario(scenario), assignments)["total_production"])
+        if len(assignments)
+        else 0.0
+    )
     saved_total = float(data["kpis"]["total_production"])
     replay_ok = abs(replay_total - saved_total) <= REPLAY_TOLERANCE * max(1.0, abs(saved_total))
     if not replay_ok:
@@ -112,7 +170,7 @@ def audit_one(args: tuple[str, str, str]) -> dict[str, object]:
         "run_id": data["run_id"],
         "source": Path(json_path).parents[1].name,
         "solver": spec["solver"],
-        "baseline": bool(spec["baseline"]),
+        "baseline": spec["baseline"],
         "size": spec["size"],
         "context": spec["context"],
         "sub_days": spec["sub_days"],
@@ -141,9 +199,17 @@ def paper_set() -> list[Path]:
         Grid run JSONs, minus the size-40 baselines that the 7200 s folders supersede, plus those
         folders' baseline JSONs.
     """
-    override_ids = {p.stem for d in BASELINE_DIRS if (d / "runs").exists() for p in (d / "runs").glob("*_mip.json")}
-    paths = [p for p in sorted((GRID / "runs").glob("*.json"))
-             if not (p.stem in override_ids and json.loads(p.read_text())["spec"]["baseline"])]
+    override_ids = {
+        p.stem
+        for d in BASELINE_DIRS
+        if (d / "runs").exists()
+        for p in (d / "runs").glob("*_mip.json")
+    }
+    paths = [
+        p
+        for p in sorted((GRID / "runs").glob("*.json"))
+        if not (p.stem in override_ids and json.loads(p.read_text())["spec"]["baseline"])
+    ]
     for d in BASELINE_DIRS:
         if (d / "runs").exists():
             paths += sorted((d / "runs").glob("*.json"))
@@ -158,7 +224,9 @@ def main() -> int:
     int
         0 when every run passes, 1 otherwise.
     """
-    parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
+    parser = argparse.ArgumentParser(
+        description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter
+    )
     parser.add_argument("--workers", type=int, default=4)
     parser.add_argument("--model-repo", type=Path, default=ROOT.parent / "jaffray-masc-fhops-model")
     args = parser.parse_args()
@@ -166,7 +234,14 @@ def main() -> int:
     jobs = []
     for jp in paper_set():
         spec = json.loads(jp.read_text(encoding="utf-8"))["spec"]
-        scenario = args.model_repo / "data" / "input" / "scenarios" / f"{spec['context']}_{spec['size']}" / "scenario.yaml"
+        scenario = (
+            args.model_repo
+            / "data"
+            / "input"
+            / "scenarios"
+            / f"{spec['context']}_{spec['size']}"
+            / "scenario.yaml"
+        )
         jobs.append((str(jp), str(jp.with_name(f"{jp.stem}_assignments.csv")), str(scenario)))
     with ProcessPoolExecutor(max_workers=args.workers) as pool:
         rows = list(pool.map(audit_one, jobs))
@@ -174,8 +249,16 @@ def main() -> int:
     out = ROOT / "results" / "audit"
     out.mkdir(parents=True, exist_ok=True)
     df.to_csv(out / "runs_audit.csv", index=False)
-    print(f"audited {len(df)} runs: {int(df.passed.sum())} passed, {int((~df.passed).sum())} failed")
-    print(df.groupby(["solver", "baseline"])[["windows_ok", "starts_ok", "horizon_ok", "error_free", "rows_ok", "replay_ok"]].sum().to_string())
+    print(
+        f"audited {len(df)} runs: {int(df.passed.sum())} passed, {int((~df.passed).sum())} failed"
+    )
+    print(
+        df.groupby(["solver", "baseline"])[
+            ["windows_ok", "starts_ok", "horizon_ok", "error_free", "rows_ok", "replay_ok"]
+        ]
+        .sum()
+        .to_string()
+    )
     failed = df[~df.passed]
     if not failed.empty:
         print(failed[["run_id", "source", "failures"]].to_string(index=False))
