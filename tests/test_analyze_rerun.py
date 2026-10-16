@@ -23,9 +23,14 @@ from analyze_rerun import (
     _spec,
     _window_outcomes,
     add_relatives,
+    collect,
+    fig_delivered,
+    fig_effort,
     gurobi_work_rates,
+    main,
     material_violations,
     numbers,
+    run_metrics,
     table_baselines,
     table_window_outcomes,
 )
@@ -215,3 +220,167 @@ def test_material_violations_restores_tolerance() -> None:
 
 def test_tiny_m3_is_one_thousandth() -> None:
     assert TINY_M3 == 1e-3
+
+
+def _full_frame() -> pd.DataFrame:
+    """A frame with every column the figure functions read, across both methods and sizes."""
+    rows = []
+    for method in ["sa", "mip"]:
+        for size in [6, 18, 40]:
+            for ctx in ["ka", "ni", "pg"]:
+                for lock in [1, 7, 14]:
+                    for theta in [2, 4, 8, 16]:
+                        rows.append(
+                            {
+                                "context": ctx,
+                                "size": size,
+                                "method": method,
+                                "baseline": False,
+                                "lock_days": lock,
+                                "theta_weeks": theta,
+                                "rel_best": 0.9 + 0.01 * (lock % 3),
+                                "wall_time_s": 1000.0 + size * 10,
+                                "continuity": 0.5,
+                            }
+                        )
+                rows.append(
+                    {
+                        "context": ctx,
+                        "size": size,
+                        "method": method,
+                        "baseline": True,
+                        "lock_days": 112,
+                        "theta_weeks": None,
+                        "rel_best": 1.0,
+                        "wall_time_s": 2000.0,
+                        "continuity": 0.4,
+                    }
+                )
+    return pd.DataFrame(rows)
+
+
+def test_fig_delivered_writes_a_pdf(tmp_path: Path) -> None:
+    out = tmp_path / "fig_delivered.pdf"
+    fig_delivered(_full_frame(), out)
+    assert out.exists()
+    assert out.stat().st_size > 0
+
+
+def test_fig_effort_writes_a_pdf(tmp_path: Path) -> None:
+    out = tmp_path / "fig_effort.pdf"
+    fig_effort(_full_frame(), out)
+    assert out.exists()
+    assert out.stat().st_size > 0
+
+
+def _minimal_run_json(run_id: str, baseline: bool, delivered: float) -> dict[str, object]:
+    return {
+        "run_id": run_id,
+        "spec": {
+            "baseline": baseline,
+            "solver": "mip",
+            "context": "ka",
+            "size": "6",
+            "sub_days": 112 if baseline else 14,
+            "lock_days": 112 if baseline else 7,
+            "master_days": 112,
+            "theta_weeks": None if baseline else 2,
+            "mip_time_limit": 30,
+            "mip_earliness_time_limit": 30,
+            "mip_solver": "gurobi",
+        },
+        "plan_summary": {
+            "iterations": [
+                {
+                    "start_day": 1,
+                    "status": "solved",
+                    "empty": False,
+                    "runtime_s": 1.0,
+                    "warnings": [],
+                }
+            ]
+        },
+        "n_locked_assignments": 0,
+        "wall_time_s": 10.0,
+        "kpis": {
+            "total_production": delivered,
+            "remaining_work_total": 0.0,
+            "sequencing_violation_count": 0,
+        },
+    }
+
+
+def test_collect_builds_the_paper_set(tmp_path: Path) -> None:
+    grid = tmp_path / "grid" / "runs"
+    grid.mkdir(parents=True)
+    (grid / "ka_6_baseline_mip.json").write_text(
+        json.dumps(_minimal_run_json("ka_6_baseline_mip", True, 100.0)), encoding="utf-8"
+    )
+    (grid / "ka_6_sub14_lock7_mip.json").write_text(
+        json.dumps(_minimal_run_json("ka_6_sub14_lock7_mip", False, 90.0)), encoding="utf-8"
+    )
+    for name in ["ka_6_baseline_mip", "ka_6_sub14_lock7_mip"]:
+        (grid / f"{name}_assignments.csv").write_text(
+            "machine_id,block_id,day,shift_id,assigned,production\n", encoding="utf-8"
+        )
+    paper, superseded = collect(tmp_path / "grid", [], MODEL_REPO, 1, "mip")
+    assert len(paper) == 2
+    assert superseded.empty
+    assert set(paper.run_id) == {"ka_6_baseline_mip", "ka_6_sub14_lock7_mip"}
+    assert paper.loc[paper.run_id == "ka_6_sub14_lock7_mip", "rel_best"].iloc[0] == pytest.approx(
+        0.9
+    )
+
+
+def test_run_metrics_replays_a_run(tmp_path: Path) -> None:
+    jp = tmp_path / "runs" / "ka_6_sub14_lock7_mip.json"
+    jp.parent.mkdir()
+    jp.write_text(
+        json.dumps(_minimal_run_json("ka_6_sub14_lock7_mip", False, 0.0)), encoding="utf-8"
+    )
+    ap = jp.with_name("ka_6_sub14_lock7_mip_assignments.csv")
+    ap.write_text("machine_id,block_id,day,shift_id,assigned,production\n", encoding="utf-8")
+    row = run_metrics((str(jp), str(ap), str(SCENARIO)))
+    assert row["run_id"] == "ka_6_sub14_lock7_mip"
+    assert row["delivered_m3"] == 0.0
+    assert row["windows"] == 1
+    assert row["moves"] == 0
+
+
+def test_main_runs_end_to_end(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    grid = tmp_path / "grid" / "runs"
+    grid.mkdir(parents=True)
+    (grid / "ka_6_baseline_mip.json").write_text(
+        json.dumps(_minimal_run_json("ka_6_baseline_mip", True, 100.0)), encoding="utf-8"
+    )
+    (grid / "ka_6_sub14_lock7_mip.json").write_text(
+        json.dumps(_minimal_run_json("ka_6_sub14_lock7_mip", False, 90.0)), encoding="utf-8"
+    )
+    for name in ["ka_6_baseline_mip", "ka_6_sub14_lock7_mip"]:
+        (grid / f"{name}_assignments.csv").write_text(
+            "machine_id,block_id,day,shift_id,assigned,production\n", encoding="utf-8"
+        )
+    import analyze_rerun as ar
+
+    monkeypatch.setattr(ar, "ROOT", tmp_path)
+    monkeypatch.setattr(
+        "sys.argv",
+        [
+            "analyze_rerun.py",
+            "--rerun-dir",
+            str(tmp_path / "grid"),
+            "--out-tag",
+            "test",
+            "--methods",
+            "mip",
+            "--workers",
+            "1",
+            "--model-repo",
+            str(MODEL_REPO),
+        ],
+    )
+    assert main() == 0
+    assert (tmp_path / "results" / "test" / "runs_metrics.csv").exists()
+    assert (tmp_path / "manuscript" / "tables" / "baselines_test.tex").exists()
+    assert (tmp_path / "manuscript" / "figures" / "fig_delivered_test.pdf").exists()
+    assert (tmp_path / "manuscript" / "generated" / "numbers_test.tex").exists()

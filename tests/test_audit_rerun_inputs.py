@@ -16,6 +16,7 @@ from audit_rerun_inputs import (
     RunSpec,
     audit_one,
     expected_windows,
+    main,
     paper_set,
 )
 
@@ -172,3 +173,24 @@ def test_paper_set_replaces_superseded_baselines(
 def test_replay_tolerance_is_relative() -> None:
     assert REPLAY_TOLERANCE == 1e-6
     assert abs(100.0 - 100.0000001) <= REPLAY_TOLERANCE * max(1.0, abs(100.0))
+
+
+def test_main_writes_the_audit_csv(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    import audit_rerun_inputs as ari
+
+    grid = tmp_path / "grid" / "runs"
+    grid.mkdir(parents=True)
+    spec = _spec()
+    iters = _iterations(spec["lock_days"], spec["master_days"])
+    doc = _run_doc(spec, iters, delivered=0.0, rows=0)
+    (grid / "ka_6_sub14_lock7_mip.json").write_text(json.dumps(doc), encoding="utf-8")
+    (grid / "ka_6_sub14_lock7_mip_assignments.csv").write_text(_assignments(0), encoding="utf-8")
+    monkeypatch.setattr(ari, "GRID", tmp_path / "grid")
+    monkeypatch.setattr(ari, "BASELINE_DIRS", [])
+    monkeypatch.setattr(ari, "ROOT", tmp_path)
+    monkeypatch.setattr(
+        "sys.argv",
+        ["audit_rerun_inputs.py", "--workers", "1", "--model-repo", str(MODEL_REPO)],
+    )
+    assert main() == 0
+    assert (tmp_path / "results" / "audit" / "runs_audit.csv").exists()
