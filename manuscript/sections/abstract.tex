@@ -1,4 +1,4 @@
-% Abstract: <= 200 words (CJFR). Findings sentences are placeholders until the re-run is analysed.
+% Abstract <= 200 words (CJFR).
 \section*{Abstract}
 Rolling-horizon optimization is widely used to schedule forest harvesting machines, but there is
 little evidence on how long the planning horizon should be and how often the plan should be
@@ -6,14 +6,15 @@ re-optimized. We evaluated both choices with the open-source Forest Harvesting O
 System (FHOPS) on nine semi-synthetic British Columbia case studies (three timber supply areas,
 6--40 blocks, 6--24 machines, 112-day horizon). The design crossed four planning horizons
 (2--16 weeks), three re-optimization intervals (1, 7, and 14 days), and two solution methods
-(simulated annealing and mixed-integer programming). Each window started from the operational
-state left by the previous plan: remaining volume, staged inter-phase inventory, and machine
-positions. Every run was scored by replaying its stitched, implemented schedule against the full
-problem. \pending{Main findings: effect of re-optimization interval and horizon length on
-delivered volume relative to full-horizon plans, sequencing feasibility, and computing time;
-role of solver choice and tractability.} \pending{Implication for configuring operational
-planning systems.} Evaluating rolling-horizon plans on their stitched schedules, with state
-carried between windows, is essential: scoring single windows can misstate plan quality.
+(simulated annealing and mixed-integer programming). Each window started from the operational state
+left by the previous plan: remaining volume, staged inter-phase inventory, and machine positions.
+Every run was scored by replaying its stitched, implemented schedule against the full problem.
+Almost every configuration delivered within about 4\% of the best plan found for its scenario.
+Extending the horizon beyond about four weeks gained little, daily and weekly re-optimization were
+indistinguishable, and only a 14-day commitment period carried a small penalty. Solver behaviour,
+not configuration, explained the weakest results: cold-started mixed-integer programming reached its
+time limit in most large windows, whereas simulated annealing never failed. Scoring single windows
+without carrying state can misstate plan quality, as an earlier evaluation did.
 
 \vspace{1em}
 \noindent\textbf{Key words:} forest operations planning; machine scheduling; rolling horizon;

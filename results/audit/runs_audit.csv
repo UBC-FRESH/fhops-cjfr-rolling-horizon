@@ -123,6 +123,7 @@ ni_40_sub28_lock7_sa,rerun_v101_gurobi,sa,False,40,ni,28,7,1800,16,True,True,Tru
 ni_40_sub56_lock14_mip,rerun_v101_gurobi,mip,False,40,ni,56,14,1800,8,True,True,True,True,True,True,871944.3044899844,871944.3044899844,,True
 ni_40_sub56_lock14_sa,rerun_v101_gurobi,sa,False,40,ni,56,14,1800,8,True,True,True,True,True,True,855739.766752,855739.766752,,True
 ni_40_sub56_lock1_mip,rerun_v101_gurobi,mip,False,40,ni,56,1,1800,112,True,True,True,True,True,True,871965.3037799982,871965.3037799982,,True
+ni_40_sub56_lock1_sa,rerun_v101_gurobi,sa,False,40,ni,56,1,1800,112,True,True,True,True,True,True,854423.766752,854423.766752,,True
 ni_40_sub56_lock7_mip,rerun_v101_gurobi,mip,False,40,ni,56,7,1800,16,True,True,True,True,True,True,871965.3037799462,871965.3037799462,,True
 ni_40_sub56_lock7_sa,rerun_v101_gurobi,sa,False,40,ni,56,7,1800,16,True,True,True,True,True,True,857713.766752,857713.766752,,True
 ni_6_baseline_mip,rerun_v101_gurobi,mip,True,6,ni,112,112,1800,1,True,True,True,True,True,True,219114.0,219114.0,,True
@@ -198,6 +199,7 @@ pg_40_sub28_lock7_sa,rerun_v101_gurobi,sa,False,40,pg,28,7,1800,16,True,True,Tru
 pg_40_sub56_lock14_mip,rerun_v101_gurobi,mip,False,40,pg,56,14,1800,8,True,True,True,True,True,True,851511.587997978,851511.587997978,,True
 pg_40_sub56_lock14_sa,rerun_v101_gurobi,sa,False,40,pg,56,14,1800,8,True,True,True,True,True,True,829118.8031039999,829118.8031039999,,True
 pg_40_sub56_lock1_mip,rerun_v101_gurobi,mip,False,40,pg,56,1,1800,112,True,True,True,True,True,True,851511.587998002,851511.587998002,,True
+pg_40_sub56_lock1_sa,rerun_v101_gurobi,sa,False,40,pg,56,1,1800,112,True,True,True,True,True,True,840304.8031039999,840304.8031039999,,True
 pg_40_sub56_lock7_mip,rerun_v101_gurobi,mip,False,40,pg,56,7,1800,16,True,True,True,True,True,True,851511.5879980135,851511.5879980135,,True
 pg_40_sub56_lock7_sa,rerun_v101_gurobi,sa,False,40,pg,56,7,1800,16,True,True,True,True,True,True,837672.803104,837672.803104,,True
 pg_6_baseline_mip,rerun_v101_gurobi,mip,True,6,pg,112,112,1800,1,True,True,True,True,True,True,67923.9629,67923.9629,,True

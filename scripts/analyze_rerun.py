@@ -63,7 +63,18 @@ SIZES = [6, 18, 40]
 LOCKS = [1, 7, 14]
 THETAS = [2, 4, 8, 16]
 FULL_X = 2**4.6  # x position of the full-horizon baselines in fig_delivered
-WORDS = {1: "One", 6: "Six", 7: "Seven", 14: "Fourteen", 18: "Eighteen", 40: "Forty"}
+WORDS = {
+    1: "One",
+    2: "Two",
+    4: "Four",
+    6: "Six",
+    7: "Seven",
+    8: "Eight",
+    14: "Fourteen",
+    16: "Sixteen",
+    18: "Eighteen",
+    40: "Forty",
+}
 METHOD_LABEL = {"sa": "SA", "mip": "MIP"}
 
 
@@ -463,7 +474,7 @@ def table_baselines(df: pd.DataFrame, out: Path) -> None:
                 f"{name} & {size} & {_fmt(cell(sa, 'share_of_volume', 100))} & "
                 f"{_fmt(cell(mip, 'share_of_volume', 100))} & "
                 f"{_fmt(cell(sa, 'wall_time_s', 1 / 3600), 2)} & "
-                f"{_fmt(cell(mip, 'wall_time_s', 1 / 3600), 2)} \\"
+                f"{_fmt(cell(mip, 'wall_time_s', 1 / 3600), 2)} \\\\"
             )
     lines += ["\\bottomrule", "\\end{tabular}"]
     out.write_text("\n".join(lines) + "\n", encoding="utf-8")
@@ -685,6 +696,13 @@ def numbers(df: pd.DataFrame, out: Path, rates: pd.DataFrame | None = None) -> N
             h = r[(r.method == method) & (r["size"] == size)]
             if not h.empty:
                 macros[f"WallMedianHours{m}{WORDS[size]}"] = f"{h.wall_time_s.median() / 3600:.2f}"
+    s40 = r[r["size"] == 40]
+    for theta in THETAS:
+        for lock in LOCKS:
+            h = s40[(s40.theta_weeks == theta) & (s40.lock_days == lock)]
+            if not h.empty:
+                name = f"RelBestSizeFortyTheta{WORDS[theta]}Lock{WORDS[lock]}"
+                macros[name] = f"{100 * h.rel_best.median():.1f}"
     if rates is not None and not rates.empty:
         macros["GurobiWorkRateMedian"] = f"{rates.work_per_s.median():.2f}"
         macros["GurobiWorkRateLow"] = f"{rates.work_per_s.quantile(0.05):.2f}"

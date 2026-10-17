@@ -25,7 +25,12 @@ Operations Planning System (FHOPS) with two solution methods. Two features disti
 First, every window starts from the operational state left by the decisions already implemented:
 remaining block volume, inventory staged between harvesting phases, and machine positions.
 Second, every run is scored on its stitched, implemented schedule, replayed against the full
-problem. \pending{One or two sentences on the main findings and their practical meaning.}
+problem. Almost every configuration delivered within about 4\% of the best plan found for its
+scenario. Extending the horizon beyond about four weeks gained little, daily and weekly
+re-optimization were indistinguishable, and only a 14-day commitment period carried a small
+penalty. The clearest differences were between solvers, not configurations: cold-started
+mixed-integer programming reached its time limit in most large windows, whereas simulated
+annealing never failed.
 
 The manuscript re-evaluates, with a corrected procedure, a design first reported in the first
 author's MASc thesis (University of British Columbia, 2026). The earlier evaluation used a FHOPS
@@ -37,8 +42,9 @@ manuscript does not report any rolling-horizon results, so there is no overlap i
 All data, code, and run outputs will be openly available (see the Data availability statement).
 The authors used generative AI tools (Claude Opus 5.5 and Kimi K3 for experiment code, Claude
 Opus 5.5 for editing, and OpenAI GPT-5.x models for FHOPS development), as disclosed in the
-Methods and Acknowledgements; the authors verified all outputs. The authors declare no competing interests other
-than \pending{confirm: G.P. leads development of the open-source FHOPS software}. The manuscript
+Methods and Acknowledgements; the authors verified all outputs. Gregory Paradis leads development of the
+open-source FHOPS software used in the study (a non-financial interest); the authors declare no
+other competing interests. The manuscript
 is not under consideration elsewhere, and all authors have approved the submission.
 
 \pending{Suggested referees (no collaborators): names, affiliations, e-mail addresses.}
