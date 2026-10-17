@@ -35,10 +35,10 @@ from analyze_rerun import (
     table_window_outcomes,
 )
 
-MODEL_REPO = Path(__file__).resolve().parents[1].parent / "jaffray-masc-fhops-model"
+MODEL_REPO = Path(__file__).resolve().parents[1] / "tests" / "data" / "model"
 SCENARIO = MODEL_REPO / "data" / "input" / "scenarios" / "ka_6" / "scenario.yaml"
 
-pytestmark = pytest.mark.skipif(not SCENARIO.exists(), reason="model repo not present")
+pytestmark = pytest.mark.skipif(not SCENARIO.exists(), reason="fixture scenario not present")
 
 
 def _rec(machine: str, block: str, day: int, shift: str, prod: float) -> PlaybackRecordLike:

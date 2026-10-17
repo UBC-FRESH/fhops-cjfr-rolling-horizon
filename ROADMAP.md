@@ -32,9 +32,9 @@ re-run reproducible and tested, and leave the paper ready for the results to be 
 - [ ] P0.1 Planning surfaces in workflow grammar (#30)
   - [ ] Archive the pre-workflow roadmap
   - [ ] Rewrite the roadmap, convert the changelog, and remove the home-directory paths
-- [ ] P0.2 Framework and gates (#31)
-  - [ ] Obtain the decision on ADR 0001 (D1)
-  - [ ] Adopt the seed framework and the two project gates
+- [x] P0.2 Framework and gates (#31)
+  - [x] Obtain the decision on ADR 0001 (D1)
+  - [x] Adopt the seed framework and the `manuscript` gate (the `assets` gate lands in P0.5)
 - [x] P0.3 Tests, typing, and docstrings for the analysis code (#32)
   - [x] Unit, contract, and negative-control tests for every script in `scripts/`
   - [x] `mypy --strict` and numpydoc docstrings

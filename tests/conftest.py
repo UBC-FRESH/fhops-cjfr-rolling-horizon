@@ -1,4 +1,4 @@
-"""Make the scripts in ``scripts/`` importable from the test suite."""
+"""Make the framework scripts in ``scripts/`` importable from the test suite."""
 
 from __future__ import annotations
 

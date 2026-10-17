@@ -1,0 +1,13 @@
+cff-version: 1.2.0
+title: "FHOPS rolling-horizon machine scheduling: CJFR manuscript and analysis"
+message: "If you use this code or the associated results, please cite the manuscript and the FHOPS software."
+authors:
+  - family-names: Jaffray
+    given-names: Rosalia
+  - family-names: Coupland
+    given-names: Kathleen
+  - family-names: Paradis
+    given-names: Gregory
+type: software
+license: MIT
+repository-code: "https://github.com/UBC-FRESH/fhops-cjfr-rolling-horizon"

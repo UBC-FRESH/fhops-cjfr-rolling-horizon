@@ -1,3 +1,7 @@
+# Tool configuration for the UBC-FRESH dev workflow. This repository is a manuscript and
+# analysis project, not a Python package, so there is no [project] table. Each gate configured
+# here is also a check in the green dashboard (scripts/dashboard.py).
+
 [tool.ruff]
 line-length = 100
 target-version = "py311"
@@ -12,6 +16,7 @@ convention = "numpy"
 
 [tool.ruff.lint.per-file-ignores]
 "tests/**" = ["D"]
+"templates/project/tests/**" = ["D"]
 "docs/conf.py" = ["D", "ANN", "N"]
 
 [tool.mypy]
@@ -22,7 +27,8 @@ mypy_path = "scripts"
 files = ["scripts", "tests", "docs/conf.py"]
 
 [[tool.mypy.overrides]]
-module = ["numpydoc", "numpydoc.*", "fhops", "fhops.*"]
+# fhops, PyYAML and numpydoc ship no type stubs. The project calls them through thin wrappers.
+module = ["numpydoc", "numpydoc.*", "fhops", "fhops.*", "yaml"]
 ignore_missing_imports = true
 
 [tool.pytest.ini_options]

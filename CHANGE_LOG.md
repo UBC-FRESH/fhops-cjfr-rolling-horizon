@@ -289,3 +289,27 @@ Commands:
 - `python -m mypy` (no issues in 10 files)
 - `python -m ruff check scripts tests` (all checks passed)
 - `python scripts/analyze_rerun.py --methods both --out-tag both_interim --workers 8` (identical to the pre-refactor run)
+
+### P0.2 framework adopted: green dashboard with the manuscript gate
+
+- Adopted the seed framework: `scripts/check_workflow.py`, `scripts/dashboard.py`, `pyproject.toml`
+  (ruff, strict mypy, pytest coverage gate), `requirements-dev.txt`, `.pre-commit-config.yaml`,
+  the docs skeleton (`docs/conf.py`, `index.rst`, `llms.txt`, `api/`), the CI workflows, the issue
+  templates, the ADR template, and the phase close-out template.
+- Added the `manuscript` gate from ADR 0001: `scripts/build_manuscript.py` builds the paper, the
+  supplement and the cover letter with tectonic and fails on errors or undefined references. The
+  `assets` gate is deferred to P0.5, where `analyze_rerun.py --check` lands. Until then, the
+  dashboard would be red with it, and the workflow forbids a red commit.
+- Merged our project files with the seed: `AGENTS.md`, `README.md`, `.gitignore` (the seed's
+  entries plus ours), `CONTRIBUTING.md`, `LICENSE` (MIT), `CODE_OF_CONDUCT.md`, `CITATION.cff`,
+  `notes/README.md`.
+- The replay tests now use a committed fixture scenario (`tests/data/model/`, a 15 KB copy of the
+  `ka_6` bundle) so they run in CI, where the experiment repository is not checked out.
+- CI installs tectonic 0.17.0 in the dashboard job for the manuscript gate. The type gate ignores
+  missing imports for `fhops`, `yaml` and `numpydoc`.
+- Dashboard: GREEN, all seven gates (lint, format, types, tests, validator, docs, manuscript).
+  Tests: 208 passed, coverage 98 percent.
+
+Commands:
+- `TECTONIC=~/bin/tectonic python scripts/dashboard.py` (OVERALL: GREEN)
+- `python scripts/check_workflow.py` (0 errors, 0 warnings)

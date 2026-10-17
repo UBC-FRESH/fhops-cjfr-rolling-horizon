@@ -1,11 +1,27 @@
-"""Sphinx configuration for the manuscript repository's documentation.
+"""Sphinx configuration for FHOPS CJFR Rolling Horizon."""
 
-This is a minimal stub so that the strict type gate has a target. P0.2 replaces it with the full
-Sphinx configuration from the UBC-FRESH dev workflow seed.
-"""
+import sys
+from pathlib import Path
 
-from __future__ import annotations
-
-project = "FHOPS CJFR rolling-horizon manuscript"
+project = "FHOPS CJFR Rolling Horizon"
 author = "UBC-FRESH"
-release = "0.1"
+copyright = "2026, UBC-FRESH"
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "scripts"))
+
+extensions: list[str] = [
+    "sphinx.ext.autodoc",
+    "sphinx.ext.napoleon",
+    "sphinx.ext.viewcode",
+]
+exclude_patterns = ["_build", "Thumbs.db", ".DS_Store"]
+
+autodoc_member_order = "bysource"
+napoleon_numpy_docstring = True
+napoleon_google_docstring = False
+napoleon_use_param = True
+napoleon_use_rtype = False
+
+html_theme = "sphinx_rtd_theme"
+html_title = "FHOPS CJFR Rolling Horizon"
+html_extra_path = ["llms.txt"]

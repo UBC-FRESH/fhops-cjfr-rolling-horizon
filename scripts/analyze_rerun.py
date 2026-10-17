@@ -185,12 +185,24 @@ def _moves_and_continuity(
 
 
 def material_violations(problem: Any, assignments: pd.DataFrame) -> int:  # noqa: ANN401 - fhops is untyped
-    """Sequencing violations with a volume tolerance of ``TINY_M3`` instead of FHOPS's 1e-6 m3.
+    """Count sequencing violations with a volume tolerance of ``TINY_M3``.
 
     FHOPS playback compares volumes with ``fhops.evaluation.sequencing.SEQUENCING_TOLERANCE``
     (read at call time). Raising it to ``TINY_M3`` for one replay treats proposals of at most
     ``TINY_M3`` as idle and ignores shortfalls of at most ``TINY_M3``, so only violations of
     material volume are counted.
+
+    Parameters
+    ----------
+    problem : Any
+        The FHOPS problem for the scenario (untyped library).
+    assignments : pandas.DataFrame
+        The stitched assignment rows to replay.
+
+    Returns
+    -------
+    int
+        The number of sequencing violations at the ``TINY_M3`` tolerance.
     """
     import fhops.evaluation.sequencing as seq
     from fhops.evaluation.metrics.kpis import compute_kpis
@@ -273,7 +285,19 @@ def _spec(json_path: Path) -> RunSpec:
 
 
 def add_relatives(df: pd.DataFrame) -> pd.DataFrame:
-    """Add ``rel_best``, ``rel_baseline`` and ``share_of_volume`` to a paper-set frame."""
+    """Add ``rel_best``, ``rel_baseline`` and ``share_of_volume`` to a paper-set frame.
+
+    Parameters
+    ----------
+    df : pandas.DataFrame
+        The paper-set metrics, with ``context``, ``size``, ``method``, ``baseline``,
+        ``delivered_m3`` and ``total_volume_m3`` columns. Modified in place.
+
+    Returns
+    -------
+    pandas.DataFrame
+        The same frame with the relative columns added.
+    """
     key = ["context", "size"]
     best = df.groupby(key)["delivered_m3"].transform("max")
     df["rel_best"] = df["delivered_m3"] / best.where(best > 0)
@@ -292,11 +316,29 @@ def add_relatives(df: pd.DataFrame) -> pd.DataFrame:
 def collect(
     main_dir: Path, override_dirs: list[Path], model_repo: Path, workers: int, methods: str
 ) -> tuple[pd.DataFrame, pd.DataFrame]:
-    """Metrics for every selected run; returns (paper set, superseded grid baselines).
+    """Compute metrics for every selected run.
 
     The main grid directory supplies every run. A full-horizon MIP baseline that also exists in an
     override directory (the 7200 s re-runs) is replaced by the override in the paper set; the grid
     record is kept as ``superseded`` for the supplementary table.
+
+    Parameters
+    ----------
+    main_dir : pathlib.Path
+        The grid directory with the ``runs/`` subdirectory.
+    override_dirs : list of pathlib.Path
+        Directories whose full-horizon MIP baselines replace the grid's.
+    model_repo : pathlib.Path
+        The experiment repository with the scenario bundles.
+    workers : int
+        Concurrent processes for the replay.
+    methods : {"both", "sa", "mip"}
+        Which solver results to include.
+
+    Returns
+    -------
+    tuple of pandas.DataFrame
+        The paper set with the relative columns, and the superseded grid baselines.
     """
     entries: list[tuple[Path, str, bool]] = []  # (json, source, in_paper_set)
     overrides: set[str] = set()
@@ -342,11 +384,23 @@ def collect(
 
 # ----------------------------------------------------------------------------- solver logs
 def gurobi_work_rates(rerun_dir: Path, min_seconds: float = 100.0) -> pd.DataFrame:
-    """Work units per second of every Gurobi solve longer than ``min_seconds`` in the run logs.
+    """Compute work units per second for every Gurobi solve over ``min_seconds``.
 
     Each ``runs/<run_id>.gurobi.log`` holds both stages of every window; the final line of each
     solve reads "Explored ... in S seconds (W work units)". Short solves are excluded because their
     rate is dominated by start-up overhead.
+
+    Parameters
+    ----------
+    rerun_dir : pathlib.Path
+        The run directory with the ``runs/`` subdirectory of Gurobi logs.
+    min_seconds : float, optional
+        Exclude solves at or below this many seconds. The default is 100.
+
+    Returns
+    -------
+    pandas.DataFrame
+        One row per solve, with ``run_id``, ``seconds``, ``work_units`` and ``work_per_s``.
     """
     import re
 
