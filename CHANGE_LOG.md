@@ -313,3 +313,13 @@ Commands:
 Commands:
 - `TECTONIC=~/bin/tectonic python scripts/dashboard.py` (OVERALL: GREEN)
 - `python scripts/check_workflow.py` (0 errors, 0 warnings)
+
+### P0.2 CI workflows pushed
+
+- The two workflow files (`.github/workflows/ci.yml`, `.github/workflows/docs.yml`) were held back
+  because the GitHub token lacked the `workflow` scope, and GitHub rejects workflow changes without
+  it. G. Paradis granted the scope, and the workflows are pushed in `e00f1dc`. CI runs on pull
+  requests, so it will run when the phase pull request is opened at close-out.
+
+Command:
+- `gh auth refresh -h github.com -s workflow` (by G. Paradis), then `git push`
