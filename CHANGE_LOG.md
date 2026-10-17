@@ -347,3 +347,13 @@ Commands:
 - `python scripts/audit_rerun_inputs.py --workers 8` (232 passed)
 - `TECTONIC=~/bin/tectonic python scripts/dashboard.py` (OVERALL: GREEN)
 - `python scripts/wordcount.py` (body 4,612; abstract 200)
+
+### P2.1 submission package
+
+- `scripts/package_submission.py` flattens the paper into `submission/package/`: it inlines every
+  `\input` (sections, tables, generated numbers), flattens `\includegraphics` paths, inlines the
+  built `.bbl`, and copies the figures, `references.bib`, the generated numbers, and the built PDFs.
+  The flattened `manuscript.tex` compiles to a PDF. Generated; gitignored.
+- Cover letter: findings and competing interests filled in. Checklist updated (word and abstract
+  budget met; the submission package is built).
+- Commands: `python scripts/package_submission.py`; `TECTONIC=~/bin/tectonic python scripts/dashboard.py` (GREEN).

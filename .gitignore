@@ -54,3 +54,6 @@ results/smoke/
 results/*interim*/
 manuscript/*/*interim*
 manuscript/*/*_mip_interim*
+
+# generated submission package (rebuilt by scripts/package_submission.py)
+submission/package/
