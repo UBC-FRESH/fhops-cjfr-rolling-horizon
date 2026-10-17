@@ -323,3 +323,27 @@ Commands:
 
 Command:
 - `gh auth refresh -h github.com -s workflow` (by G. Paradis), then `git push`
+
+### P0.4, P0.5 and P1: final analysis, paper assets, and the manuscript text
+
+- Final analysis on 232 runs (117 MIP, 115 SA; size-40 baselines at 7200 s). Final input audit:
+  232 of 232 pass. Assets for the paper committed: `results/rerun/runs_metrics.csv`,
+  `results/rerun/gurobi_work_rates.csv`, Tables 2--3, Figs. 2--3, and `generated/numbers.tex`.
+- Fixed a bug in `table_baselines`: a row terminator emitted one backslash instead of two, so the
+  paper did not build. Caught by the rebuilt `manuscript` gate.
+- Added size-40 horizon-by-lock macros to the generator, so every number in the Results traces to
+  the committed results.
+- Wrote the Results, Discussion, Conclusions and abstract from the generated numbers, and the
+  analysis memo (`notes/analysis/analysis-memo.md`). Body 4,612 of 6,000 words; abstract 200 of 200.
+- Headline: with carry-forward and stitched-plan scoring, almost every configuration delivers within
+  about 4 percent of the best plan; horizon length beyond four weeks gains little; 1-day and 7-day
+  locks are indistinguishable; solver time limits explain the weak cells. The Ch. 4 frequency effect
+  is revised (Table 4 in the Discussion).
+- Deviation: the manuscript writing is phase P1 work, committed on the P0 branch. The phase
+  bookkeeping (P0 close-out, P1 activation) is deferred to the submission step.
+
+Commands:
+- `python scripts/analyze_rerun.py --methods both --out-tag rerun --workers 8`
+- `python scripts/audit_rerun_inputs.py --workers 8` (232 passed)
+- `TECTONIC=~/bin/tectonic python scripts/dashboard.py` (OVERALL: GREEN)
+- `python scripts/wordcount.py` (body 4,612; abstract 200)

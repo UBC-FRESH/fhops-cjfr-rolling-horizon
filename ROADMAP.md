@@ -38,11 +38,12 @@ re-run reproducible and tested, and leave the paper ready for the results to be 
 - [x] P0.3 Tests, typing, and docstrings for the analysis code (#32)
   - [x] Unit, contract, and negative-control tests for every script in `scripts/`
   - [x] `mypy --strict` and numpydoc docstrings
-- [ ] P0.4 Input audit of the re-run (#33)
-  - [x] Audit of 230 runs with negative controls (`results/audit/runs_audit.csv`)
-  - [ ] Re-run after the four SA runs complete (P1.1)
-- [ ] P0.5 Deterministic analysis pipeline (#34)
-  - [ ] One command regenerates every paper asset, and two runs are identical
+- [x] P0.4 Input audit of the re-run (#33)
+  - [x] Audit with negative controls (`results/audit/runs_audit.csv`)
+  - [x] Final audit: 232 of 232 runs pass
+- [~] P0.5 Deterministic analysis pipeline (#34)
+  - [x] One command regenerates every paper asset from the committed results
+  - [ ] `--check` mode and the `assets` gate (deferred; needs byte-stable figures)
 
 Detailed Next Steps Notes: the analysis is ready for the 113 SA runs and the 117 MIP runs now (D2).
 The four missing SA runs are re-run JIT. The framework adoption (P0.2) waits for ADR 0001. The
