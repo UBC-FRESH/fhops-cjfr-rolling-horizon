@@ -13,9 +13,9 @@ Source: `notes/cjfr-guidelines.md`. Status: ✅ done · ⏳ pending results · �
 | 7 | Competing interests statement (title page and submission form) | ✅ | `metadata.tex`: G.P. leads FHOPS development (non-financial); none other. Repeat in ScholarOne |
 | 8 | Funding statement (agency in full, grant numbers) | ✅ | `metadata.tex` (NSERC RGPIN-2023-04197, FRESH, BRIMM) |
 | 9 | Author contributions (CRediT, initials) | ✅ | `sections/statements.tex` (agreed 2026-10-10; formal analysis G.P. only). Enter in ScholarOne with levels: lead = first-named in `notes/open-questions.md` |
-| 10 | Data availability statement (repository, DOI, link) | ❗ | text done; make both repos public, cut the Zenodo releases, insert the DOIs (P2.2) |
+| 10 | Data availability statement (repository, DOI, link) | ❗ | text done; steps queued in `notes/plans/p2-2-data-release.md` (make this repo public, cut the re-run release, mint Zenodo DOIs, insert them). Needs G.P. approval and the Zenodo account |
 | 11 | Generative AI disclosure (tool name and version; writing help in Acknowledgements, research use in Methods) | ✅/❗ | Acknowledgements and Methods name Claude Opus 5.5 (Anthropic, via OpenCode), per the CSP wording. Methods also discloses Kimi K3 (original rolling-horizon runner) and OpenAI GPT-5.x (several versions; FHOPS design, implementation and testing). Before submission G.P. must do the code review the Methods sentence claims (spot-check `analyze_rerun.py` against run JSONs). Repeat the disclosure in ScholarOne |
-| 12 | Harvard references, alphabetical, DOIs where possible | ✅/❗ | `cjfr-apalike-doi.bst`; 19 DOIs added. Thesis URL resolved. Still to resolve: FHOPS archive DOI, Zenodo version check |
+| 12 | Harvard references, alphabetical, DOIs where possible | ✅/❗ | `cjfr-apalike-doi.bst`; 19 DOIs added. Thesis URL resolved. Still to resolve: FHOPS 1.0.1 archive DOI and the scenario Zenodo version check (`notes/plans/p2-2-data-release.md`) |
 | 13 | Submitted work not in the reference list | ✅ | SoftwareX paper cited in text only (`\fhopspaper`); systematic review removed |
 | 14 | Equations numbered flush left | ✅ | `amsmath` `leqno` (no displayed equations yet) |
 | 15 | Figures/tables cited in order, self-contained captions | ✅ | Figs. 1–3, Tables 1–4 (Table 4 = Ch. 4 re-test) |

@@ -10,7 +10,7 @@ roadmap before the workflow is archived in `notes/archive/roadmap-pre-workflow.m
 | --- | --- | --- | --- |
 | P0 Workflow adoption and analysis readiness | #29 | `feature/p0-workflow-analysis` | active |
 | P1 Results and manuscript | #35 | `feature/p1-results-manuscript` | active |
-| P2 Submission package and data release | TBD | `feature/p2-submission` | planned |
+| P2 Submission package and data release | #37 | `feature/p2-submission` | active |
 
 ## Conventions
 
@@ -59,21 +59,23 @@ Goal: write the Results, Discussion, Conclusions and Limitations from generated 
 finish the abstract, the introduction and the methods.
 
 - [~] #36 P1.1 Final analysis run with all runs complete (blocked on two `sub112_lock1` SA runs)
-- [ ] P1.2 Analysis memo: RQ1 to RQ4, and the Ch. 4 conclusions confirmed, qualified, or revised
-- [ ] P1.3 Results section from the generated macros
-- [ ] P1.4 Discussion, Conclusions, and Limitations
-- [ ] P1.5 Abstract, Introduction, and Methods pass, with word budget and reference check
-- [ ] P1.6 Supplement: Tables S1 to S3
+- [x] P1.2 Analysis memo: RQ1 to RQ4, and the Ch. 4 conclusions confirmed, qualified, or revised
+  (`notes/analysis/analysis-memo.md`; the two pending runs are recorded as a deviation)
+- [x] P1.3 Results section from the generated macros (`manuscript/sections/results.tex`)
+- [x] P1.4 Discussion, Conclusions, and Limitations (`manuscript/sections/discussion.tex`)
+- [x] P1.5 Abstract, Introduction, and Methods pass (abstract 200/200; body 4612/6000; 41 refs)
+- [x] P1.6 Supplement: Tables S1 and S2 rendered, S3 described as the machine-readable deposit
 
 ## Phase 2: Submission package and data release
 
-Parent issue: TBD
+Parent issue: #37
 Branch: `feature/p2-submission`
-Status: planned
+Status: active (data release queued for approval)
 
 Goal: a submission package for CJFR, with the data released and archived, ready for G. Paradis to
 submit.
 
-- [ ] P2.1 Checklist, cover letter, and flattened LaTeX source for ScholarOne
-- [ ] P2.2 Data release: public repositories, GitHub releases, and Zenodo DOIs (each approved)
+- [x] P2.1 Checklist, cover letter, and flattened LaTeX source for ScholarOne
+  (`scripts/package_submission.py` -> `submission/package/`)
+- [~] P2.2 Data release: public repositories, GitHub releases, and Zenodo DOIs (each approved)
 - [ ] P2.3 Close-out and handoff to G. Paradis

@@ -380,3 +380,13 @@ Commands:
   its FHOPS 1.0.1 provenance. A 1.0.1 control reproduced the banked runs exactly (6/6).
 - Verified the build: `main.tex` and `supplement.tex` compile with tectonic 0.17.0; the dashboard is
   GREEN (lint, format, types, tests, validator, docs, manuscript).
+### P2 opened; data-release plan queued
+
+- Opened the P2 parent issue #37 and reconciled `ROADMAP.md`: P1.2-P1.6 marked done (memo, results,
+  discussion, abstract/intro/methods pass, supplement); P2 active with P2.1 done and P2.2 queued.
+- Queued the data-release plan `notes/plans/p2-2-data-release.md` (ADR 0008): confirm the scenario
+  Zenodo record, cut a re-run release of `jaffray-masc-fhops-model`, make this repository public,
+  mint the Zenodo DOIs (scenarios, FHOPS 1.0.1, both repositories), and insert them. Checklist items
+  10 and 12 updated. Each action needs G.P.'s approval and the Zenodo account.
+- Rebuilt `submission/package/` (main + supplement PDFs, flattened `manuscript.tex`, cover letter):
+  `python scripts/package_submission.py`. Both PDFs compile with tectonic 0.17.0.
