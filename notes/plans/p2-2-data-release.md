@@ -49,3 +49,19 @@ approval.
 
 - P2.3 close-out: rebuild `submission/package/`, re-run the dashboard, and hand off to G. Paradis.
 - The author sign-off (#22) and the optional referees (#21) remain author actions.
+
+## Staged on 2026-10-18 (pending one decision and the final grid)
+
+- `.zenodo.json` added to this repository (analysis) for the Zenodo deposition.
+- Release-notes draft at `notes/plans/p2-2-experiment-release-notes.md` for the experiment repo.
+- **Sequencing:** the outputs of `jaffray-masc-fhops-model` are currently **untracked** (only
+  `environment.txt` is committed), so the data-availability statement's "openly available in the
+  GitHub repository" is not yet true. The output publication + release + DOI should run **after
+  P1.1 completes the grid** (2 SA runs outstanding), so we release the complete grid once rather than
+  twice.
+- **Open decision (blocks the release):** `jaffray-masc-fhops-model` `notes/repo_cleanup.md` asks
+  whether to archive **all** outputs (45 MB, 817 files: per-run JSON, stitched assignment tables, and
+  ~5 MB Gurobi logs) or a **representative subset** (per-run JSON + `summary.csv` + manifests, no
+  solver logs). Recommendation: commit the JSON, `summary.csv`, assignment tables, and manifests
+  (~1-2 MB) to the repository, and attach the full output tree (with logs) as a release asset /
+  Zenodo deposit, keeping the git history light.
