@@ -16,7 +16,7 @@ Source: `notes/cjfr-guidelines.md`. Status: ✅ done · ⏳ pending results · �
 | 10 | Data availability statement (repository, DOI, link) | ❗ | text done; steps queued in `notes/plans/p2-2-data-release.md` (make this repo public, cut the re-run release, mint Zenodo DOIs, insert them). Needs G.P. approval and the Zenodo account |
 | 11 | Generative AI disclosure (tool name and version; writing help in Acknowledgements, research use in Methods) | ✅/❗ | Acknowledgements and Methods name Claude Opus 5.5 (Anthropic, via OpenCode), per the CSP wording. Methods also discloses Kimi K3 (original rolling-horizon runner) and OpenAI GPT-5.x (several versions; FHOPS design, implementation and testing). Before submission G.P. must do the code review the Methods sentence claims (spot-check `analyze_rerun.py` against run JSONs). Repeat the disclosure in ScholarOne |
 | 12 | Harvard references, alphabetical, DOIs where possible | ✅/❗ | `cjfr-apalike-doi.bst`; 19 DOIs added. Thesis URL resolved. Still to resolve: FHOPS 1.0.1 archive DOI and the scenario Zenodo version check (`notes/plans/p2-2-data-release.md`) |
-| 13 | Submitted work not in the reference list | ✅ | SoftwareX paper cited in text only (`\fhopspaper`); systematic review removed |
+| 13 | Submitted work not in the reference list | ✅ | SoftwareX paper cited in text only (`\fhopspaper`), now **in press** (accepted 2026-10); promote to a reference entry once it has a volume/DOI |
 | 14 | Equations numbered flush left | ✅ | `amsmath` `leqno` (no displayed equations yet) |
 | 15 | Figures/tables cited in order, self-contained captions | ✅ | Figs. 1–3, Tables 1–4 (Table 4 = Ch. 4 re-test) |
 | 16 | Figures ≥ 300 dpi / vector PDF | ✅ | all figures are vector PDF |

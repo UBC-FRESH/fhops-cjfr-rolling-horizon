@@ -390,3 +390,10 @@ Commands:
   10 and 12 updated. Each action needs G.P.'s approval and the Zenodo account.
 - Rebuilt `submission/package/` (main + supplement PDFs, flattened `manuscript.tex`, cover letter):
   `python scripts/package_submission.py`. Both PDFs compile with tectonic 0.17.0.
+### SoftwareX companion paper now in press
+
+- The FHOPS SoftwareX companion (Paradis, Jaffray, Coupland) was accepted 2026-10 and is in press.
+  Updated the `\fhopspaper` macro (`manuscript/metadata.tex`) from "unpublished manuscript under
+  review at SoftwareX" to the full in-press citation with its title; checklist item 13 updated.
+- Rebuilt `main.pdf` (verified: no "unpublished" remains; the introduction and methods render the
+  citation as "...benchmarking stack for forest harvest operations, SoftwareX, in press").
