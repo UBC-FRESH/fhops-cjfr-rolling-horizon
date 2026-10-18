@@ -435,3 +435,11 @@ Commands:
 - Added the Zenodo DOI for the `v1.1.0-rerun` release of `UBC-FRESH/jaffray-masc-fhops-model`
   (10.5281/zenodo.23448896): new reference `jaffray2026rerun` and the data-availability statement now
   cites it. The last `\pending{}` in the manuscript is resolved.
+### Manuscript repository release (Zenodo trigger)
+
+- Cut GitHub release **`v1.0.0`** on `UBC-FRESH/fhops-cjfr-rolling-horizon`
+  (`gh release create v1.0.0 --target feature/p1-results-manuscript`) so the Zenodo GitHub
+  integration can mint the archived-analysis DOI. `.zenodo.json` was already committed. Insert the
+  minted DOI into the data-availability statement once available.
+- Merged `origin/main` (the AGENTS.md environment-paths commit, #28) into the branch, resolving the
+  AGENTS.md conflict in favour of the public-facing build commands; validator clean.
