@@ -407,3 +407,12 @@ Commands:
 - **Made `UBC-FRESH/fhops-cjfr-rolling-horizon` public** (G.P. instruction) so both cited
   repositories are openly available ahead of submission. `notes/plans/p2-2-data-release.md` updated
   (step 3 done).
+### Public-repository cleanup
+
+- Genericised the build commands so the now-public repository does not advertise local paths:
+  `README.md`, `AGENTS.md`, `manuscript/main.tex`, `manuscript/supplement.tex` and
+  `scripts/build_figures.sh` now call `tectonic` (overridable via `$TECTONIC`); the AGENTS.md Python
+  note points at `requirements.txt`. (`CHANGE_LOG.md` history and the provenance column in
+  `results/rerun/summary.csv` are left as-is.)
+- Fixed the roadmap status string for P2 (`Status: active`) after the validator flagged it.
+- Dashboard: GREEN (lint, format, types, tests, validator, docs, manuscript).

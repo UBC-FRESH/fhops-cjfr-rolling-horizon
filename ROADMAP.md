@@ -70,7 +70,7 @@ finish the abstract, the introduction and the methods.
 
 Parent issue: #37
 Branch: `feature/p2-submission`
-Status: active (data release queued for approval)
+Status: active
 
 Goal: a submission package for CJFR, with the data released and archived, ready for G. Paradis to
 submit.
