@@ -71,7 +71,7 @@ operational state between windows and judge the plan that is actually implemente
 \subsection{Solver choice and tractability}
 
 The largest differences between runs, and all the outright failures, are solver effects. Cold-started
-MIP windows reach the time limit in 70\% of the 40-block windows, and where they do, the window may
+MIP windows reach the time limit in \WindowsStageOneLimitMIPForty\% of the 40-block windows, and where they do, the window may
 return no plan or an empty one (Table~\ref{tab:windows}). The simulated annealing never fails,
 because it is bounded by iterations rather than time, and it delivered more volume than the MIP in
 \NPairsSAWinsAny\ of \NPairsAll\ configurations --- in \NPairsSAWinsMIPClean\ of them the MIP
@@ -153,7 +153,7 @@ about four weeks gained little and was confounded by solver tractability; daily 
 re-optimization were indistinguishable, and only a 14-day commitment period carried a small
 penalty. The dominant differences were between solvers: cold-started mixed-integer programming
 reached its time limit in most 40-block windows and failed outright in a few, whereas simulated
-annealing never failed and was up to 11\% better in those cases. The large re-optimization-frequency
+annealing never failed and reached up to \RatioSAMIPMax\ times the MIP volume in those cases. The large re-optimization-frequency
 effect reported in Chapter 4 of \citet{jaffray2026thesis} did not survive the corrected procedure;
 re-planning each window from the initial state and scoring a single window are the likely causes,
 though this design cannot isolate them. Future work should add stochastic

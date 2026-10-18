@@ -8,12 +8,14 @@ its stitched plan, replayed against the full 112-day problem.
 
 The full-horizon baselines set the reference for each scenario (Table~\ref{tab:baselines}). They
 are not uniformly good. For Kamloops and Prince George at 6 and 18 blocks the baseline reaches
-100\% of the scheduled volume. Elsewhere it delivers less --- 54--68\% for North Island at every
-size, and 59--92\% for the 40-block Kamloops and Prince George cases --- because of fleet
-throughput, landing capacity, or solver limits, which this design does not separate.
+100\% of the scheduled volume. Elsewhere it delivers less --- \BaselineShareNILow--\BaselineShareNIHigh\%
+for North Island at every size, and \BaselineShareLargeLow--\BaselineShareLargeHigh\% for the
+40-block Kamloops and Prince George cases --- because of fleet throughput, landing capacity, or
+solver limits, which this design does not separate.
 
 Solver behaviour explains much of this (Table~\ref{tab:windows}). The MIP reached its 1800~s
-first-stage limit in 4.4\% of windows at 6 blocks, 37.9\% at 18 blocks, and 70.0\% at 40 blocks.
+first-stage limit in \WindowsStageOneLimitMIPSix\% of windows at 6 blocks,
+\WindowsStageOneLimitMIPEighteen\% at 18 blocks, and \WindowsStageOneLimitMIPForty\% at 40 blocks.
 The simulated annealing never reached a limit, because it stops after a fixed number of iterations.
 Across all MIP rolling windows, 9 returned no solution and 17 were empty, all at 18 and 40 blocks;
 no simulated-annealing window failed. All \GurobiSolvesLogged\ MIP solves longer than 100~s ran at a
@@ -26,7 +28,7 @@ Delivered volume is close to the best plan found for each scenario in most confi
 (Fig.~\ref{fig:delivered}). Against the same-method full-horizon baseline ($R^{\mathrm{base}}$,
 Eq.~\ref{eq:relative}) the median rolling run reaches \RelBaselineMedianMIP\% (MIP) and
 \RelBaselineMedianSA\% (SA), so decomposing the horizon costs little at the median; the worst run
-reaches \RelBaselineMin\%. Aggregated over the three study areas, the median run delivers
+reaches \RelBaselineMin\%. Aggregated over the three timber supply areas and all sizes, horizons and lock spans, the median run delivers
 \RelBestMedianMIPLockOne\% (MIP) and \RelBestMedianSALockOne\% (SA) of the best known plan at a
 1-day lock; \RelBestMedianMIPLockSeven\% and \RelBestMedianSALockSeven\% at 7 days; and
 \RelBestMedianMIPLockFourteen\% and \RelBestMedianSALockFourteen\% at 14 days. The worst runs reach
@@ -73,9 +75,10 @@ configurations; it is a property of the solver.
 
 Continuity is descriptive here, because machine moves are free in these scenarios and neither
 method is rewarded for keeping a machine on a block. Median continuity is high
-at 6 blocks (about 0.72 for both methods) and falls with size, more so for MIP (0.36 at 18 blocks,
-0.20 at 40 blocks) than for SA (0.42 and 0.28). Machine moves rise with size and are slightly
-higher for MIP at 40 blocks. These are incidental properties of the schedules, not optimized ones.
+at 6 blocks (\ContinuityMedianSASix\ for SA, \ContinuityMedianMIPSix\ for MIP) and falls with size,
+more so for MIP (\ContinuityMedianMIPEighteen\ at 18 blocks, \ContinuityMedianMIPForty\ at 40) than
+for SA (\ContinuityMedianSAEighteen\ and \ContinuityMedianSAForty). Machine moves rise with size and
+are slightly higher for MIP at 40 blocks. These are incidental properties of the schedules, not optimized ones.
 
 \subsection{Problem size, solution method, and computing effort}
 
@@ -107,7 +110,7 @@ ones with no-solution or empty windows.
 
 \begin{table}[htbp]
   \centering
-  \caption{Outcomes of the rolling-horizon windows, pooled over study areas, planning horizons,
+  \caption{Outcomes of the rolling-horizon windows, pooled over timber supply areas, planning horizons,
   and lock spans. Stage-1 and earliness limit: percentage of windows in which the first-stage
   (1800~s) or earliness-stage (900~s) solve stopped at its time limit. No solution: windows for
   which the solver returned no plan. Empty: windows whose plan delivered no volume. The simulated
@@ -123,7 +126,7 @@ ones with no-solution or empty windows.
   \caption{Volume delivered by the replayed stitched plan relative to the best plan found for the
   scenario, by planning horizon $\theta$, lock span $f$ (colours), problem size (columns), and
   method (rows; SA, simulated annealing; MIP, mixed-integer programming). Lines join the medians
-  over the three study areas (markers). Open markers: full-horizon baselines.}
+  over the three timber supply areas (markers). Open markers: full-horizon baselines.}
   \label{fig:delivered}
 \end{figure}
 

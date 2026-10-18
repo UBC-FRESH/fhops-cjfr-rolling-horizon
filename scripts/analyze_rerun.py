@@ -770,6 +770,34 @@ def numbers(df: pd.DataFrame, out: Path, rates: pd.DataFrame | None = None) -> N
         macros["NPairsSAWinsAny"] = f"{int((pairs['sa'] > pairs['mip']).sum())}"
         clean = pairs[(pairs["sa"] > pairs["mip"]) & (fails["mip"].reindex(pairs.index) == 0)]
         macros["NPairsSAWinsMIPClean"] = f"{len(clean)}"
+        positive = pairs[pairs["mip"] > 0]
+        if not positive.empty:
+            macros["RatioSAMIPMax"] = f"{(positive['sa'] / positive['mip']).max():.2f}"
+    # MIP stage-1 time-limit hits by size (audit: numbers typed literally in the prose).
+    for size in SIZES:
+        h = mip_rolling[mip_rolling["size"] == size]
+        if not h.empty and h.windows.sum():
+            macros[f"WindowsStageOneLimitMIP{WORDS[size]}"] = (
+                f"{100 * h.windows_stage1_time_limit.sum() / h.windows.sum():.1f}"
+            )
+    # Full-horizon baseline delivery shares (North Island vs the other, 40-block, cases).
+    baseline = df[df.baseline]
+    ni_baseline = baseline[baseline.context == "ni"]
+    if not ni_baseline.empty:
+        macros["BaselineShareNILow"] = f"{100 * ni_baseline.share_of_volume.min():.0f}"
+        macros["BaselineShareNIHigh"] = f"{100 * ni_baseline.share_of_volume.max():.0f}"
+    large_baseline = baseline[(baseline.context != "ni") & (baseline["size"] == 40)]
+    if not large_baseline.empty:
+        macros["BaselineShareLargeLow"] = f"{100 * large_baseline.share_of_volume.min():.0f}"
+        macros["BaselineShareLargeHigh"] = f"{100 * large_baseline.share_of_volume.max():.0f}"
+    # Continuity medians by method and size.
+    for method in ["sa", "mip"]:
+        for size in SIZES:
+            h = r[(r.method == method) & (r["size"] == size)]
+            if not h.empty and h.continuity.notna().any():
+                macros[f"ContinuityMedian{METHOD_LABEL[method]}{WORDS[size]}"] = (
+                    f"{h.continuity.median():.2f}"
+                )
     if rates is not None and not rates.empty:
         macros["GurobiWorkRateMedian"] = f"{rates.work_per_s.median():.2f}"
         macros["GurobiWorkRateLow"] = f"{rates.work_per_s.quantile(0.05):.2f}"

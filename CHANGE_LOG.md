@@ -525,3 +525,19 @@ m3/m8/m11/m12/m15/m16 and the nitpicks, and a CI gate against un-macro'd numeral
   reports **19** literals, of which the `results.tex` time-limit percentages (4.4/37.9/70.0) and the
   range endpoints (54--68/59--92) are the clearest candidates to convert to macros. Test added.
 - Gates: dashboard GREEN; body 4,786/6,000.
+
+### Audit batch 2 (cont.): literals to macros, calibration caveats, wording
+
+- Converted the flagged literals to `numbers.tex` macros: MIP stage-1 time-limit hits by size
+  (`\WindowsStageOneLimitMIP*`), baseline delivery-share ranges (`\BaselineShare*`), continuity
+  medians by method/size (`\ContinuityMedian*`), and the SA-over-MIP ratio (`\RatioSAMIPMax`).
+  **Two stale prose numbers fell out**: the baseline low end was written **59%** (data: **60%**) and
+  SA continuity at 40 blocks **0.28** (data: **0.29**) -- the audit's m3. Literal-percent warnings
+  fell 19 -> 12 (the rest are approximations and calibration figures).
+- **m16**: "first non-empty incumbent after about 1350 s" is not in the committed calibration; the
+  trajectory checkpoints show no first-stage incumbent before 1800 s, and the text now says so.
+- **m15**: named the earliness exception (the 40-block, 14-day Prince George calibration) instead of
+  "all but one window".
+- **n1/n7**: the aggregation line now says the medians pool sizes, horizons and lock spans; "study
+  areas" standardised to "timber supply areas".
+- Gates: dashboard GREEN; body 4,801/6,000.

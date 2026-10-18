@@ -4,7 +4,7 @@ Source: `notes/cjfr-guidelines.md`. Status: ✅ done · ⏳ pending results · �
 
 | # | Requirement | Status | Where / note |
 |---|---|---|---|
-| 1 | Research article: ≤ 6000 words Introduction→Discussion, ≤ 50 references | ✅ | `python scripts/wordcount.py` (2026-10-18: body 4786/6000; abstract 200/200; 42 references) |
+| 1 | Research article: ≤ 6000 words Introduction→Discussion, ≤ 50 references | ✅ | `python scripts/wordcount.py` (2026-10-18: body 4801/6000; abstract 200/200; 42 references) |
 | 2 | Abstract ≤ 200 words, one paragraph, no citations | ✅ | 200 words |
 | 3 | Keywords after abstract | ✅ | `sections/abstract.tex` |
 | 4 | Double-spaced, single column, page numbers, continuous line numbers, Letter | ✅ | `main.tex` (setspace, lineno) |
