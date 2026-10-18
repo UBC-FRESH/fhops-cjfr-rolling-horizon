@@ -430,3 +430,8 @@ Commands:
 - Added the Zenodo archive DOI for FHOPS 1.0.1 (10.5281/zenodo.23244315) to `fhops2026v101` in
   `references.bib` (removed the "PENDING: archive DOI" note); checklist item 12 updated. Rebuilt
   `main.pdf` and verified the DOI renders in the reference list and resolves.
+### Re-run dataset DOI
+
+- Added the Zenodo DOI for the `v1.1.0-rerun` release of `UBC-FRESH/jaffray-masc-fhops-model`
+  (10.5281/zenodo.23448896): new reference `jaffray2026rerun` and the data-availability statement now
+  cites it. The last `\pending{}` in the manuscript is resolved.
