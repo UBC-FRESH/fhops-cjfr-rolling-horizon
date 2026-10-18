@@ -67,10 +67,11 @@ single window, can produce horizon and frequency effects that are artifacts. Sol
 a further confounder. When exact solvers are given a fixed time per window, large windows can
 end without a useful solution, and this can be mistaken for an effect of the horizon itself.
 \citet{jaffray2026thesis} reported a first evaluation of these parameters with an early release
-of the open-source Forest Harvesting Operations Planning System (FHOPS). That release did not
-carry state between windows, and the evaluation scored runs by the last window's objective.
-FHOPS~1.0.1 \citep{fhops2026v101} carries the operational state forward and replays the stitched
-plan against the full problem.
+of the open-source Forest Harvesting Operations Planning System (FHOPS). That release carried no
+state between windows, and the evaluation scored each run by its last window's objective. Those
+two choices make the reported numbers a poor measure of the schedule that is actually implemented,
+and we treat them as superseded rather than reproducible. FHOPS~1.0.1 \citep{fhops2026v101}
+carries the operational state forward and replays the stitched plan against the full problem.
 
 This study repeats that evaluation with FHOPS~1.0.1 (\fhopspaper) on nine semi-synthetic case
 studies representative of British Columbia (BC) harvesting operations, with both an exact and a
@@ -79,7 +80,8 @@ planning horizon and re-optimization interval affect the delivered volume, feasi
 continuity of implemented machine schedules, and the computing effort needed to produce them.
 Second, it sets out an evaluation protocol for rolling-horizon planning systems: carried state,
 stitched-plan replay, explicit reporting of window outcomes, and calibrated solver limits. The
-protocol applies to any planning system, not only FHOPS. Third, it releases every scenario,
+protocol is stated in terms of the operational state and solver behaviour that any such system
+shares, so it transfers beyond FHOPS, although we demonstrate it only on FHOPS here. Third, it releases every scenario,
 script, and run output, so that the results can be reproduced and extended. We ask:
 \begin{enumerate}
   \item At what planning horizon length do further gains in delivered volume become small?

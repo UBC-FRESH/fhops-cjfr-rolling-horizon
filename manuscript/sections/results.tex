@@ -61,9 +61,14 @@ indistinguishable, and the 14-day lock is 1--3 percentage points lower at 40 blo
 
 Feasibility of the replayed plans differs by method. All \NRollingRunsSA\ simulated-annealing plans
 replay with no sequencing violations. \NRunsWithViolationsMIPRolling\ of the \NRollingRunsMIP\ MIP
-rolling runs show raw violations (\NViolationsMIPRolling\ in total), but only
-\NRunsWithMaterialViolations\ run has any beyond a \TinyThreshold~m$^3$ tolerance: the rest are
-negligible-production rows that FHOPS replays as violations (UBC-FRESH/fhops\#157). Feasibility is therefore not a discriminating factor between
+rolling runs show raw violations at the FHOPS default tolerance of $10^{-6}$~m$^3$
+(\NViolationsMIPRolling\ in total). The count falls steeply as the tolerance rises through the
+sub-litre range: \NRunsWithMaterialViolationsOneEMinusFour\ runs at $10^{-4}$~m$^3$,
+\NRunsWithMaterialViolations\ at $10^{-3}$~m$^3$, and
+\NRunsWithMaterialViolationsOneEMinusTwo\ at $10^{-2}$~m$^3$. That fall-off, together with
+\NTinyRowsTotal\ MIP assignment rows whose planned production is below $10^{-3}$~m$^3$ (up to
+\NTinyRowsMax\ in one run), identifies the raw violations as numerical artefacts of
+negligible-production rows rather than operational infeasibilities (UBC-FRESH/fhops\#157). Feasibility is therefore not a discriminating factor between
 configurations; it is a property of the solver.
 
 Continuity is descriptive here, because machine moves are free in these scenarios and neither

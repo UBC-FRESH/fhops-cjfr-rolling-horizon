@@ -47,7 +47,8 @@ python scripts/make_table_scenarios.py          # Table 1 (scenario bundles)
 python scripts/make_supplement_tables.py        # Tables S1-S2 (calibration, solver probe)
 python scripts/analyze_rerun.py                 # results/rerun, Tables 2-3, Figs. 2-3, numbers.tex
 scripts/build_figures.sh                        # Fig. 1 (TikZ)
-cd manuscript && tectonic -o build main.tex && tectonic -o build supplement.tex
+cd manuscript && tectonic --keep-intermediates -o build main.tex \
+  && tectonic --keep-intermediates -o build supplement.tex   # keeps main.bbl; packaging needs it
 python scripts/wordcount.py                     # CJFR limits
 ```
 Python: a FHOPS 1.0.1 environment with matplotlib (see `requirements.txt`; `tectonic` is overridable

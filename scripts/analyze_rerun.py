@@ -196,13 +196,17 @@ def _moves_and_continuity(
     return moves, (kept / total if total else math.nan)
 
 
-def material_violations(problem: Any, assignments: pd.DataFrame) -> int:  # noqa: ANN401 - fhops is untyped
-    """Count sequencing violations with a volume tolerance of ``TINY_M3``.
+def material_violations(
+    problem: Any,  # noqa: ANN401 - fhops is untyped
+    assignments: pd.DataFrame,
+    tolerance: float = TINY_M3,
+) -> int:
+    """Count sequencing violations with a volume tolerance of ``tolerance``.
 
     FHOPS playback compares volumes with ``fhops.evaluation.sequencing.SEQUENCING_TOLERANCE``
-    (read at call time). Raising it to ``TINY_M3`` for one replay treats proposals of at most
-    ``TINY_M3`` as idle and ignores shortfalls of at most ``TINY_M3``, so only violations of
-    material volume are counted.
+    (read at call time). Raising it for one replay treats proposals of at most the tolerance as idle
+    and ignores shortfalls of at most the tolerance, so only violations of material volume are
+    counted.
 
     Parameters
     ----------
@@ -210,17 +214,20 @@ def material_violations(problem: Any, assignments: pd.DataFrame) -> int:  # noqa
         The FHOPS problem for the scenario (untyped library).
     assignments : pandas.DataFrame
         The stitched assignment rows to replay.
+    tolerance : float, optional
+        The volume tolerance in m^3 passed to the replay, by default ``TINY_M3`` (1e-3). Higher
+        values ignore more of the negligible-production artefacts; the analysis reports a sweep.
 
     Returns
     -------
     int
-        The number of sequencing violations at the ``TINY_M3`` tolerance.
+        The number of sequencing violations at ``tolerance``.
     """
     import fhops.evaluation.sequencing as seq
     from fhops.evaluation.metrics.kpis import compute_kpis
 
     saved = seq.SEQUENCING_TOLERANCE
-    seq.SEQUENCING_TOLERANCE = TINY_M3
+    seq.SEQUENCING_TOLERANCE = tolerance
     try:
         return int(compute_kpis(problem, assignments)["sequencing_violation_count"])
     finally:
@@ -284,6 +291,12 @@ def run_metrics(args: tuple[str, str, str]) -> dict[str, Any]:
     row["violations_material"] = (
         material_violations(problem, assignments) if len(assignments) else 0
     )
+    # Sensitivity of the material-violation count to the tolerance (M10 audit): 1e-4 and 1e-2
+    # bracket the reported 1e-3 so the choice is demonstrably not load-bearing.
+    for tol, label in ((1e-4, "1e4"), (1e-2, "1e2")):
+        row[f"violations_material_{label}"] = (
+            material_violations(problem, assignments, tol) if len(assignments) else 0
+        )
     shift_order = (
         {s.name: i for i, s in enumerate(scenario.timeline.shifts)} if scenario.timeline else {}
     )
@@ -709,6 +722,19 @@ def numbers(df: pd.DataFrame, out: Path, rates: pd.DataFrame | None = None) -> N
     macros["NRollingRunsSA"] = f"{len(sa_rolling)}"
     macros["NRollingRunsMIP"] = f"{len(mip_rolling)}"
     macros["NRunsWithViolationsMIPRolling"] = f"{int((mip_rolling.violations > 0).sum())}"
+    # Violation-count sensitivity to the tolerance (M10 audit).
+    if "violations_material" in df.columns:
+        macros["NViolationsMaterialOneEMinusThree"] = f"{int(df['violations_material'].sum())}"
+    for label, col in (
+        ("OneEMinusFour", "violations_material_1e4"),
+        ("OneEMinusTwo", "violations_material_1e2"),
+    ):
+        if col in df.columns:
+            macros[f"NViolationsMaterial{label}"] = f"{int(df[col].sum())}"
+            macros[f"NRunsWithMaterialViolations{label}"] = f"{int((df[col] > 0).sum())}"
+    if "tiny_rows" in df.columns:
+        macros["NTinyRowsTotal"] = f"{int(df['tiny_rows'].sum()):,}"
+        macros["NTinyRowsMax"] = f"{int(df['tiny_rows'].max()):,}"
     macros["NViolationsMIPRolling"] = f"{int(mip_rolling.violations.sum())}"
     macros["RelBestWorstRolling"] = f"{100 * r.rel_best.min():.1f}"
     for method in ["sa", "mip"]:

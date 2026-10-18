@@ -66,6 +66,17 @@ def main() -> int:
     if not main_tex.exists():
         print("manuscript/main.tex is missing; build the paper first", file=sys.stderr)
         return 1
+    # A missing or stale .bbl would silently ship a bibliography that does not match the cited keys,
+    # so refuse to package. tectonic only emits the .bbl with --keep-intermediates.
+    if not bbl.exists() or bbl.stat().st_mtime < max(
+        (MANUSCRIPT / "references.bib").stat().st_mtime, main_tex.stat().st_mtime
+    ):
+        print(
+            "manuscript/build/main.bbl is missing or older than the sources; rebuild with "
+            "`tectonic --keep-intermediates -o build main.tex` before packaging",
+            file=sys.stderr,
+        )
+        return 1
     PACKAGE.mkdir(parents=True, exist_ok=True)
     tex = inline(main_tex.read_text(encoding="utf-8"))
 

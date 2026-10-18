@@ -82,7 +82,9 @@ place of a wall-clock limit, or using the heuristic directly for the largest ins
 practical options \citep{frisk2016detailed,audy2023planning}.
 
 \subsection{Implications for evaluating operational planning systems}
-The protocol used here applies to rolling-horizon planning systems in general, not only to FHOPS.
+The protocol used here is expressed in terms of the carried state and solver behaviour that any
+rolling-horizon planning system shares, so we expect it to transfer beyond FHOPS; we demonstrate it
+on one system only, and that is the main limit on its generality.
 Four elements make an evaluation trustworthy. First, each window must start from the state implied
 by the decisions already locked. For a multi-phase system that means remaining volume, inter-phase
 inventory, and machine positions; in other settings it would include open orders, crews, or road

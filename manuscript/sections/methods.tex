@@ -147,9 +147,11 @@ deterministic playback. We report:
         method. $R^{\mathrm{best}}$ allows comparison across methods and is not inflated when a
         baseline is itself limited by solver time;
   \item sequencing violations in the replayed plan, that is, slots in which a phase was scheduled
-        to process more volume than its upstream phases had staged. We count them twice: with the
-        FHOPS volume tolerance of $10^{-6}$~m$^3$, and with a tolerance of $10^{-3}$~m$^3$. The
-        second count excludes artefacts from MIP assignments with negligible planned production;
+        to process more volume than its upstream phases had staged. We report the count at four
+        volume tolerances ($10^{-6}$, $10^{-4}$, $10^{-3}$ and $10^{-2}$~m$^3$) rather than at one,
+        because MIP assignments contain negligible-production rows whose replay produces spurious
+        violations and the count would otherwise hinge on an arbitrary threshold; a sub-litre
+        shortfall is orders of magnitude below any operational resolution;
   \item block-to-block machine moves and schedule continuity, computed from the playback records
         that produced volume. Continuity is the share of the machines working a block on one
         working day that also work it on the block's next working day, pooled over blocks and days

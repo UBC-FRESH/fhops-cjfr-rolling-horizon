@@ -462,7 +462,7 @@ Commands:
 - Dashboard: GREEN. Both PDFs and the submission package rebuilt.
 ### Antagonistic-audit fixes, batch 1 (blockers + numbers + headline)
 
-An adversarial audit (`/home/gep/projects/p1-antagonistic-audit.md`, outside the repo) found 3 fatal,
+An adversarial audit (`<workspace>/p1-antagonistic-audit.md`, outside the repo) found 3 fatal,
 15 major, 16 minor and 7 nitpick issues. This batch fixes the submission blockers, the stale
 hand-typed numbers, and the over-claimed headline:
 
@@ -492,3 +492,23 @@ hand-typed numbers, and the over-claimed headline:
 Remaining from the audit (batch 2): M6/M7 (calibration vs grid work rate; the 16-week confound),
 M10 (tolerance justification and tiny-production rows), M14 (fleet-capacity claim), M15 (framing),
 m3/m8/m11/m12/m15/m16 and the nitpicks, and a CI gate against un-macro'd numerals.
+
+### Audit batch 2: M10 (tolerance), M15 (framing), and the submission mechanics
+
+- **M10 — the violation tolerance is now justified, not asserted.** `scripts/analyze_rerun.py` gained
+  a tolerance sweep (`material_violations(..., tolerance=)`), and the re-run reports the count at
+  four tolerances. It is genuinely load-bearing — **17** runs at $10^{-4}$ m$^3$, **1** at
+  $10^{-3}$, **0** at $10^{-2}$ — so the Methods and Results now present the sweep (plus the
+  `\NTinyRowsTotal` negligible-production rows, max `\NTinyRowsMax` in one run) instead of resting on
+  a single threshold.
+- **M15 — framing.** The Introduction now states plainly that the earlier evaluation's numbers are
+  superseded rather than reproducible, and both the Introduction and Discussion narrow the "applies
+  to any planning system" claim to "stated in terms of what any such system shares; demonstrated on
+  one".
+- **m8** — removed the uncited `myers2004analysis` entry.
+- **m11/m12 — the stale-bibliography blocker.** `tectonic` only writes `main.bbl` with
+  `--keep-intermediates`, so the package had been inlining an **Oct-10, 32-entry** bbl against 40
+  cited keys. Rebuilt cleanly (**42** entries), the build docs updated, and
+  `scripts/package_submission.py` now **refuses to package** when the bbl is missing or older than
+  the sources.
+- Gates: dashboard GREEN (lint, format, types, tests, validator, docs, manuscript); body 4,774/6,000.
