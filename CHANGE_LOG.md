@@ -425,3 +425,8 @@ Commands:
   anonymously reachable (release page and raw run JSON: HTTP 200), so the data-availability
   statement is now accurate.
 - A follow-up point release adds the two outstanding `sub112_lock1` SA runs after P1.1.
+### FHOPS 1.0.1 archive DOI resolved
+
+- Added the Zenodo archive DOI for FHOPS 1.0.1 (10.5281/zenodo.23244315) to `fhops2026v101` in
+  `references.bib` (removed the "PENDING: archive DOI" note); checklist item 12 updated. Rebuilt
+  `main.pdf` and verified the DOI renders in the reference list and resolves.
