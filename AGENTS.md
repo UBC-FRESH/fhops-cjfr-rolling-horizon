@@ -50,7 +50,8 @@ scripts/build_figures.sh                        # Fig. 1 (TikZ)
 cd manuscript && tectonic -o build main.tex && tectonic -o build supplement.tex
 python scripts/wordcount.py                     # CJFR limits
 ```
-Python: a FHOPS 1.0.1 environment with matplotlib (see `requirements.txt`). Assets with a
+Python: a FHOPS 1.0.1 environment with matplotlib (see `requirements.txt`; `tectonic` is overridable
+via `$TECTONIC`). Assets with a
 `_smoke` suffix come from the smoke run and are for pipeline testing only; never cite them.
 CJFR format: double-spaced, single column, page and continuous line numbers, Letter paper,
 Harvard (author year) citations, abstract ≤ 200 words, ≤ 6000 words Introduction–Discussion,
