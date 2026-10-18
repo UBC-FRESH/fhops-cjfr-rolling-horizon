@@ -22,12 +22,11 @@ approval.
 1. **Confirm the scenario record.** Check whether the FHOPS 1.0.1 scenario bundles match
    `10.5281/zenodo.19200385`; if not, mint a new version of that Zenodo record and update
    `jaffray2026zenodo`. (Zenodo account: G.P.)
-2. **Cut a release for the re-run.** Tag and release `UBC-FRESH/jaffray-masc-fhops-model` (e.g.
-   `v1.1.0-rerun`) containing the runner, scenarios, `data/output/rerun_v101_gurobi/` outputs, and
-   `summary.csv`, with the release notes stating the FHOPS 1.0.1 provenance.
-   ```bash
-   gh release create v1.1.0-rerun -R UBC-FRESH/jaffray-masc-fhops-model --title "FHOPS 1.0.1 rolling-horizon re-run" --notes-file <notes>
-   ```
+2. ~~**Cut a release for the re-run.**~~ — **done 2026-10-18**: the outputs (45 MB, 817 files:
+   per-run JSON, stitched assignment tables, Gurobi logs, `summary.csv`, manifests) are now committed
+   to `feature/rolling-rerun-v101` and released as **`v1.1.0-rerun`** using
+   `notes/plans/p2-2-experiment-release-notes.md`. The data-availability statement is now accurate.
+   A follow-up point release will add the two outstanding `sub112_lock1` SA runs after P1.1.
 3. ~~**Make this repository public**~~ — **done 2026-10-18**:
    `gh repo edit UBC-FRESH/fhops-cjfr-rolling-horizon --visibility public`.
 4. **Connect both repositories to Zenodo** and mint a DOI per release (Zenodo's GitHub integration
@@ -50,7 +49,7 @@ approval.
 - P2.3 close-out: rebuild `submission/package/`, re-run the dashboard, and hand off to G. Paradis.
 - The author sign-off (#22) and the optional referees (#21) remain author actions.
 
-## Staged on 2026-10-18 (pending one decision and the final grid)
+## Staged on 2026-10-18
 
 - `.zenodo.json` added to this repository (analysis) for the Zenodo deposition.
 - Release-notes draft at `notes/plans/p2-2-experiment-release-notes.md` for the experiment repo.
@@ -59,7 +58,9 @@ approval.
   GitHub repository" is not yet true. The output publication + release + DOI should run **after
   P1.1 completes the grid** (2 SA runs outstanding), so we release the complete grid once rather than
   twice.
-- **Open decision (blocks the release):** `jaffray-masc-fhops-model` `notes/repo_cleanup.md` asks
+- **Resolved:** the outputs were published in full (all 45 MB) in `v1.1.0-rerun`, so the solver logs
+  are included as the statement says. (The earlier note on an all-vs-subset decision:)
+- *Open decision (now moot):* `jaffray-masc-fhops-model` `notes/repo_cleanup.md` asks
   whether to archive **all** outputs (45 MB, 817 files: per-run JSON, stitched assignment tables, and
   ~5 MB Gurobi logs) or a **representative subset** (per-run JSON + `summary.csv` + manifests, no
   solver logs). Recommendation: commit the JSON, `summary.csv`, assignment tables, and manifests

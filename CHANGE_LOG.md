@@ -416,3 +416,12 @@ Commands:
   `results/rerun/summary.csv` are left as-is.)
 - Fixed the roadmap status string for P2 (`Status: active`) after the validator flagged it.
 - Dashboard: GREEN (lint, format, types, tests, validator, docs, manuscript).
+### Experiment repo: outputs published and released
+
+- Pushed the FHOPS 1.0.1 re-run outputs (per-run JSON, stitched assignment tables, Gurobi logs,
+  `summary.csv`, manifests; 45 MB, 817 files) to `UBC-FRESH/jaffray-masc-fhops-model`
+  (`feature/rolling-rerun-v101`, commit `3ba274e`) and released them as **`v1.1.0-rerun`**
+  (`gh release create ... --notes-file notes/plans/p2-2-experiment-release-notes.md`). Verified
+  anonymously reachable (release page and raw run JSON: HTTP 200), so the data-availability
+  statement is now accurate.
+- A follow-up point release adds the two outstanding `sub112_lock1` SA runs after P1.1.
