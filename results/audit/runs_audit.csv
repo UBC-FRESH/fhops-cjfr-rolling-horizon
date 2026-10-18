@@ -106,6 +106,7 @@ ni_40_baseline_sa,rerun_v101_gurobi,sa,True,40,ni,112,112,1800,1,True,True,True,
 ni_40_sub112_lock14_mip,rerun_v101_gurobi,mip,False,40,ni,112,14,1800,8,True,True,True,True,True,True,769282.7202519513,769282.7202519513,,True
 ni_40_sub112_lock14_sa,rerun_v101_gurobi,sa,False,40,ni,112,14,1800,8,True,True,True,True,True,True,857055.766752,857055.766752,,True
 ni_40_sub112_lock1_mip,rerun_v101_gurobi,mip,False,40,ni,112,1,1800,112,True,True,True,True,True,True,856914.9700116375,856914.9700116375,,True
+ni_40_sub112_lock1_sa,rerun_v101_gurobi,sa,False,40,ni,112,1,1800,112,True,True,True,True,True,True,856397.7667519999,856397.7667519999,,True
 ni_40_sub112_lock7_mip,rerun_v101_gurobi,mip,False,40,ni,112,7,1800,16,True,True,True,True,True,True,820656.1041354162,820656.1041354162,,True
 ni_40_sub112_lock7_sa,rerun_v101_gurobi,sa,False,40,ni,112,7,1800,16,True,True,True,True,True,True,857713.766752,857713.766752,,True
 ni_40_sub14_lock14_mip,rerun_v101_gurobi,mip,False,40,ni,14,14,1800,8,True,True,True,True,True,True,837079.8528559804,837079.8528559806,,True
@@ -182,6 +183,7 @@ pg_40_baseline_sa,rerun_v101_gurobi,sa,True,40,pg,112,112,1800,1,True,True,True,
 pg_40_sub112_lock14_mip,rerun_v101_gurobi,mip,False,40,pg,112,14,1800,8,True,True,True,True,True,True,748871.0741740008,748871.0741740008,,True
 pg_40_sub112_lock14_sa,rerun_v101_gurobi,sa,False,40,pg,112,14,1800,8,True,True,True,True,True,True,831750.8031039999,831750.8031039999,,True
 pg_40_sub112_lock1_mip,rerun_v101_gurobi,mip,False,40,pg,112,1,1800,112,True,True,True,True,True,True,800140.152968999,800140.1529689989,,True
+pg_40_sub112_lock1_sa,rerun_v101_gurobi,sa,False,40,pg,112,1,1800,112,True,True,True,True,True,True,837672.8031039999,837672.8031039999,,True
 pg_40_sub112_lock7_mip,rerun_v101_gurobi,mip,False,40,pg,112,7,1800,16,True,True,True,True,True,True,851467.517706977,851467.517706977,,True
 pg_40_sub112_lock7_sa,rerun_v101_gurobi,sa,False,40,pg,112,7,1800,16,True,True,True,True,True,True,838330.8031039999,838330.8031039999,,True
 pg_40_sub14_lock14_mip,rerun_v101_gurobi,mip,False,40,pg,14,14,1800,8,True,True,True,True,True,True,814908.5005062864,814908.5005062864,,True

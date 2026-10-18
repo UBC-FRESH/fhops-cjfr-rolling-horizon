@@ -134,9 +134,8 @@ effect rather than a planning one. The results depend on the solver, the limits,
 effective Gurobi work rate here was about half the calibrated rate because the host was shared.
 
 Simulated annealing used one seed and a fixed iteration budget, so its results show one trajectory
-rather than a distribution. The two largest simulated-annealing runs (North Island and Prince
-George, 40 blocks, 112-day windows, 1-day lock) exceeded the compute budget and are excluded; their
-cells are covered at 112 days by the runs with longer lock spans and by the MIP runs.
+rather than a distribution. The largest runs are expensive: the two 112-day, 1-day-lock runs at 40
+blocks (North Island and Prince George) took 56--64~h each, the longest in the grid.
 
 \section{Conclusions}
 

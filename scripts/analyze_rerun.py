@@ -47,6 +47,7 @@ from __future__ import annotations
 import argparse
 import json
 import math
+import re
 import shutil
 from concurrent.futures import ProcessPoolExecutor
 from itertools import pairwise
@@ -713,6 +714,28 @@ def numbers(df: pd.DataFrame, out: Path, rates: pd.DataFrame | None = None) -> N
     out.write_text("\n".join(lines) + "\n", encoding="utf-8")
 
 
+_PERSONAL_PATH_PREFIX = re.compile(r"/(?:home|Users|tmp)/[^/,\n\"]+/")
+
+
+def _scrub_personal_paths(path: Path) -> None:
+    """Replace absolute home/tmp prefixes in a copied CSV with ``<env>/``.
+
+    The copied ``summary.csv`` records, in ``fhops_path``, the interpreter path of the FHOPS
+    install that produced each run. On a maintainer machine that is an absolute home (or ``/tmp``)
+    path; commit a placeholder instead, so the repository carries no personal path (the workflow
+    validator rejects them).
+
+    Parameters
+    ----------
+    path:
+        The copied CSV to rewrite in place. Left untouched when no personal prefix is present.
+    """
+    text = path.read_text(encoding="utf-8")
+    scrubbed = _PERSONAL_PATH_PREFIX.sub("<env>/", text)
+    if scrubbed != text:
+        path.write_text(scrubbed, encoding="utf-8")
+
+
 def main() -> int:
     """Run the analysis end to end and write every result asset.
 
@@ -758,6 +781,7 @@ def main() -> int:
         superseded.to_csv(res / "supplementary_baselines_grid_1800s.csv", index=False)
     if args.methods == "both" and (args.rerun_dir / "summary.csv").exists():
         shutil.copy2(args.rerun_dir / "summary.csv", res / "summary.csv")
+        _scrub_personal_paths(res / "summary.csv")
     suffix = "" if args.out_tag == "rerun" else f"_{args.out_tag}"
     tables = ROOT / "manuscript" / "tables"
     figures = ROOT / "manuscript" / "figures"

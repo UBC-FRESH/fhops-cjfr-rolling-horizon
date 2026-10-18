@@ -443,3 +443,20 @@ Commands:
   minted DOI into the data-availability statement once available.
 - Merged `origin/main` (the AGENTS.md environment-paths commit, #28) into the branch, resolving the
   AGENTS.md conflict in favour of the public-facing build commands; validator clean.
+## 2026-10-18
+
+### P1.1: the complete grid (234 runs) is in the analysis
+
+- The two outstanding SA runs finished (`pg_40_sub112_lock1_sa` 56.3 h, `ni_40_sub112_lock1_sa`
+  63.6 h; both 112 windows). Input audit: **234/234 passed**.
+- Re-ran `scripts/analyze_rerun.py --methods both --out-tag rerun --workers 8` over the complete
+  grid. `results/rerun/runs_metrics.csv` now holds 234 runs (117 MIP + 117 SA). Macro changes:
+  `\NRollingRuns` 214 -> 216, `\NRuns` 232 -> 234, `\NWindows` 9,568 -> 9,792,
+  `\RelBestSizeFortyThetaSixteenLockOne` **97.6 -> 98.2** (the gap the two runs filled),
+  `\RelBestMedianSALockOne` 99.1 -> 99.0, `\WallMedianHoursSAForty` 4.49 -> 4.73.
+- Removed the "still solving / excluded" note from Results and the exclusion sentence from the
+  Discussion (Limitations now note the two runs' cost instead); the analysis memo records the
+  completed grid. Body 4,562/6,000 words; abstract 200/200.
+- `analyze_rerun.py` now scrubs absolute home/tmp prefixes in the copied `summary.csv`
+  (`fhops_path` -> `<env>/...`) so no personal path is committed; validator clean.
+- Dashboard: GREEN. Both PDFs and the submission package rebuilt.
