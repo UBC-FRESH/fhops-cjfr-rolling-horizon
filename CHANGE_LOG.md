@@ -397,3 +397,13 @@ Commands:
   review at SoftwareX" to the full in-press citation with its title; checklist item 13 updated.
 - Rebuilt `main.pdf` (verified: no "unpublished" remains; the introduction and methods render the
   citation as "...benchmarking stack for forest harvest operations, SoftwareX, in press").
+### Systematic review published; repository made public
+
+- The authors' systematic review is now **published**: Jaffray, Coupland, and Paradis (2026),
+  *International Journal of Forest Engineering*, pp. 1-16, DOI 10.1080/14942119.2026.2662184
+  (published online 13 June 2026). Added `jaffray2026systematic` to `references.bib` (Crossref
+  metadata) and cited it directly in the Introduction (was cited via the thesis while submitted).
+  `notes/ch4-to-cjfr-map.md` updated. Reference count 41 -> 42.
+- **Made `UBC-FRESH/fhops-cjfr-rolling-horizon` public** (G.P. instruction) so both cited
+  repositories are openly available ahead of submission. `notes/plans/p2-2-data-release.md` updated
+  (step 3 done).

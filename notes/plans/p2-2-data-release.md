@@ -11,8 +11,8 @@ approval.
 - `UBC-FRESH/jaffray-masc-fhops-model` (scenarios, runner, run outputs): **public**, with a
   `v1.0.0` release from March 2026 ("Final thesis results"). The FHOPS 1.0.1 re-run outputs
   (`data/output/rerun_v101_gurobi/`) are **not** in any release.
-- `UBC-FRESH/fhops-cjfr-rolling-horizon` (this repo, the analysis): **private**. The data-availability
-  statement cites it as a public URL, so it must be public (or the scripts moved) before submission.
+- `UBC-FRESH/fhops-cjfr-rolling-horizon` (this repo, the analysis): made **public** on 2026-10-18
+  (G.P. instruction); the data-availability statement cites it as a public URL.
 - FHOPS: `v1.0.1` is released on GitHub (2026-10-08); no archive DOI minted.
 - `references.bib`: `jaffray2026zenodo` carries a Zenodo DOI (10.5281/zenodo.19200385) flagged
   "confirm version"; `fhops2026v101` is flagged "PENDING: archive DOI".
@@ -28,10 +28,8 @@ approval.
    ```bash
    gh release create v1.1.0-rerun -R UBC-FRESH/jaffray-masc-fhops-model --title "FHOPS 1.0.1 rolling-horizon re-run" --notes-file <notes>
    ```
-3. **Make this repository public** (or move `scripts/` + `results/` to the experiment repo).
-   ```bash
-   gh repo edit UBC-FRESH/fhops-cjfr-rolling-horizon --visibility public --accept-visibility-change-consequences
-   ```
+3. ~~**Make this repository public**~~ — **done 2026-10-18**:
+   `gh repo edit UBC-FRESH/fhops-cjfr-rolling-horizon --visibility public`.
 4. **Connect both repositories to Zenodo** and mint a DOI per release (Zenodo's GitHub integration
    mints one DOI per GitHub release once the repo is switched on). Record the concept DOI and the
    version DOI.
