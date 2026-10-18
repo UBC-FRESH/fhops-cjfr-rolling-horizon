@@ -7,10 +7,10 @@ its stitched plan, replayed against the full 112-day problem.
 \subsection{Tractability and window outcomes}
 
 The full-horizon baselines set the reference for each scenario (Table~\ref{tab:baselines}). They
-are not uniformly good. Where the fleet can harvest all of the scheduled volume within 112 days,
-the baseline reaches 100\% of the volume (Kamloops and Prince George at 6 and 18 blocks). Where it
-cannot, or where the solver runs out of time, it delivers less: 54--68\% for North Island at every
-size, and 59--92\% for the larger Kamloops and Prince George cases.
+are not uniformly good. For Kamloops and Prince George at 6 and 18 blocks the baseline reaches
+100\% of the scheduled volume. Elsewhere it delivers less --- 54--68\% for North Island at every
+size, and 59--92\% for the 40-block Kamloops and Prince George cases --- because of fleet
+throughput, landing capacity, or solver limits, which this design does not separate.
 
 Solver behaviour explains much of this (Table~\ref{tab:windows}). The MIP reached its 1800~s
 first-stage limit in 4.4\% of windows at 6 blocks, 37.9\% at 18 blocks, and 70.0\% at 40 blocks.
@@ -98,8 +98,8 @@ ones with no-solution or empty windows.
   \caption{Full-horizon baselines ($\theta = f = 112$ days): volume delivered by the replayed plan
   as a share of the scenario's total volume, and wall time. SA, simulated annealing (500
   iterations); MIP, mixed-integer programming (Gurobi, 1800~s; the size-40 baselines use 7200~s).
-  The North Island baselines are low because the fleet cannot harvest the full scheduled volume in
-  112 days.}
+  The North Island baselines are low: the scheduled volume exceeds what the fleet harvests in 112
+  days under these shift calendars.}
   \label{tab:baselines}
   \small
   \input{tables/baselines}

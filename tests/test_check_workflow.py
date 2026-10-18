@@ -807,3 +807,21 @@ def test_an_unsupported_negation_reincludes_every_path(tmp_path: Path) -> None:
     rules = cw.load_ignore_rules(tmp_path)
     assert [rule.negated for rule in rules] == [False, True]
     assert not cw.is_ignored("docs/keep.log", is_dir=False, rules=rules)
+
+
+def test_literal_percent_is_a_warning(tmp_path: Path) -> None:
+    """A hand-typed result percentage is flagged; a numbers.tex macro is not."""
+    backslash = chr(92)
+    root = make_repo(tmp_path)
+    sections = root / "manuscript" / "sections"
+    sections.mkdir(parents=True)
+    (sections / "results.tex").write_text(
+        "A hand-typed figure of 97.8" + backslash + "%"
+        " next to a macro " + backslash + "RelBestMedianSALockOne" + backslash + "%.\n",
+        encoding="utf-8",
+    )
+    diags = cw.check_literal_numbers(root)
+    assert [d.code for d in diags] == ["LITERAL-PERCENT"]
+    assert diags[0].severity == "warning"
+    assert "97.8" in diags[0].message
+    assert error_codes(root) == set()

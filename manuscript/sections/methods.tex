@@ -17,9 +17,10 @@ with a floor of
 four roles. Each block has its own landing, which at most two machines can work at once. The
 planning horizon is 112 days with three 8-h shifts per day, 7 days per week, and full machine
 availability. Blocks can be harvested at any time within the horizon. The scenarios differ in
-total volume relative to fleet capacity, so in some scenarios not all volume can be harvested
-within 112 days (Table~\ref{tab:scenarios}). Delivered volume, rather than completion time, is
-therefore the primary measure of plan quality.
+total volume relative to the fleet, and in some of them the baseline runs do not deliver the full
+scheduled volume within 112 days (Table~\ref{tab:scenarios}); the design cannot separate a
+fleet-throughput limit from model, landing, or solver limits. Delivered volume, rather than
+completion time, is therefore the primary measure of plan quality.
 
 \begin{table}[htbp]
   \centering

@@ -1115,6 +1115,45 @@ def check_files(paths: list[Path]) -> list[Diagnostic]:
     return diags
 
 
+def check_literal_numbers(root: Path) -> list[Diagnostic]:
+    r"""Warn about result percentages typed literally in the manuscript sections.
+
+    Every result number should come from a ``generated/numbers.tex`` macro so the prose cannot drift
+    from the committed results -- the failure mode behind the stale hand-typed numbers found in the
+    P1 audit. We flag a ``<number>%`` that is neither a macro expansion (its ``\\%`` immediately
+    follows ``}``) nor inside math mode.
+
+    Severity is a warning, not an error, because structural round numbers ("100\\%") and descriptive
+    ranges are legitimately typed by hand.
+
+    Parameters
+    ----------
+    root : Path
+        Repository root.
+
+    Returns
+    -------
+    list of Diagnostic
+        One warning per literal percentage, in file and line order.
+    """
+    diags: list[Diagnostic] = []
+    pattern = re.compile(r"(?<![\}\w$.])(\d+(?:\.\d+)?)\s*\\%")
+    for path in sorted((root / "manuscript" / "sections").glob("*.tex")):
+        rel = str(path.relative_to(root))
+        for lineno, line in enumerate(path.read_text(encoding="utf-8").splitlines(), start=1):
+            without_math = re.sub(r"\$[^$]*\$", "", line)
+            for match in pattern.finditer(without_math):
+                diags.append(
+                    warning(
+                        "LITERAL-PERCENT",
+                        rel,
+                        lineno,
+                        f"literal '{match.group(1)}%' -- quote a numbers.tex macro instead",
+                    )
+                )
+    return diags
+
+
 def run(root: Path) -> list[Diagnostic]:
     """Run every repository check against a root and return all findings.
 
@@ -1137,6 +1176,7 @@ def run(root: Path) -> list[Diagnostic]:
         diags.extend(check_changelog("CHANGE_LOG.md", _read_text(changelog)))
     diags.extend(check_markdown_links(root))
     diags.extend(check_llms(root))
+    diags.extend(check_literal_numbers(root))
     diags.extend(scan_repository(root))
     return diags
 

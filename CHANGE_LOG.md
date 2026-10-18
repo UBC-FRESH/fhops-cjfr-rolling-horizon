@@ -512,3 +512,16 @@ m3/m8/m11/m12/m15/m16 and the nitpicks, and a CI gate against un-macro'd numeral
   `scripts/package_submission.py` now **refuses to package** when the bbl is missing or older than
   the sources.
 - Gates: dashboard GREEN (lint, format, types, tests, validator, docs, manuscript); body 4,774/6,000.
+
+### Audit batch 2 (cont.): M14 framing and a literal-number gate
+
+- **M14 — the fleet-capacity claim is no longer asserted as a cause.** Methods, Results, and the
+  baselines caption now say the shortfall is *consistent with* fleet throughput but that the design
+  cannot separate a fleet limit from model, landing, or solver limits.
+- **New validator check `LITERAL-PERCENT`** (`scripts/check_workflow.py`): warns on a `<number>%`
+  typed literally in `manuscript/sections/` instead of quoted from a `generated/numbers.tex` macro --
+  the exact failure mode behind the stale hand-typed numbers the P1 audit found. Warning severity, so
+  it surfaces rather than fails (round structural numbers like "100%" are legitimate). It currently
+  reports **19** literals, of which the `results.tex` time-limit percentages (4.4/37.9/70.0) and the
+  range endpoints (54--68/59--92) are the clearest candidates to convert to macros. Test added.
+- Gates: dashboard GREEN; body 4,786/6,000.
