@@ -42,7 +42,13 @@
   \input{tables/solver_probe}
 \end{table}
 
-\pending{Table S3: per-run results of all 234 runs, generated from
-\texttt{results/rerun/runs\_metrics.csv}.}
+\section*{Table S3: per-run results (machine-readable)}
+
+Table~S3 is the machine-readable per-run record of all 234 runs (117 MIP, 117 SA), deposited with
+the paper as \texttt{runs\_metrics.csv}. It is produced by \texttt{scripts/analyze\_rerun.py} from
+\texttt{results/rerun/runs\_metrics.csv} and carries one row per run: the scenario context, block
+count, method (MIP or SA), the full-horizon baseline flag, the window and lock spans in days, the MIP
+time limits, wall time, delivered volume, and the relative-volume and violation metrics used in the
+paper. It is the source of every number quoted in the paper and the supplement.
 
 \end{document}

@@ -367,3 +367,16 @@ Commands:
 - P1.1 is blocked on two SA runs still solving in `UBC-FRESH/jaffray-masc-fhops-model`
   (`ni_40_sub112_lock1_sa`, `pg_40_sub112_lock1_sa`; `sub_days=112`, `lock_days=1`). ETA ~12-16 h
   from the analogous `*_40_sub56_lock1_sa` runs (~33 h; ~54 h of CPU already spent).
+### P1 engine check and submission-readiness pass
+
+- Resolved the last resolvable `\pending{}`: Table S3 is now a described deposit artifact rather
+  than a placeholder (`manuscript/supplement.tex`). The only remaining `\pending{}` is the Zenodo
+  DOI in `statements.tex` (P2).
+- Checklist: item 1 now cites the current word count (body 4612/6000, 41 references); items 18 and
+  23 updated.
+- Engine comparison recorded in `notes/analysis/fhops-1.1-engine-comparison.md`: re-running the SA
+  grid on the merged FHOPS 1.1 is 2.4x (size 6) to 14.5x (size 18) faster with delivered volume
+  unchanged to within +/-0.29% (signed both ways). FHOPS 1.1 is faster, not better; the paper keeps
+  its FHOPS 1.0.1 provenance. A 1.0.1 control reproduced the banked runs exactly (6/6).
+- Verified the build: `main.tex` and `supplement.tex` compile with tectonic 0.17.0; the dashboard is
+  GREEN (lint, format, types, tests, validator, docs, manuscript).
