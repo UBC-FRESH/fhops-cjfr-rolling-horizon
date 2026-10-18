@@ -704,6 +704,46 @@ def numbers(df: pd.DataFrame, out: Path, rates: pd.DataFrame | None = None) -> N
             if not h.empty:
                 name = f"RelBestSizeFortyTheta{WORDS[theta]}Lock{WORDS[lock]}"
                 macros[name] = f"{100 * h.rel_best.median():.1f}"
+    mip_rolling = r[r.method == "mip"]
+    sa_rolling = r[r.method == "sa"]
+    macros["NRollingRunsSA"] = f"{len(sa_rolling)}"
+    macros["NRollingRunsMIP"] = f"{len(mip_rolling)}"
+    macros["NRunsWithViolationsMIPRolling"] = f"{int((mip_rolling.violations > 0).sum())}"
+    macros["NViolationsMIPRolling"] = f"{int(mip_rolling.violations.sum())}"
+    macros["RelBestWorstRolling"] = f"{100 * r.rel_best.min():.1f}"
+    for method in ["sa", "mip"]:
+        h = r[r.method == method]
+        if not h.empty:
+            macros[f"RelBaselineMedian{METHOD_LABEL[method]}"] = (
+                f"{100 * h.rel_baseline.median():.1f}"
+            )
+    macros["RelBaselineMin"] = f"{100 * r.rel_baseline.min():.1f}"
+    macros["NRunsBeyondFourPct"] = f"{int((r.rel_best < 0.96).sum())}"
+    cells = r.groupby(["context", "size", "sub_days", "lock_days"])["rel_best"].min()
+    macros["NCellsAll"] = f"{len(cells)}"
+    macros["NCellsBeyondFourPct"] = f"{int((cells < 0.96).sum())}"
+    one_day = r[r.lock_days == 1]
+    if not one_day.empty:
+        macros["RelBestMinLockOne"] = f"{100 * one_day.rel_best.min():.1f}"
+        macros["RelBestMaxLockOne"] = f"{100 * one_day.rel_best.max():.1f}"
+    for method in ["sa", "mip"]:
+        for size in SIZES:
+            h = r[(r.method == method) & (r["size"] == size)]
+            if not h.empty:
+                macros[f"RelBestMedian{METHOD_LABEL[method]}{WORDS[size]}"] = (
+                    f"{100 * h.rel_best.median():.1f}"
+                )
+    key = ["context", "size", "sub_days", "lock_days"]
+    pairs = r.pivot_table(index=key, columns="method", values="rel_best")
+    fails = r.assign(_fail=r.windows_no_solution + r.windows_empty).pivot_table(
+        index=key, columns="method", values="_fail", aggfunc="sum"
+    )
+    if {"sa", "mip"} <= set(pairs.columns):
+        macros["NPairsAll"] = f"{len(pairs)}"
+        macros["NPairsSAWins"] = f"{int((pairs['sa'] > pairs['mip'] + 0.005).sum())}"
+        macros["NPairsSAWinsAny"] = f"{int((pairs['sa'] > pairs['mip']).sum())}"
+        clean = pairs[(pairs["sa"] > pairs["mip"]) & (fails["mip"].reindex(pairs.index) == 0)]
+        macros["NPairsSAWinsMIPClean"] = f"{len(clean)}"
     if rates is not None and not rates.empty:
         macros["GurobiWorkRateMedian"] = f"{rates.work_per_s.median():.2f}"
         macros["GurobiWorkRateLow"] = f"{rates.work_per_s.quantile(0.05):.2f}"

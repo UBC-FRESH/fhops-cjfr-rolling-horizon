@@ -7,9 +7,11 @@ by `scripts/analyze_rerun.py`.
 ## Headline
 
 With state carried between windows and the stitched plan scored against the full problem, the
-rolling-horizon configuration matters little. Every configuration delivers within about 4 percent
-of the best plan found for its scenario. Planning horizon and lock span have small, consistent
-effects; solver choice and solver time limits matter more, and they explain the few weak cells.
+rolling-horizon configuration matters little. Almost all configurations deliver close to the best
+plan found for their scenario, though 16 of 216 runs fall more than 4 percent short (worst 87.9
+percent). Planning horizon and lock span have small, consistent effects; solver choice and solver
+time limits matter more, though the weakest SA runs have no solver failure, so configuration matters
+too.
 
 ## RQ1: at what horizon do gains become small?
 
@@ -39,8 +41,8 @@ procedure; only the longest lock span (14 days) shows a small, consistent penalt
 
 ## RQ3: continuity and feasibility
 
-All 106 SA plans are feasibility-clean in the replay (0 sequencing violations). 25 of the 117 MIP
-runs show raw violations, 58 in total, but only 1 run has any at the 1e-3 m3 tolerance: they are the
+All 108 SA rolling plans are feasibility-clean in the replay (0 sequencing violations). 24 of the 108
+MIP rolling runs show raw violations, 58 in total, but only 1 run has any at the 1e-3 m3 tolerance: they are the
 negligible-production rows (UBC-FRESH/fhops#157). Continuity is descriptive only, because machine
 moves are free in these scenarios: neither method is rewarded for keeping a machine on a block.
 Median continuity rises with problem size and is higher for SA than MIP at 18 and 40 blocks
@@ -48,11 +50,11 @@ Median continuity rises with problem size and is higher for SA than MIP at 18 an
 
 ## RQ4: problem size, method, and computing effort
 
-- Delivery: size 6 saturates (both methods at 100 percent of best known). Size 18: MIP 1.000,
-  SA 0.990. Size 40: MIP 1.000, SA 0.978.
-- Paired SA/MIP comparison: SA beats MIP by more than 0.5 percent in 8 of 106 configurations, all
-  at 40 blocks with 14- or 112-day windows, reaching 1.114 times MIP. Elsewhere MIP is at least as
-  good.
+- Delivery (median): MIP 1.000 at every size; SA 1.000 at 6, 0.990 at 18, 0.981 at 40 blocks
+  (not every North Island run saturates at 6 blocks).
+- Paired SA/MIP comparison: SA beats MIP by more than 0.5 percent in 9 of 108 configurations (10
+  strictly more), reaching 1.114 times MIP; in 5 of those the MIP returned a complete plan, so the
+  gap is not only a failure effect. Elsewhere MIP is at least as good.
 - Time: median wall time for size 40 is 10.2 h (MIP) and 4.5 h (SA); for size 6, 1.8 h and 0.3 h.
   MIP reached the stage-1 time limit in 4.4, 37.9, and 70.0 percent of windows at 6, 18, and 40
   blocks; SA never did (it is iteration-bounded).

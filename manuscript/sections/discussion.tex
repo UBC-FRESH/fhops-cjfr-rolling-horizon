@@ -3,11 +3,13 @@
 We re-evaluated the rolling-horizon design of \citet{jaffray2026thesis} with two corrections: every
 window now starts from the state left by the decisions already implemented, and every run is scored
 on its stitched, implemented schedule rather than on a single window's objective. Across
-\NRollingRuns\ runs the rolling-horizon configuration has small effects. Almost every configuration
-delivers within about 4\% of the best plan found for its scenario. Extending the planning window
+\NRollingRuns\ runs the rolling-horizon configuration has small effects. Almost all configurations
+deliver close to the best plan found for their scenario, though \NRunsBeyondFourPct\ of
+\NRollingRuns\ runs fall more than 4\% short. Extending the planning window
 beyond about four weeks gains little, the 1-day and 7-day re-optimization intervals are
 indistinguishable, and only the longest interval (14 days) carries a small, consistent penalty.
-Solver time limits, not configuration, explain the weakest results.
+Solver time limits explain the failed windows; the weakest simulated-annealing runs had no solver
+failure, so configuration matters too.
 
 \subsection{Planning horizon and re-optimization frequency}
 
@@ -39,7 +41,7 @@ corrected procedure.
     Only the 14-day lock is worse, by 1--3\% at 40 blocks; the 1-day and 7-day locks are the same. \\
     Diminishing returns beyond about 8 weeks &
     confirmed, with a limit &
-    4- and 8-week windows are best or tied-best; 16 weeks is no better and is confounded by MIP time limits. \\
+    For the MIP, 4- and 8-week windows are best or tied-best; for SA the 4--16-week differences are small and 4 weeks is not the best; 16 weeks is no better overall and is confounded by MIP time limits. \\
     Weekly re-optimization over 4--8-week windows is a practical sweet spot &
     supported &
     Among the best configurations, and far cheaper than daily re-optimization (fewer windows to solve). \\
@@ -48,7 +50,7 @@ corrected procedure.
     Runtime grows with the horizon; MIP time-limit hits grow with problem size. \\
     Daily re-optimization gives near-identical solutions across horizons &
     qualified &
-    All horizons reach 96--99\% of the best plan; the differences are small, not zero. \\
+    Daily-lock runs reach \RelBestMinLockOne--\RelBestMaxLockOne\% of the best plan (worst \RelBestWorstRolling\% across all configurations); the differences are small, not zero. \\
     \bottomrule
   \end{tabular}
 \end{table}
@@ -68,13 +70,14 @@ operational state between windows and judge the plan that is actually implemente
 
 \subsection{Solver choice and tractability}
 
-The largest differences between runs, and the only failures, are solver effects. Cold-started MIP
-windows reach the time limit in 70\% of the 40-block windows, and where they do, the window may
+The largest differences between runs, and all the outright failures, are solver effects. Cold-started
+MIP windows reach the time limit in 70\% of the 40-block windows, and where they do, the window may
 return no plan or an empty one (Table~\ref{tab:windows}). The simulated annealing never fails,
-because it is bounded by iterations rather than time, and for the 8 of 106 configurations where the
-MIP timed out most, it delivered more volume. Where the MIP found a plan, it was at least as good
-as the heuristic. Planning systems at this scale should therefore not rely on cold-started exact
-solves alone. Warm-starting the MIP from a heuristic plan, setting a deterministic work limit in
+because it is bounded by iterations rather than time, and it delivered more volume than the MIP in
+\NPairsSAWinsAny\ of \NPairsAll\ configurations --- in \NPairsSAWinsMIPClean\ of them the MIP
+returned a complete plan, so the gap is not only a failure effect. Where the MIP returned a complete
+plan it was generally at least as good as the heuristic, but not always. Planning systems at this
+scale should therefore not rely on cold-started exact solves alone. Warm-starting the MIP from a heuristic plan, setting a deterministic work limit in
 place of a wall-clock limit, or using the heuristic directly for the largest instances are the
 practical options \citep{frisk2016detailed,audy2023planning}.
 
@@ -135,19 +138,21 @@ effective Gurobi work rate here was about half the calibrated rate because the h
 
 Simulated annealing used one seed and a fixed iteration budget, so its results show one trajectory
 rather than a distribution. The largest runs are expensive: the two 112-day, 1-day-lock runs at 40
-blocks (North Island and Prince George) took 56--64~h each, the longest in the grid.
+blocks (North Island and Prince George) took 56--64~h each, the longest simulated-annealing runs.
 
 \section{Conclusions}
 
 With state carried between rolling-horizon windows and the stitched plan scored against the full
 problem, the design of the rolling horizon matters much less than the earlier evaluation suggested.
-Across 214 rolling runs on nine semi-synthetic British Columbia case studies, almost every
-configuration delivered within about 4\% of the best plan found for its scenario. Windowing beyond
+Across \NRollingRuns\ rolling runs on nine semi-synthetic British Columbia case studies, almost all
+configurations delivered close to the best plan found for their scenario
+(\NRunsBeyondFourPct\ of \NRollingRuns\ runs fell more than 4\% short). Windowing beyond
 about four weeks gained little and was confounded by solver tractability; daily and weekly
 re-optimization were indistinguishable, and only a 14-day commitment period carried a small
 penalty. The dominant differences were between solvers: cold-started mixed-integer programming
 reached its time limit in most 40-block windows and failed outright in a few, whereas simulated
-annealing never failed and was up to 11\% better in those cases. The re-optimization-frequency
-effect reported in Chapter 4 of \citet{jaffray2026thesis} was largely an artefact of re-planning
-each window from the initial state and scoring a single window. Future work should add stochastic
+annealing never failed and was up to 11\% better in those cases. The large re-optimization-frequency
+effect reported in Chapter 4 of \citet{jaffray2026thesis} did not survive the corrected procedure;
+re-planning each window from the initial state and scoring a single window are the likely causes,
+though this design cannot isolate them. Future work should add stochastic
 disturbances, test other harvesting systems and regions, and use real operational data.

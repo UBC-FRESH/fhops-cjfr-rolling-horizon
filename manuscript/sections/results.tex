@@ -22,8 +22,11 @@ median of \GurobiWorkRateMedian\ work units per second (5th--95th percentile
 
 \subsection{Delivered volume: planning horizon and re-optimization interval}
 
-Delivered volume is close to the best plan found for each scenario in almost every configuration
-(Fig.~\ref{fig:delivered}). Aggregated over the three study areas, the median run delivers
+Delivered volume is close to the best plan found for each scenario in most configurations
+(Fig.~\ref{fig:delivered}). Against the same-method full-horizon baseline ($R^{\mathrm{base}}$,
+Eq.~\ref{eq:relative}) the median rolling run reaches \RelBaselineMedianMIP\% (MIP) and
+\RelBaselineMedianSA\% (SA), so decomposing the horizon costs little at the median; the worst run
+reaches \RelBaselineMin\%. Aggregated over the three study areas, the median run delivers
 \RelBestMedianMIPLockOne\% (MIP) and \RelBestMedianSALockOne\% (SA) of the best known plan at a
 1-day lock; \RelBestMedianMIPLockSeven\% and \RelBestMedianSALockSeven\% at 7 days; and
 \RelBestMedianMIPLockFourteen\% and \RelBestMedianSALockFourteen\% at 14 days. The worst runs reach
@@ -56,11 +59,11 @@ indistinguishable, and the 14-day lock is 1--3 percentage points lower at 40 blo
 
 \subsection{Feasibility and continuity of the implemented schedule}
 
-Feasibility of the replayed plans differs by method. All \NRollingRuns\ simulated-annealing plans
-replay with no sequencing violations. \NRunsWithViolations\ of the 117 MIP rolling runs show raw
-violations (58 in total), but only \NRunsWithMaterialViolations\ run has any beyond a
-\TinyThreshold~m$^3$ tolerance: the rest are negligible-production rows that FHOPS replays as
-violations (UBC-FRESH/fhops\#157). Feasibility is therefore not a discriminating factor between
+Feasibility of the replayed plans differs by method. All \NRollingRunsSA\ simulated-annealing plans
+replay with no sequencing violations. \NRunsWithViolationsMIPRolling\ of the \NRollingRunsMIP\ MIP
+rolling runs show raw violations (\NViolationsMIPRolling\ in total), but only
+\NRunsWithMaterialViolations\ run has any beyond a \TinyThreshold~m$^3$ tolerance: the rest are
+negligible-production rows that FHOPS replays as violations (UBC-FRESH/fhops\#157). Feasibility is therefore not a discriminating factor between
 configurations; it is a property of the solver.
 
 Continuity is descriptive here, because machine moves are free in these scenarios and neither
@@ -71,17 +74,19 @@ higher for MIP at 40 blocks. These are incidental properties of the schedules, n
 
 \subsection{Problem size, solution method, and computing effort}
 
-Problem size has the clearest effect (Fig.~\ref{fig:effort}). At 6 blocks both methods reach the
-best known plan in every configuration. At 18 blocks the median MIP run reaches 100\% and the
-median SA run 99.0\%. At 40 blocks the median MIP run reaches 100\% and the median SA run 97.8\%.
+Problem size has the clearest effect (Fig.~\ref{fig:effort}). At 6 blocks the median run reaches the
+best known plan for both methods, though not every North Island run does. At 18 blocks the median
+MIP run reaches \RelBestMedianMIPEighteen\% and the median SA run \RelBestMedianSAEighteen\%; at 40
+blocks they reach \RelBestMedianMIPForty\% and \RelBestMedianSAForty\%.
 
-Measured against the MIP run of the same configuration, SA delivers more volume in 8 of 106 pairs,
-all at 40 blocks with 14-day or 112-day windows, where it reaches up to 1.11 times the MIP volume;
-in the remaining pairs MIP is at least as good. The MIP advantage comes at a cost: median wall time
-at 40 blocks is \WallMedianHoursMIPForty\ h for MIP against \WallMedianHoursSAForty\ h for SA, and
-at 18 blocks \WallMedianHoursMIPEighteen\ h against \WallMedianHoursSAEighteen\ h. The weak MIP
-cells are the ones with no-solution or empty windows; where the MIP found a plan, it was at least
-as good as SA.
+Measured against the MIP run of the same configuration, SA delivers more volume in
+\NPairsSAWinsAny\ of \NPairsAll\ pairs (by more than 0.5\% in \NPairsSAWins\ of them), reaching up to
+1.11 times the MIP volume. The remaining pairs are MIP's, but the gap is not always a solver
+failure: in \NPairsSAWinsMIPClean\ of the \NPairsSAWinsAny\ pairs where SA won, the MIP returned a
+complete plan in every window. The MIP advantage comes at a cost: median wall time at 40 blocks is
+\WallMedianHoursMIPForty\ h for MIP against \WallMedianHoursSAForty\ h for SA, and at 18 blocks
+\WallMedianHoursMIPEighteen\ h against \WallMedianHoursSAEighteen\ h. The weakest MIP cells are the
+ones with no-solution or empty windows.
 
 \begin{table}[htbp]
   \centering

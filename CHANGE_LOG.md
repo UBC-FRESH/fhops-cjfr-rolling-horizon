@@ -460,3 +460,35 @@ Commands:
 - `analyze_rerun.py` now scrubs absolute home/tmp prefixes in the copied `summary.csv`
   (`fhops_path` -> `<env>/...`) so no personal path is committed; validator clean.
 - Dashboard: GREEN. Both PDFs and the submission package rebuilt.
+### Antagonistic-audit fixes, batch 1 (blockers + numbers + headline)
+
+An adversarial audit (`/home/gep/projects/p1-antagonistic-audit.md`, outside the repo) found 3 fatal,
+15 major, 16 minor and 7 nitpick issues. This batch fixes the submission blockers, the stale
+hand-typed numbers, and the over-claimed headline:
+
+- **F3 (rendered placeholder)**: removed the `PENDING: confirm version` note from
+  `references.bib:jaffray2026zenodo` (moved to a non-rendering `%` comment); the built PDF has 0
+  occurrences of `PENDING`. Cover letter "under review" -> "in press" (m10). Removed the duplicate
+  `doi` in `herding2024rolling` (m7).
+- **M3 (stale numbers)**: added macros to `scripts/analyze_rerun.py`
+  (`\NRollingRunsSA/MIP`, `\NRunsWithViolationsMIPRolling`, `\NViolationsMIPRolling`,
+  `\NPairsAll`, `\NPairsSAWins`, `\NPairsSAWinsAny`, `\NPairsSAWinsMIPClean`,
+  `\RelBestWorstRolling`, `\RelBestMin/MaxLockOne`, `\NRunsBeyondFourPct`, `\NCellsAll`,
+  `\NCellsBeyondFourPct`, per-method/µ-sized medians, `\RelBaseline*`) and replaced the hand-typed
+  values in Results and Discussion (214->`\NRollingRuns`, 97.8->`\RelBestMedianSAForty`=98.1,
+  "8 of 106"->`\NPairsSAWinsAny/\NPairsAll`, "All 216 SA plans"->`\NRollingRunsSA`=108, violation
+  denominators, "the longest in the grid"->"the longest simulated-annealing runs" M11).
+- **F1/M13 (headline)**: the abstract and Discussion/Results now report the true distribution
+  (`\NRunsBeyondFourPct` of `\NRollingRuns` runs >4% short, worst `\RelBestWorstRolling`%) instead of
+  "almost every configuration within about 4%", and the abstract carries the tractability caveat.
+  Abstract held at 200 words.
+- **M9**: reported `R^base` (the same-method full-horizon baseline) in the Results; the Methods
+  promise now matches what is reported.
+- **M1/M2/M5**: claims corrected (solver failures explain the *failed windows* but not the weakest SA
+  runs; SA beat MIP in `\NPairsSAWinsAny/\NPairsAll` pairs, `\NPairsSAWinsMIPClean` with no MIP
+  window failure; the horizon-effect row is now per-method).
+- Re-ran the analysis; dashboard GREEN; PDF rebuilt (0 `PENDING`, 0 undefined refs); package rebuilt.
+
+Remaining from the audit (batch 2): M6/M7 (calibration vs grid work rate; the 16-week confound),
+M10 (tolerance justification and tiny-production rows), M14 (fleet-capacity claim), M15 (framing),
+m3/m8/m11/m12/m15/m16 and the nitpicks, and a CI gate against un-macro'd numerals.

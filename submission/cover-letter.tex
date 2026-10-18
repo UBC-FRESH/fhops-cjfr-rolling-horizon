@@ -25,8 +25,8 @@ Operations Planning System (FHOPS) with two solution methods. Two features disti
 First, every window starts from the operational state left by the decisions already implemented:
 remaining block volume, inventory staged between harvesting phases, and machine positions.
 Second, every run is scored on its stitched, implemented schedule, replayed against the full
-problem. Almost every configuration delivered within about 4\% of the best plan found for its
-scenario. Extending the horizon beyond about four weeks gained little, daily and weekly
+problem. Almost all configurations delivered close to the best plan found for their scenario (the
+largest shortfall was about 12\%); extending the horizon beyond about four weeks gained little, daily and weekly
 re-optimization were indistinguishable, and only a 14-day commitment period carried a small
 penalty. The clearest differences were between solvers, not configurations: cold-started
 mixed-integer programming reached its time limit in most large windows, whereas simulated
@@ -36,7 +36,7 @@ The manuscript re-evaluates, with a corrected procedure, a design first reported
 author's MASc thesis (University of British Columbia, 2026). The earlier evaluation used a FHOPS
 release that did not carry state between windows and scored runs by the last window's
 objective. The present results supersede it, and the manuscript says so explicitly. The FHOPS
-software itself is described in a separate manuscript under review at \emph{SoftwareX}. That
+software itself is described in a separate manuscript in press at \emph{SoftwareX}. That
 manuscript does not report any rolling-horizon results, so there is no overlap in results.
 
 All data, code, and run outputs will be openly available (see the Data availability statement).
