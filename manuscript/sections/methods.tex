@@ -95,16 +95,17 @@ re-optimization interval. The results reported here supersede those values.
   solved from the state left by the decisions already locked; its first $f$ days are locked and
   appended to the stitched plan, and the rest is re-planned by the next window. The carried state
   is obtained by replaying the stitched plan with deterministic playback. $H$, master horizon
-  (112 days).}
+  (112 days); the schematic's time axis is not to scale.}
   \label{fig:rolling}
 \end{figure}
 
 \subsection{Experimental design}
 
 The full factorial design crossed the nine scenarios with
-$\theta \in \{2, 4, 8, 16\}$~weeks, $f \in \{1, 7, 14\}$~days, and both solution methods: 216
-rolling-horizon runs. These levels represent daily, weekly, and biweekly re-planning cycles and
-horizons from two weeks to the full season. For each scenario and method we also solved one full-horizon baseline ($\theta = f = H$), giving 18 baselines.
+$\theta \in \{2, 4, 8, 16\}$~weeks, $f \in \{1, 7, 14\}$~days, and both solution methods, giving
+\NRollingRuns\ rolling-horizon runs, plus one full-horizon baseline per scenario and method
+($\theta = f = H$), for \NBaselineRuns\ baselines (\NRuns\ runs in total). These levels represent
+daily, weekly, and biweekly re-planning cycles and horizons from two weeks to the full season.
 A rolling run solves $\lceil H/f \rceil$ windows: 112, 16, or 8 for $f = 1$, 7, and 14 days. Window
 lengths of 2--16 weeks span a wide range of problem sizes. For the MIP, the window models range from
 about 10\,000 binary variables (18 blocks, 14 days) to about 350\,000 (40 blocks, 112 days)

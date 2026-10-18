@@ -541,3 +541,13 @@ m3/m8/m11/m12/m15/m16 and the nitpicks, and a CI gate against un-macro'd numeral
 - **n1/n7**: the aggregation line now says the medians pool sizes, horizons and lock spans; "study
   areas" standardised to "timber supply areas".
 - Gates: dashboard GREEN; body 4,801/6,000.
+
+### Audit batch 2 (cont.): run counts, Fig. 1 note
+
+- **n6**: the design sentence now quotes the run counts as macros
+  (`\NRollingRuns` rolling runs + `\NBaselineRuns` baselines = `\NRuns` in total) instead of the
+  literals 216/18.
+- **n5**: Fig. 1's caption now says the schematic's time axis is not to scale.
+- **n4** left as-is: Tables S1/S2 are auto-numbered table captions while S3 is a description (not a
+  table), so the heading styles legitimately differ.
+- Gates: dashboard GREEN; body 4,800/6,000.
