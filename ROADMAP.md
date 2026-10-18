@@ -53,7 +53,7 @@ analysis code is not merged until P0.3 passes.
 
 Parent issue: #35
 Branch: `feature/p1-results-manuscript`
-Status: active
+Status: pr-open
 
 Goal: write the Results, Discussion, Conclusions and Limitations from generated numbers only, and
 finish the abstract, the introduction and the methods.
