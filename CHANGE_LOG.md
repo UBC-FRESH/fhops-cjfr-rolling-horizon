@@ -357,3 +357,13 @@ Commands:
 - Cover letter: findings and competing interests filled in. Checklist updated (word and abstract
   budget met; the submission package is built).
 - Commands: `python scripts/package_submission.py`; `TECTONIC=~/bin/tectonic python scripts/dashboard.py` (GREEN).
+
+## 2026-10-18
+
+### P1 opened: Results and manuscript (#35)
+
+- Opened the P1 parent issue #35 and child #36 (P1.1), linked as a GitHub sub-issue; branch
+  `feature/p1-results-manuscript` created. `ROADMAP.md` updated (P1 active, #35/#36).
+- P1.1 is blocked on two SA runs still solving in `UBC-FRESH/jaffray-masc-fhops-model`
+  (`ni_40_sub112_lock1_sa`, `pg_40_sub112_lock1_sa`; `sub_days=112`, `lock_days=1`). ETA ~12-16 h
+  from the analogous `*_40_sub56_lock1_sa` runs (~33 h; ~54 h of CPU already spent).

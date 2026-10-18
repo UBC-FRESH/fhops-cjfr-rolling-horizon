@@ -9,7 +9,7 @@ roadmap before the workflow is archived in `notes/archive/roadmap-pre-workflow.m
 | Phase | Parent issue | Branch | Status |
 | --- | --- | --- | --- |
 | P0 Workflow adoption and analysis readiness | #29 | `feature/p0-workflow-analysis` | active |
-| P1 Results and manuscript | TBD | `feature/p1-results-manuscript` | planned |
+| P1 Results and manuscript | #35 | `feature/p1-results-manuscript` | active |
 | P2 Submission package and data release | TBD | `feature/p2-submission` | planned |
 
 ## Conventions
@@ -51,14 +51,14 @@ analysis code is not merged until P0.3 passes.
 
 ## Phase 1: Results and manuscript
 
-Parent issue: TBD
+Parent issue: #35
 Branch: `feature/p1-results-manuscript`
-Status: planned
+Status: active
 
 Goal: write the Results, Discussion, Conclusions and Limitations from generated numbers only, and
 finish the abstract, the introduction and the methods.
 
-- [ ] P1.1 Final analysis run with all runs complete
+- [~] #36 P1.1 Final analysis run with all runs complete (blocked on two `sub112_lock1` SA runs)
 - [ ] P1.2 Analysis memo: RQ1 to RQ4, and the Ch. 4 conclusions confirmed, qualified, or revised
 - [ ] P1.3 Results section from the generated macros
 - [ ] P1.4 Discussion, Conclusions, and Limitations
