@@ -9,7 +9,7 @@ roadmap before the workflow is archived in `notes/archive/roadmap-pre-workflow.m
 | Phase | Parent issue | Branch | Status |
 | --- | --- | --- | --- |
 | P0 Workflow adoption and analysis readiness | #29 | `feature/p0-workflow-analysis` | active |
-| P1 Results and manuscript | #35 | `feature/p1-results-manuscript` | active |
+| P1 Results and manuscript | #35 | `feature/p1-results-manuscript` | pr-open |
 | P2 Submission package and data release | #37 | `feature/p2-submission` | active |
 
 ## Conventions
