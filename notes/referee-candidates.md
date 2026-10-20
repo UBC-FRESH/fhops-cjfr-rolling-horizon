@@ -24,25 +24,28 @@ These override my inferences and should be treated as the record:
   Rönnqvist and D'Amours; very senior and likely reviews few or no papers now. Keep only as a
   long-shot alternate.
 
-## Recommended three
+## Suggested referees (final selection, 2026-10-20)
 
 | # | Name | Affiliation (verify) | Cited work | Fit | Relationship |
 |---|---|---|---|---|---|
+| 12 | **Lars Mönch** | FernUniversität in Hagen, Germany | `herding2024rolling` | Rolling-horizon scheduling with MIP-based decomposition — methodological match to the core claim | None known; swapped out of the final four on 2026-10-20 |
 | 1 | **Mikael Rönnqvist** | Université Laval, QC, Canada | `ronnqvist2015operations`, `ronnqvist2023fifty`, `audy2023planning` | Operations research applied to forestry; the most demanding and best-qualified reviewer for this paper's OR + forestry combination | Known >15 years, never co-authored, no current collaboration. **Disclose**; spouse co-supervised the thesis |
 | 2 | **Woodam Chung** | Oregon State University, USA | `bellavenutte2020partitioning` | Forest operations, harvest scheduling and logistics — the operational layer the paper models | None known |
-| 3 | **Lars Mönch** | FernUniversität in Hagen, Germany | `herding2024rolling` | Rolling-horizon scheduling with MIP-based decomposition — closest methodological match to the core claim | None known |
+| 3 | **Marc E. McDill** | Pennsylvania State University, USA | (not cited; field expertise) | Harvest-scheduling MIP formulations and spatial forest planning; publishes in CJFR | None known |
+| 4 | **Mustapha Ouhimmou** | ÉTS Montréal, Canada | (not cited; field expertise) | Forest value-chain optimisation, MIP, planning under uncertainty; publishes in CJFR | Frequent co-author with Rönnqvist — see the note below |
 
 ## Alternates
 
 | # | Name | Affiliation (verify) | Cited work | Fit | Relationship |
 |---|---|---|---|---|---|
-| 4 | **David Martell** | University of Toronto, Canada | `martell1998forest`, `ronnqvist2015operations` | Forest management science and OR; Canadian readership | Long acquaintance, no co-authorship; **disclose** if used |
-| 5 | **Kyle Eyvindson** | NMBU, Ås, Norway | `de2023perceptions` | Forest planning under uncertainty; planning systems for counterfactual testing | None known |
-| 6 | **Karin Öhman** | SLU, Umeå, Sweden | `ulvdal2022uncertainty` | Forest planning under uncertainty, multi-objective evaluation | None known |
-| 7 | **Fernando Santos** | University of Waterloo, Canada | `santos2021integrated` | MIP and heuristic optimisation for integrated planning | None known; verify |
-| 8 | **James L. Corner** | University of Waikato, NZ (check active) | `corner2005scheduling` | Forest harvest scheduling, combinatorial methods | None known |
-| 9 | **Mario Vanhoucke** | Ghent University, Belgium | `vanhoucke2006work` | Project scheduling and rolling-horizon control | None known |
-| 10 | **Andres Weintraub** | Universidad de Chile | `ronnqvist2015operations`, `epstein2007harvest` | Forest operations research, senior breadth | Close friend of the Canadian group; unlikely to review |
+| 12 | **Lars Mönch** | FernUniversität in Hagen, Germany | `herding2024rolling` | Rolling-horizon scheduling with MIP-based decomposition — methodological match to the core claim | None known; swapped out of the final four on 2026-10-20 |
+| 5 | **David Martell** | University of Toronto, Canada | `martell1998forest`, `ronnqvist2015operations` | Forest management science and OR; Canadian readership | Long acquaintance, no co-authorship; **disclose** if used |
+| 6 | **Kyle Eyvindson** | NMBU, Ås, Norway | `de2023perceptions` | Forest planning under uncertainty; planning systems for counterfactual testing | None known |
+| 7 | **Karin Öhman** | SLU, Umeå, Sweden | `ulvdal2022uncertainty` | Forest planning under uncertainty, multi-objective evaluation | None known |
+| 8 | **Fernando Santos** | University of Waterloo, Canada | `santos2021integrated` | MIP and heuristic optimisation for integrated planning | None known; verify |
+| 9 | **James L. Corner** | University of Waikato, NZ (check active) | `corner2005scheduling` | Forest harvest scheduling, combinatorial methods | None known |
+| 10 | **Mario Vanhoucke** | Ghent University, Belgium | `vanhoucke2006work` | Project scheduling and rolling-horizon control | None known |
+| 11 | **Andres Weintraub** | Universidad de Chile | `ronnqvist2015operations`, `epstein2007harvest` | Forest operations research, senior breadth | Close friend of the Canadian group; unlikely to review |
 
 
 ## Author-suggested additions (G. Paradis, 2026-10-20; contacts verified on institutional pages)
