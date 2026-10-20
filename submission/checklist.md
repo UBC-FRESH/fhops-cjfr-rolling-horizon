@@ -23,7 +23,7 @@ Source: `notes/cjfr-guidelines.md`. Status: ✅ done · ⏳ pending results · �
 | 17 | Tables editable at production | ⏳ | LaTeX tables; provide DOCX/XLSX if requested after acceptance |
 | 18 | Supplementary material numbered S1…, cited by footnote | ✅ | `supplement.tex` (Tables S1–S2 rendered; S3 described and deposited as the machine-readable per-run CSV) |
 | 19 | LaTeX for ScholarOne: figures without `./`, all files in one folder, inline `.bbl` if needed | ✅ | `scripts/package_submission.py` → `submission/package/` |
-| 20 | Cover letter | ✅/❗ | `submission/cover-letter.tex` (findings and competing interests filled; referees pending) |
-| 21 | Suggested referees (optional, no collaborators) | ❗ | authors |
+| 20 | Cover letter | ✅ | `submission/cover-letter.tex` (findings, competing interests, suggested referees and the referee COI disclosure filled; package rebuild follows the M7 fold-in) |
+| 21 | Suggested referees (optional, no collaborators) | ✅ | `submission/cover-letter.tex`: Rönnqvist (Laval), Chung (Oregon State), Mönch (Hagen), with a COI disclosure. Draft pool and relationship notes in `notes/referee-candidates.md`; enter in ScholarOne |
 | 22 | All authors approve submission, incl. conclusions differing from Ch. 4 | ❗ | sign-off memo after the analysis |
-| 23 | No `\pending{}` left | ❗ | only the Zenodo DOI in `statements.tex` (P2 data release). The `metadata.tex` macro fallbacks are all overridden by `generated/numbers.tex`; the supplement's Table S3 placeholder is now the described deposit CSV |
+| 23 | No `\pending{}` left | ✅ | manuscript and cover letter render with no `Pending:` marker (checked in the extracted PDF text, 2026-10-20). The `metadata.tex` fallbacks are overridden by `generated/numbers.tex` |
