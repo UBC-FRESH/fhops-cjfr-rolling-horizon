@@ -44,6 +44,32 @@ These override my inferences and should be treated as the record:
 | 9 | **Mario Vanhoucke** | Ghent University, Belgium | `vanhoucke2006work` | Project scheduling and rolling-horizon control | None known |
 | 10 | **Andres Weintraub** | Universidad de Chile | `ronnqvist2015operations`, `epstein2007harvest` | Forest operations research, senior breadth | Close friend of the Canadian group; unlikely to review |
 
+
+## Author-suggested additions (G. Paradis, 2026-10-20; contacts verified on institutional pages)
+
+| Name | Position / affiliation | E-mail | Fit | Note |
+|---|---|---|---|---|
+| **Shuva Hari Gautam** | Professeur agrégé, Département des sciences du bois et de la forêt, Université Laval | `shuva-hari.gautam@sbf.ulaval.ca` | Forest operations, wood supply planning, forest products supply chains | Same department as Beaudoin and (for FORAC) Rönnqvist — a Laval-heavy list if several are used |
+| **Daniel Beaudoin** | Professeur titulaire and department director, Département des sciences du bois et de la forêt, Université Laval | `Daniel.Beaudoin@sbf.ulaval.ca` | Forest operations (the applied object of the paper); cited as `beaudoin2008hierarchical` | Department director; may decline for workload |
+| **Mustapha Ouhimmou** | Professeur titulaire, Département de génie des systèmes, ÉTS Montréal | `Mustapha.Ouhimmou@etsmtl.ca` | Forest value-chain optimisation, MIP, planning under uncertainty; publishes in CJFR | Frequent co-author with Rönnqvist (joint students and papers), so suggesting both concentrates the list in one network |
+
+### Verified contacts for the recommended three
+
+- **Mikael Rönnqvist** — Full Professor, Department of Mechanical and Industrial Engineering,
+  Université Laval, Québec, QC, Canada; `mikael.ronnqvist@gmc.ulaval.ca`
+  (Université Laval faculty directory and FORAC team page, checked 2026-10-20).
+- **Woodam Chung** — Faye and Lucille Stewart Professor of Forest Operations, Department of Forest
+  Engineering, Resources and Management, Oregon State University, Corvallis, OR, USA;
+  `woodam.chung@oregonstate.edu` (OSU College of Forestry directory, checked 2026-10-20).
+- **Lars Mönch** — Chair of Enterprise-wide Software Systems, Faculty of Mathematics and Computer
+  Science, FernUniversität in Hagen, Hagen, Germany; `Lars.Moench@fernuni-hagen.de`
+  (FernUniversität team page, checked 2026-10-20).
+
+**Selection caveat.** Three of the six strongest names (Rönnqvist, Gautam, Beaudoin) are at
+Université Laval, and Ouhimmou co-authors with Rönnqvist. If the editor values institutional
+spread, the recommended three (Laval, Oregon State, Hagen) is the better-balanced set; if the
+editor values domain proximity to Canadian forest operations, swap Mönch for Ouhimmou or Gautam.
+
 ## Excluded
 
 - **Sophie D'Amours** — rectrice, co-supervised the thesis, spouse of candidate #1.
