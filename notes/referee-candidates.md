@@ -52,6 +52,7 @@ These override my inferences and should be treated as the record:
 | **Shuva Hari Gautam** | Professeur agrégé, Département des sciences du bois et de la forêt, Université Laval | `shuva-hari.gautam@sbf.ulaval.ca` | Forest operations, wood supply planning, forest products supply chains | Same department as Beaudoin and (for FORAC) Rönnqvist — a Laval-heavy list if several are used |
 | **Daniel Beaudoin** | Professeur titulaire and department director, Département des sciences du bois et de la forêt, Université Laval | `Daniel.Beaudoin@sbf.ulaval.ca` | Forest operations (the applied object of the paper); cited as `beaudoin2008hierarchical` | Department director; may decline for workload |
 | **Mustapha Ouhimmou** | Professeur titulaire, Département de génie des systèmes, ÉTS Montréal | `Mustapha.Ouhimmou@etsmtl.ca` | Forest value-chain optimisation, MIP, planning under uncertainty; publishes in CJFR | Frequent co-author with Rönnqvist (joint students and papers), so suggesting both concentrates the list in one network |
+| **Marc E. McDill** | Associate Professor of Forest Management, Department of Ecosystem Science and Management, The Pennsylvania State University, University Park, PA, USA | `mmcdill@psu.edu` | Harvest-scheduling MIP formulations, spatial optimisation, forest management planning and economics; publishes in CJFR | No known tie. Strong fit for the MIP side of the comparison |
 
 ### Verified contacts for the recommended three
 
