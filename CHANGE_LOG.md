@@ -551,3 +551,22 @@ m3/m8/m11/m12/m15/m16 and the nitpicks, and a CI gate against un-macro'd numeral
 - **n4** left as-is: Tables S1/S2 are auto-numbered table captions while S3 is a description (not a
   table), so the heading styles legitimately differ.
 - Gates: dashboard GREEN; body 4,800/6,000.
+
+## 2026-10-20
+
+### Limitations: one sentence on seeded starts, with committed evidence
+
+- Added one sentence to `manuscript/sections/discussion.tex` (Limitations): a heuristic incumbent
+  made MILP-feasible with a fixed-binary LP leaves the typical objective and gap unchanged at equal
+  total budget but guarantees a feasible plan from the first second, which would remove the
+  no-solution outcome observed in a few of the largest windows.
+- Evidence committed under `results/seeding/` (`equal_total_pg40.jsonl`, `PROVENANCE.md`): `pg_40`
+  full-horizon MILP, 1,800 s **total** per arm, idle host. Cold 392,699.08 (gap 0.74%); greedy
+  391,541.56; SA 389,954.89; ILS 390,139.35; Tabu 390,685.60 (gaps 1.04–1.45%). A seed holds an
+  incumbent at ~0.5 s; cold's first improving incumbent is at 410 s.
+- **Correction recorded**: the earlier "cold is catastrophic on the large instance" figure
+  (−1,309,443) was a 300 s budget artefact, not a property of the instance. The text does not use it.
+- The sentence deliberately makes **no numeric and no scale claim**; the committed provenance file
+  bounds it (full-horizon MILP, one instance, one seed; the rolling windows are a different model).
+- Software side: `feasible_start` implemented and tested in `UBC-FRESH/fhops` (PR #169).
+- Gates: dashboard GREEN; body 4,847/6,000; abstract 200/200.
