@@ -1,57 +1,66 @@
 # Suggested referees — draft for author review
 
 CJFR asks for suggested referees only as an optional list, and excludes collaborators. This is a
-**draft**: affiliations below are from the literature and general field knowledge, not verified
-against institutional pages, and co-authorship/committee relationships can only be confirmed by the
-authors. Check each before entering the names in ScholarOne, and supply institutional e-mail
-addresses (not personal ones).
+**draft**: affiliations are from the literature and general field knowledge, not verified against
+institutional pages, and only the authors can confirm relationships. Supply institutional e-mail
+addresses (not personal ones) in ScholarOne.
 
-Selection criteria used here:
+## Author-provided relationship notes (G. Paradis, 2026-10-20)
 
-1. Documented expertise in at least one of the paper's three legs — forest operations/harvest
-   scheduling, MIP versus heuristic optimisation, or rolling-horizon planning.
-2. Evidence of that expertise in the paper's own reference list (the cited work is named).
-3. No obvious tie to UBC or to the FHOPS project. Candidates with plausible ties to the Canadian
-   forest-operations network are marked **verify**.
+These override my inferences and should be treated as the record:
 
-## Primary candidates
+- **Mikael Rönnqvist** (Université Laval): known well for >15 years; **never co-authored**; not
+  currently collaborating; a future collaboration is plausible but not planned. Judgement: arm's
+  length for single-blind review, with a **brief COI disclosure to the editor**.
+- **Sophie D'Amours** (Rectrice, Université Laval): Rönnqvist's spouse; **co-supervised the PhD
+  thesis**; too busy as rectrice to review. Excluded. Note the indirect route: if Rönnqvist reviews,
+  he may seek her advice — part of what the editor should know.
+- **Eldon Gunn**: died several years ago. Removed from the list; my earlier "possible committee
+  ties" flag was wrong and is withdrawn.
+- **David Martell** (University of Toronto): active; known since 2001; a friend of the M.Sc.For.Eng.
+  supervisor (Evelyn Richards); regularly sends Paradis papers to review as an associate editor.
+  A relationship, not a collaboration — disclose if suggested.
+- **Andres Weintraub** (Universidad de Chile): long-standing close friend of Gunn, Richards, Martell,
+  Rönnqvist and D'Amours; very senior and likely reviews few or no papers now. Keep only as a
+  long-shot alternate.
 
-| # | Name | Affiliation (verify) | Cited work | Fit | Conflict check |
+## Recommended three
+
+| # | Name | Affiliation (verify) | Cited work | Fit | Relationship |
 |---|---|---|---|---|---|
-| 1 | **Kyle Eyvindson** | Norwegian University of Life Sciences (NMBU), Ås, Norway | `de2023perceptions` | Forest planning under uncertainty; how planning systems support counterfactual testing — matches the Discussion's framing | Low. No UBC or Canadian institutional tie apparent |
-| 2 | **Woodam Chung** | Oregon State University, Corvallis, OR, USA | `bellavenutte2020partitioning` | Forest operations, harvest scheduling and logistics — the operational layer the paper models | Low–medium. Pacific Northwest forest-operations community; **verify** any past UBC collaboration |
-| 3 | **Lars Mönch** (with R. Herding, the cited co-author) | FernUniversität in Hagen, Germany | `herding2024rolling` | Rolling-horizon scheduling with MIP-based decomposition — the closest methodological match to the paper's core question | Low. No Canadian tie apparent |
-| 4 | **Karin Öhman** | Swedish University of Agricultural Sciences (SLU), Umeå, Sweden | `ulvdal2022uncertainty` | Forest planning under uncertainty and multi-objective evaluation — covers the Limitations and the stochastic next step | Low. No Canadian tie apparent |
-| 5 | **Fernando Santos** | University of Waterloo, ON, Canada | `santos2021integrated` | MIP and heuristic optimisation for integrated planning — covers the solver comparison | Low–medium. Canadian OR community; **verify** co-authorship with any author |
+| 1 | **Mikael Rönnqvist** | Université Laval, QC, Canada | `ronnqvist2015operations`, `ronnqvist2023fifty`, `audy2023planning` | Operations research applied to forestry; the most demanding and best-qualified reviewer for this paper's OR + forestry combination | Known >15 years, never co-authored, no current collaboration. **Disclose**; spouse co-supervised the thesis |
+| 2 | **Woodam Chung** | Oregon State University, USA | `bellavenutte2020partitioning` | Forest operations, harvest scheduling and logistics — the operational layer the paper models | None known |
+| 3 | **Lars Mönch** | FernUniversität in Hagen, Germany | `herding2024rolling` | Rolling-horizon scheduling with MIP-based decomposition — closest methodological match to the core claim | None known |
 
 ## Alternates
 
-| # | Name | Affiliation (verify) | Cited work | Fit | Conflict check |
+| # | Name | Affiliation (verify) | Cited work | Fit | Relationship |
 |---|---|---|---|---|---|
-| 6 | **Andres Weintraub** | Universidad de Chile, Santiago, Chile | `ronnqvist2015operations`, `epstein2007harvest` | Forest operations research, harvest scheduling — senior breadth | Medium. Co-author with Rönnqvist and D'Amours; **verify** no tie to the authors |
-| 7 | **James L. Corner** | University of Waikato, New Zealand (check active status) | `corner2005scheduling` | Forest harvest scheduling and combinatorial methods | Low |
-| 8 | **Mario Vanhoucke** | Ghent University, Belgium | `vanhoucke2006work` | Project scheduling and rolling-horizon control — methodological breadth | Low |
+| 4 | **David Martell** | University of Toronto, Canada | `martell1998forest`, `ronnqvist2015operations` | Forest management science and OR; Canadian readership | Long acquaintance, no co-authorship; **disclose** if used |
+| 5 | **Kyle Eyvindson** | NMBU, Ås, Norway | `de2023perceptions` | Forest planning under uncertainty; planning systems for counterfactual testing | None known |
+| 6 | **Karin Öhman** | SLU, Umeå, Sweden | `ulvdal2022uncertainty` | Forest planning under uncertainty, multi-objective evaluation | None known |
+| 7 | **Fernando Santos** | University of Waterloo, Canada | `santos2021integrated` | MIP and heuristic optimisation for integrated planning | None known; verify |
+| 8 | **James L. Corner** | University of Waikato, NZ (check active) | `corner2005scheduling` | Forest harvest scheduling, combinatorial methods | None known |
+| 9 | **Mario Vanhoucke** | Ghent University, Belgium | `vanhoucke2006work` | Project scheduling and rolling-horizon control | None known |
+| 10 | **Andres Weintraub** | Universidad de Chile | `ronnqvist2015operations`, `epstein2007harvest` | Forest operations research, senior breadth | Close friend of the Canadian group; unlikely to review |
 
-## Candidates to avoid unless the authors confirm otherwise
+## Excluded
 
+- **Sophie D'Amours** — rectrice, co-supervised the thesis, spouse of candidate #1.
 - **Taraneh Sowlati** (UBC) — same institution.
-- **Sophie D'Amours**, **Mikael Rönnqvist** (Université Laval) — central to the Canadian forest
-  operations-research network the authors publish in; high risk of collaboration.
-- **Eldon Gunn**, **David Martell** — Canadian forest OR establishment; possible thesis-committee or
-  project ties. Flagged rather than excluded, because either would be an excellent referee.
+- **Eldon Gunn** — deceased.
 
-## Recommended set of three
+## Disclosure wording for the cover letter
 
-If the goal is one referee per leg, with the lowest conflict risk:
+> Suggested referees: [three names, affiliations, institutional e-mails]. For transparency: I have
+> known Prof. Rönnqvist professionally for over 15 years. We have never co-authored a paper and are
+> not collaborating on current or planned work, though a future collaboration is conceivable. His
+> spouse, Prof. Sophie D'Amours (Rectrice, Université Laval), co-supervised my doctoral thesis. I
+> disclose this so the editor can weigh it; I do not believe it prevents an arm's-length review.
 
-1. **Woodam Chung** — forest operations (the applied object).
-2. **Lars Mönch** — rolling-horizon methodology (the core claim).
-3. **Kyle Eyvindson** (or **Karin Öhman**) — forest planning and uncertainty (the interpretation).
+## Remaining author actions
 
-## What the authors still must do
-
-- Confirm current affiliations and active status.
-- Confirm no co-authorship, no shared grant, no committee service with Jaffray, Coupland or Paradis
-  in the last ~5 years.
-- Supply institutional e-mail addresses.
-- Choose three (CJFR treats the list as optional; three is a sensible number).
+- Confirm current affiliations, active status and institutional e-mail addresses.
+- Decide whether Martell replaces one of the three (he would be a strong Canadian reviewer, with a
+  disclosed acquaintance).
+- Confirm the disclosure wording suits the authors.
