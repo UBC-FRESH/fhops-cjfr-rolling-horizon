@@ -58,7 +58,8 @@ Status: pr-open
 Goal: write the Results, Discussion, Conclusions and Limitations from generated numbers only, and
 finish the abstract, the introduction and the methods.
 
-- [~] #36 P1.1 Final analysis run with all runs complete (blocked on two `sub112_lock1` SA runs)
+- [x] #36 P1.1 Final analysis run with all runs complete (SA and MIP; the M7 cold-MIP re-run is
+  folded in, and its run-to-run variation is stated in the Limitations)
 - [x] P1.2 Analysis memo: RQ1 to RQ4, and the Ch. 4 conclusions confirmed, qualified, or revised
   (`notes/analysis/analysis-memo.md`; the two pending runs are recorded as a deviation)
 - [x] P1.3 Results section from the generated macros (`manuscript/sections/results.tex`)
