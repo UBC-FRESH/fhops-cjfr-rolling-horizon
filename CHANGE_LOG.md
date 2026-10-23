@@ -570,3 +570,23 @@ m3/m8/m11/m12/m15/m16 and the nitpicks, and a CI gate against un-macro'd numeral
   bounds it (full-horizon MILP, one instance, one seed; the rolling windows are a different model).
 - Software side: `feasible_start` implemented and tested in `UBC-FRESH/fhops` (PR #169).
 - Gates: dashboard GREEN; body 4,847/6,000; abstract 200/200.
+
+## 2026-10-23
+
+### M7 cold-MIP re-run folded in (`jaffray-masc-fhops-model#1`)
+
+- Re-ran the cold-start MIP arm alone (117 runs; 1,800 s stage 1, 900 s earliness, one Gurobi
+  thread per window, 36 windows in parallel) and rebuilt the paper set by merging the 117 SA runs
+  from the original grid with the re-run's 117 MIP runs. Recipe, totals and per-run comparison:
+  `results/rerun/M7_COMPARISON.md`, `results/rerun/m7_rerun_comparison.csv`.
+- Regenerated every asset from playback. 39 macros changed; the paper-set failure counts rose:
+  no-solution windows 9 -> 32, empty windows 17 -> 38, runs >4% short 16 -> 22 of 216, SA-winning
+  pairs 9 -> 16 of 108, MIP rolling violations 58 -> 89, runs with material violations 1 -> 3.
+- **The re-run did not confirm the contention hypothesis.** Matching 603,700 per-solve Gurobi
+  records, its work rate was 8.4% higher (median 0.523 -> 0.567 work units/s), yet it produced more
+  failures. The counts describe a time-limited solve, not a fixed instance property: 20 of 117 runs
+  changed (long `lock1` trajectories diverge; short ones do not).
+- Added one Limitations sentence stating this. Conclusions unchanged in direction: 40-block stage-1
+  limit hits 66.7% (was 70.0%), worst rolling run 88.0% (was 87.9%), SA still never fails.
+- Rebuilt `submission/package/` from the regenerated sources.
+- Gates: dashboard GREEN; body 4,887/6,000; abstract 200/200; 29 pages, no `Pending:`.

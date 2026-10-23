@@ -137,6 +137,9 @@ optimal either (gaps up to 2.2\% on North Island at 7200~s). Relative volume nea
 close to the resolution of the experiment, and part of the 16-week penalty is a tractability
 effect rather than a planning one. The results depend on the solver, the limits, and the host; the
 effective Gurobi work rate here was about half the calibrated rate because the host was shared.
+Re-running the cold-start MIP arm alone, at a somewhat higher Gurobi work rate, changed the per-run
+outcomes (no-solution windows rose from 9 to 32), so the failure counts describe a time-limited run
+rather than a fixed property of each instance.
 Seeding a window from a heuristic incumbent, made MILP-feasible with a fixed-binary LP, leaves the
 typical objective and gap unchanged at equal total budget but guarantees a feasible plan from the
 first second; that would remove the no-solution outcome observed in a few of the largest windows.
