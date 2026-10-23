@@ -590,3 +590,13 @@ m3/m8/m11/m12/m15/m16 and the nitpicks, and a CI gate against un-macro'd numeral
   limit hits 66.7% (was 70.0%), worst rolling run 88.0% (was 87.9%), SA still never fails.
 - Rebuilt `submission/package/` from the regenerated sources.
 - Gates: dashboard GREEN; body 4,887/6,000; abstract 200/200; 29 pages, no `Pending:`.
+
+### CI fix: the manuscript gate failed in a clean checkout
+
+- `scripts/build_manuscript.py` passed `-o build` to tectonic without creating the directory. On CI
+  the checkout has no `manuscript/build/` (gitignored), so all three builds failed with exit 1 and
+  the **"Green dashboard summary"** check has been red since 2026-10-18 — on every commit, including
+  ones whose local dashboard was green.
+- The script now creates the output directory before each build. Verified by removing
+  `manuscript/build/` and rebuilding: `main.tex`, `supplement.tex`, `cover-letter.tex` all exit 0.
+- Dashboard GREEN locally; this is what makes PR #38 mergeable.

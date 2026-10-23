@@ -77,6 +77,10 @@ def build_document(tectonic: str, document: str, workdir: Path, out: str) -> Bui
     BuildResult
         The exit status and any undefined-reference lines.
     """
+    out_path = Path(out)
+    if not out_path.is_absolute():
+        out_path = workdir / out_path
+    out_path.mkdir(parents=True, exist_ok=True)
     completed = subprocess.run(
         [tectonic, "-o", out, document],
         cwd=workdir,
