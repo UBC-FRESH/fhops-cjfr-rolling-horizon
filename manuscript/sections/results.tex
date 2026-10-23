@@ -1,64 +1,138 @@
 \section{Results}
 
-% Numbers quoted below are macros from generated/numbers.tex (scripts/analyze_rerun.py, loaded in
-% main.tex); tables and figures come from the same script. The \IfFileExists fallbacks keep the
-% manuscript compilable until the grid completes.
+We analysed \NRollingRuns\ rolling-horizon runs and \NBaselineRuns\ full-horizon baselines
+(\NRuns\ runs in total; Table~\ref{tab:scenarios} describes the scenarios). Every run is scored on
+its stitched plan, replayed against the full 112-day problem.
 
 \subsection{Tractability and window outcomes}
-\pending{Full-horizon baselines by scenario and method: delivered share of volume and wall time
-(Table~\ref{tab:baselines}). Window outcomes by size and method: windows that reached the time
-limits, returned no solution, or were empty (Table~\ref{tab:windows}).}
+
+The full-horizon baselines set the reference for each scenario (Table~\ref{tab:baselines}). They
+are not uniformly good. For Kamloops and Prince George at 6 and 18 blocks the baseline reaches
+100\% of the scheduled volume. Elsewhere it delivers less --- \BaselineShareNILow--\BaselineShareNIHigh\%
+for North Island at every size, and \BaselineShareLargeLow--\BaselineShareLargeHigh\% for the
+40-block Kamloops and Prince George cases --- because of fleet throughput, landing capacity, or
+solver limits, which this design does not separate.
+
+Solver behaviour explains much of this (Table~\ref{tab:windows}). The MIP reached its 1800~s
+first-stage limit in \WindowsStageOneLimitMIPSix\% of windows at 6 blocks,
+\WindowsStageOneLimitMIPEighteen\% at 18 blocks, and \WindowsStageOneLimitMIPForty\% at 40 blocks.
+The simulated annealing never reached a limit, because it stops after a fixed number of iterations.
+Across all MIP rolling windows, 9 returned no solution and 17 were empty, all at 18 and 40 blocks;
+no simulated-annealing window failed. All \GurobiSolvesLogged\ MIP solves longer than 100~s ran at a
+median of \GurobiWorkRateMedian\ work units per second (5th--95th percentile
+\GurobiWorkRateLow--\GurobiWorkRateHigh), about half the rate measured on an otherwise idle host.
+
+\subsection{Delivered volume: planning horizon and re-optimization interval}
+
+Delivered volume is close to the best plan found for each scenario in most configurations
+(Fig.~\ref{fig:delivered}). Against the same-method full-horizon baseline ($R^{\mathrm{base}}$,
+Eq.~\ref{eq:relative}) the median rolling run reaches \RelBaselineMedianMIP\% (MIP) and
+\RelBaselineMedianSA\% (SA), so decomposing the horizon costs little at the median; the worst run
+reaches \RelBaselineMin\%. Aggregated over the three timber supply areas and all sizes, horizons and lock spans, the median run delivers
+\RelBestMedianMIPLockOne\% (MIP) and \RelBestMedianSALockOne\% (SA) of the best known plan at a
+1-day lock; \RelBestMedianMIPLockSeven\% and \RelBestMedianSALockSeven\% at 7 days; and
+\RelBestMedianMIPLockFourteen\% and \RelBestMedianSALockFourteen\% at 14 days. The worst runs reach
+\RelBestMinMIPLockOne\% (MIP) and \RelBestMinSALockOne\% (SA) at a 1-day lock, and
+\RelBestMinMIPLockFourteen\% and \RelBestMinSALockFourteen\% at 14 days.
+
+The differences between configurations are small. At 40 blocks, where the effects are largest, the
+median relative volume by window length and lock span is:
+
+\begin{center}
+\small
+\begin{tabular}{lrrr}
+\toprule
+Planning horizon & $f = 1$~d & $f = 7$~d & $f = 14$~d \\
+\midrule
+2 weeks & \RelBestSizeFortyThetaTwoLockOne & \RelBestSizeFortyThetaTwoLockSeven & \RelBestSizeFortyThetaTwoLockFourteen \\
+4 weeks & \RelBestSizeFortyThetaFourLockOne & \RelBestSizeFortyThetaFourLockSeven & \RelBestSizeFortyThetaFourLockFourteen \\
+8 weeks & \RelBestSizeFortyThetaEightLockOne & \RelBestSizeFortyThetaEightLockSeven & \RelBestSizeFortyThetaEightLockFourteen \\
+16 weeks & \RelBestSizeFortyThetaSixteenLockOne & \RelBestSizeFortyThetaSixteenLockSeven & \RelBestSizeFortyThetaSixteenLockFourteen \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+Two patterns stand out. First, window length matters little: the 4- and 8-week windows are the best
+or tied-best in every lock span, and the 16-week windows are no better and are sometimes a little
+worse. The 16-week penalty coincides with the point at which MIP windows most often hit the time
+limit, so it is at least partly a tractability effect rather than a planning one. Second, the
+re-optimization interval matters only at its longest value: the 1-day and 7-day locks are
+indistinguishable, and the 14-day lock is 1--3 percentage points lower at 40 blocks.
+
+\subsection{Feasibility and continuity of the implemented schedule}
+
+Feasibility of the replayed plans differs by method. All \NRollingRunsSA\ simulated-annealing plans
+replay with no sequencing violations. \NRunsWithViolationsMIPRolling\ of the \NRollingRunsMIP\ MIP
+rolling runs show raw violations at the FHOPS default tolerance of $10^{-6}$~m$^3$
+(\NViolationsMIPRolling\ in total). The count falls steeply as the tolerance rises through the
+sub-litre range: \NRunsWithMaterialViolationsOneEMinusFour\ runs at $10^{-4}$~m$^3$,
+\NRunsWithMaterialViolations\ at $10^{-3}$~m$^3$, and
+\NRunsWithMaterialViolationsOneEMinusTwo\ at $10^{-2}$~m$^3$. That fall-off, together with
+\NTinyRowsTotal\ MIP assignment rows whose planned production is below $10^{-3}$~m$^3$ (up to
+\NTinyRowsMax\ in one run), identifies the raw violations as numerical artefacts of
+negligible-production rows rather than operational infeasibilities (UBC-FRESH/fhops\#157). Feasibility is therefore not a discriminating factor between
+configurations; it is a property of the solver.
+
+Continuity is descriptive here, because machine moves are free in these scenarios and neither
+method is rewarded for keeping a machine on a block. Median continuity is high
+at 6 blocks (\ContinuityMedianSASix\ for SA, \ContinuityMedianMIPSix\ for MIP) and falls with size,
+more so for MIP (\ContinuityMedianMIPEighteen\ at 18 blocks, \ContinuityMedianMIPForty\ at 40) than
+for SA (\ContinuityMedianSAEighteen\ and \ContinuityMedianSAForty). Machine moves rise with size and
+are slightly higher for MIP at 40 blocks. These are incidental properties of the schedules, not optimized ones.
+
+\subsection{Problem size, solution method, and computing effort}
+
+Problem size has the clearest effect (Fig.~\ref{fig:effort}). At 6 blocks the median run reaches the
+best known plan for both methods, though not every North Island run does. At 18 blocks the median
+MIP run reaches \RelBestMedianMIPEighteen\% and the median SA run \RelBestMedianSAEighteen\%; at 40
+blocks they reach \RelBestMedianMIPForty\% and \RelBestMedianSAForty\%.
+
+Measured against the MIP run of the same configuration, SA delivers more volume in
+\NPairsSAWinsAny\ of \NPairsAll\ pairs (by more than 0.5\% in \NPairsSAWins\ of them), reaching up to
+1.11 times the MIP volume. The remaining pairs are MIP's, but the gap is not always a solver
+failure: in \NPairsSAWinsMIPClean\ of the \NPairsSAWinsAny\ pairs where SA won, the MIP returned a
+complete plan in every window. The MIP advantage comes at a cost: median wall time at 40 blocks is
+\WallMedianHoursMIPForty\ h for MIP against \WallMedianHoursSAForty\ h for SA, and at 18 blocks
+\WallMedianHoursMIPEighteen\ h against \WallMedianHoursSAEighteen\ h. The weakest MIP cells are the
+ones with no-solution or empty windows.
 
 \begin{table}[htbp]
   \centering
   \caption{Full-horizon baselines ($\theta = f = 112$ days): volume delivered by the replayed plan
   as a share of the scenario's total volume, and wall time. SA, simulated annealing (500
-  iterations); MIP, mixed-integer programming (Gurobi, 1800~s; no earliness stage because the lock
-  span covers the window).}
+  iterations); MIP, mixed-integer programming (Gurobi, 1800~s; the size-40 baselines use 7200~s).
+  The North Island baselines are low: the scheduled volume exceeds what the fleet harvests in 112
+  days under these shift calendars.}
   \label{tab:baselines}
   \small
-  \IfFileExists{tables/baselines.tex}{\input{tables/baselines}}{\pending{generated by
-  \texttt{scripts/analyze\_rerun.py}}}
+  \input{tables/baselines}
 \end{table}
 
 \begin{table}[htbp]
   \centering
-  \caption{Outcomes of the rolling-horizon windows, pooled over study areas, planning horizons,
+  \caption{Outcomes of the rolling-horizon windows, pooled over timber supply areas, planning horizons,
   and lock spans. Stage-1 and earliness limit: percentage of windows in which the first-stage
   (1800~s) or earliness-stage (900~s) solve stopped at its time limit. No solution: windows for
-  which the solver returned no plan. Empty: windows whose plan delivered no volume.}
+  which the solver returned no plan. Empty: windows whose plan delivered no volume. The simulated
+  annealing stops after a fixed number of iterations, so it reaches no time limit.}
   \label{tab:windows}
   \small
-  \IfFileExists{tables/window_outcomes.tex}{\input{tables/window_outcomes}}{\pending{generated
-  by \texttt{scripts/analyze\_rerun.py}}}
+  \input{tables/window_outcomes}
 \end{table}
-
-\subsection{Delivered volume: planning horizon and re-optimization interval}
-\pending{Relative delivered volume by $\theta \times f$, by problem size and method
-(Fig.~\ref{fig:delivered}). RQ1: horizon length beyond which gains become small. RQ2: frequent
-re-optimization versus longer horizons.}
 
 \begin{figure}[htbp]
   \centering
-  \IfFileExists{figures/fig_delivered.pdf}{\includegraphics[width=\textwidth]{figures/fig_delivered.pdf}}{\pending{Fig.~2 generated by \texttt{scripts/analyze\_rerun.py}}}
+  \includegraphics[width=\textwidth]{figures/fig_delivered.pdf}
   \caption{Volume delivered by the replayed stitched plan relative to the best plan found for the
   scenario, by planning horizon $\theta$, lock span $f$ (colours), problem size (columns), and
   method (rows; SA, simulated annealing; MIP, mixed-integer programming). Lines join the medians
-  over the three study areas (markers). Open markers: full-horizon baselines.}
+  over the three timber supply areas (markers). Open markers: full-horizon baselines.}
   \label{fig:delivered}
 \end{figure}
 
-\subsection{Feasibility and continuity of the implemented schedule}
-\pending{Sequencing violations (FHOPS tolerance and $10^{-3}$~m$^3$ tolerance), machine moves,
-and continuity by configuration (RQ3).}
-
-\subsection{Problem size, solution method, and computing effort}
-\pending{SA versus MIP by size: delivered volume against wall time (Fig.~\ref{fig:effort}a) and
-continuity (Fig.~\ref{fig:effort}b) (RQ4).}
-
 \begin{figure}[htbp]
   \centering
-  \IfFileExists{figures/fig_effort.pdf}{\includegraphics[width=\textwidth]{figures/fig_effort.pdf}}{\pending{Fig.~3 generated by \texttt{scripts/analyze\_rerun.py}}}
+  \includegraphics[width=\textwidth]{figures/fig_effort.pdf}
   \caption{Volume delivered relative to the best plan found for the scenario against (a) wall time
   per run and (b) schedule continuity, for all rolling-horizon runs. Colours: lock span $f$;
   markers: method (SA, simulated annealing; MIP, mixed-integer programming).}

@@ -1,0 +1,19 @@
+{
+  "title": "FHOPS rolling-horizon machine scheduling: CJFR manuscript and analysis",
+  "description": "Analysis code, committed result files, tables, figures, and LaTeX source for the Canadian Journal of Forest Research manuscript 'Rolling-horizon machine scheduling with FHOPS' (Jaffray, Coupland, Paradis). Regenerates every figure, table, and number from the FHOPS 1.0.1 re-run outputs in UBC-FRESH/jaffray-masc-fhops-model.",
+  "upload_type": "software",
+  "license": "MIT",
+  "access_right": "open",
+  "creators": [
+    {"name": "Jaffray, Rosalia", "affiliation": "University of British Columbia"},
+    {"name": "Coupland, Kathleen", "affiliation": "University of British Columbia"},
+    {"name": "Paradis, Gregory", "affiliation": "University of British Columbia"}
+  ],
+  "keywords": ["forest operations planning", "machine scheduling", "rolling horizon", "mixed-integer programming", "simulated annealing", "FHOPS", "open source"],
+  "related_identifiers": [
+    {"identifier": "https://github.com/UBC-FRESH/fhops-cjfr-rolling-horizon", "relation": "isSupplementTo", "scheme": "url"},
+    {"identifier": "https://github.com/UBC-FRESH/jaffray-masc-fhops-model", "relation": "requires", "scheme": "url"},
+    {"identifier": "https://github.com/UBC-FRESH/fhops", "relation": "requires", "scheme": "url"},
+    {"identifier": "10.1080/14942119.2026.2662184", "relation": "isCitedBy", "scheme": "doi"}
+  ]
+}

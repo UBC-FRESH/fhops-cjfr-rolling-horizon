@@ -1,15 +1,59 @@
-manuscript/build/
+# Python
 __pycache__/
-*.pyc
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+
+# Coverage, runtime, and Hypothesis records
+.coverage
+.coverage.*
+coverage.xml
+htmlcov/
+runtime/
+.hypothesis/
+
+# Environments
 .venv/
+venv/
+~/venvs/
+
+# Builds
+_build/
+docs/_build/
+build/
+dist/
+
+# LaTeX build products (tectonic intermediate files)
 *.aux
 *.log
 *.bbl
 *.blg
 *.out
-# smoke-run assets (pipeline tests only; never cited)
+
+# Local work and private or generated material
+tmp/
+local/
+data/private/
+outputs/
+
+# Editors and OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Manuscript build output
+manuscript/build/
+
+# Smoke-run assets (pipeline tests only; never cited)
 *_smoke.*
+
+# Interim analysis outputs (not for the paper)
 results/smoke/
-# interim analysis outputs (not for the paper)
 results/*interim*/
+manuscript/*/*interim*
 manuscript/*/*_mip_interim*
+
+# generated submission package (rebuilt by scripts/package_submission.py)
+submission/package/

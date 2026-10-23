@@ -36,9 +36,9 @@ the root `AGENTS.md`; it applies to all subdirectories. It follows the conventio
 | `submission/` | Cover letter and the CJFR submission checklist. |
 
 ## Read-only sources (never modify)
-- Thesis: `/home/gep/projects/jaffray-rosalia-masc-thesis` (Ch. 4: `body_chapters/chap_4/`).
-- FHOPS: `/home/gep/projects/fhops` (main checkout, user work) and `/home/gep/projects/fhops-v101`.
-- SoftwareX paper: `/home/gep/projects/fhops-manuscript`.
+- Thesis: `<workspace>/jaffray-rosalia-masc-thesis` (Ch. 4: `body_chapters/chap_4/`).
+- FHOPS: `<workspace>/fhops` (main checkout, user work) and `<workspace>/fhops-v101`.
+- SoftwareX paper: `<workspace>/fhops-manuscript`.
 - Earlier T&F-template draft: `UBC-FRESH/jaffray-masc-modelling-paper` (private, Overleaf-synced).
 
 ## Build
@@ -47,10 +47,12 @@ python scripts/make_table_scenarios.py          # Table 1 (scenario bundles)
 python scripts/make_supplement_tables.py        # Tables S1-S2 (calibration, solver probe)
 python scripts/analyze_rerun.py                 # results/rerun, Tables 2-3, Figs. 2-3, numbers.tex
 scripts/build_figures.sh                        # Fig. 1 (TikZ)
-cd manuscript && ~/bin/tectonic -o build main.tex && ~/bin/tectonic -o build supplement.tex
+cd manuscript && tectonic --keep-intermediates -o build main.tex \
+  && tectonic --keep-intermediates -o build supplement.tex   # keeps main.bbl; packaging needs it
 python scripts/wordcount.py                     # CJFR limits
 ```
-Python: the FHOPS 1.0.1 venv (`~/venvs/fhops101-grb (fhops 1.0.1 + matplotlib)`, plus matplotlib). Assets with a
+Python: a FHOPS 1.0.1 environment with matplotlib (see `requirements.txt`; `tectonic` is overridable
+via `$TECTONIC`). Assets with a
 `_smoke` suffix come from the smoke run and are for pipeline testing only; never cite them.
 CJFR format: double-spaced, single column, page and continuous line numbers, Letter paper,
 Harvard (author year) citations, abstract ≤ 200 words, ≤ 6000 words Introduction–Discussion,

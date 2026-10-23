@@ -13,7 +13,7 @@ Authors: Rosalia Jaffray, Kathleen Coupland, Gregory Paradis (corresponding).
 
 ## Build
 ```
-cd manuscript && /tmp/opencode/tex/tectonic -o build main.tex
+cd manuscript && tectonic --keep-intermediates -o build main.tex   # keeps main.bbl for packaging
 ```
 
 See `AGENTS.md` for the working contract and `ROADMAP.md` for status.

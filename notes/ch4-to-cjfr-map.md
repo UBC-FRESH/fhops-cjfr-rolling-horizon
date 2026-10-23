@@ -7,7 +7,7 @@ Fates: **kept** (little change), **rewritten** (content kept, text redone), **dr
 | Ch. 4 section / claim | Fate | Where / note |
 |---|---|---|
 | §4.1 Intro: forest ops complexity, delays, uncertainty (Martell; D'Amours; Alayet; Arora) | rewritten | Introduction ¶1 |
-| §4.1 Practice ranges from whiteboards to proprietary tools; fragmented progress (jaffray2025systematic) | rewritten | Intro ¶1. The systematic review is *submitted*, so CSP rules keep it out of the reference list; cited the thesis instead. Re-cite the review once it is published. |
+| §4.1 Practice ranges from whiteboards to proprietary tools; fragmented progress (jaffray2025systematic) | rewritten | Intro ¶1. The systematic review is now **published** (Jaffray, Coupland, Paradis 2026, *International Journal of Forest Engineering*, DOI 10.1080/14942119.2026.2662184) and is cited directly as `jaffray2026systematic`. |
 | §4.1 Large combinatorial problems; rolling horizon as remedy (Bellavenutte; Sethi; Venkataraman; Feng) | rewritten | Intro ¶2 |
 | §4.1 Horizon length / re-optimization frequency theory (Baker; Santos; Sethi; Chand) | rewritten | Intro ¶3 |
 | — (new) carry-forward and stitched-plan evaluation as preconditions of a valid evaluation | new | Intro ¶4, Methods §2.3, Discussion §4.2 |

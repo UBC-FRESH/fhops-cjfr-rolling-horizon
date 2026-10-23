@@ -2,7 +2,7 @@
 
 \subsection{Case studies}
 
-We used nine semi-synthetic scenarios: three study areas (North Island, Kamloops, and Prince
+We used nine semi-synthetic scenarios: three timber supply areas (North Island, Kamloops, and Prince
 George timber supply areas, BC) crossed with three problem sizes (6, 18, and 40 harvest blocks;
 Table~\ref{tab:scenarios}) \citep{jaffray2026zenodo}. Block geometry, area, and stand attributes
 come from an overlay of the provincial Forest Harvest Authorizations and Vegetation Resources
@@ -17,9 +17,10 @@ with a floor of
 four roles. Each block has its own landing, which at most two machines can work at once. The
 planning horizon is 112 days with three 8-h shifts per day, 7 days per week, and full machine
 availability. Blocks can be harvested at any time within the horizon. The scenarios differ in
-total volume relative to fleet capacity, so in some scenarios not all volume can be harvested
-within 112 days (Table~\ref{tab:scenarios}). Delivered volume, rather than completion time, is
-therefore the primary measure of plan quality.
+total volume relative to the fleet, and in some of them the baseline runs do not deliver the full
+scheduled volume within 112 days (Table~\ref{tab:scenarios}); the design cannot separate a
+fleet-throughput limit from model, landing, or solver limits. Delivered volume, rather than
+completion time, is therefore the primary measure of plan quality.
 
 \begin{table}[htbp]
   \centering
@@ -59,9 +60,10 @@ second stage, and the incumbent and bound were recorded over time. At 1800~s the
 incumbent was within 0.4\% of its 7200-s value in six of the seven windows not solved to
 optimality, and within 1.1\% in the largest (40 blocks, 112 days). The remaining optimality gaps
 (0.4--5.2\% at 1800~s) narrowed little by 7200~s. Shorter limits were not adequate for the largest
-window: its first non-empty incumbent appeared only after about 1350~s. The second stage converged
-more slowly. At 300~s its objective was up to 23\% below its 1800-s value, and at 900~s within 3\%
-in all but one window. We used Gurobi for the MIP arm because of a comparison with the
+window: no first-stage incumbent is recorded before 1800~s in its trajectory checkpoints. The second
+stage converged more slowly. At 300~s its objective was up to 23\% below its 1800-s value, and at
+900~s within 3\% in all but one window, where it stayed well below (the 40-block, 14-day Prince
+George calibration; Supplementary Table~S1). We used Gurobi for the MIP arm because of a comparison with the
 open-source solver HiGHS~1.15.1 \citep{huangfu2018highs} on six windows (sizes 18 and 40), with an
 1800-s first stage and a 300-s second stage. HiGHS returned only the empty plan on three of them;
 Gurobi returned non-empty plans on all six. Supplementary Tables S1 and S2 give the calibration and the solver comparison.\footnote{Supplementary material is available with the article through the journal Web site.}
@@ -93,16 +95,17 @@ re-optimization interval. The results reported here supersede those values.
   solved from the state left by the decisions already locked; its first $f$ days are locked and
   appended to the stitched plan, and the rest is re-planned by the next window. The carried state
   is obtained by replaying the stitched plan with deterministic playback. $H$, master horizon
-  (112 days).}
+  (112 days); the schematic's time axis is not to scale.}
   \label{fig:rolling}
 \end{figure}
 
 \subsection{Experimental design}
 
 The full factorial design crossed the nine scenarios with
-$\theta \in \{2, 4, 8, 16\}$~weeks, $f \in \{1, 7, 14\}$~days, and both solution methods: 216
-rolling-horizon runs. These levels represent daily, weekly, and biweekly re-planning cycles and
-horizons from two weeks to the full season. For each scenario and method we also solved one full-horizon baseline ($\theta = f = H$), giving 18 baselines.
+$\theta \in \{2, 4, 8, 16\}$~weeks, $f \in \{1, 7, 14\}$~days, and both solution methods, giving
+\NRollingRuns\ rolling-horizon runs, plus one full-horizon baseline per scenario and method
+($\theta = f = H$), for \NBaselineRuns\ baselines (\NRuns\ runs in total). These levels represent
+daily, weekly, and biweekly re-planning cycles and horizons from two weeks to the full season.
 A rolling run solves $\lceil H/f \rceil$ windows: 112, 16, or 8 for $f = 1$, 7, and 14 days. Window
 lengths of 2--16 weeks span a wide range of problem sizes. For the MIP, the window models range from
 about 10\,000 binary variables (18 blocks, 14 days) to about 350\,000 (40 blocks, 112 days)
@@ -133,7 +136,7 @@ models (several versions over the development period).
 Each run was scored on its stitched plan, replayed against the full 112-day scenario with FHOPS
 deterministic playback. We report:
 \begin{itemize}
-  \item delivered volume (m$^3$ output by the final phase) and remaining volume;
+  \item delivered volume (m$^3$ output by the final phase);
   \item relative delivered volume against two references. For run $r$ on scenario $k$ with
         method $m$ and delivered volume $V_r$,
         \begin{equation}
@@ -147,9 +150,11 @@ deterministic playback. We report:
         method. $R^{\mathrm{best}}$ allows comparison across methods and is not inflated when a
         baseline is itself limited by solver time;
   \item sequencing violations in the replayed plan, that is, slots in which a phase was scheduled
-        to process more volume than its upstream phases had staged. We count them twice: with the
-        FHOPS volume tolerance of $10^{-6}$~m$^3$, and with a tolerance of $10^{-3}$~m$^3$. The
-        second count excludes artefacts from MIP assignments with negligible planned production;
+        to process more volume than its upstream phases had staged. We report the count at four
+        volume tolerances ($10^{-6}$, $10^{-4}$, $10^{-3}$ and $10^{-2}$~m$^3$) rather than at one,
+        because MIP assignments contain negligible-production rows whose replay produces spurious
+        violations and the count would otherwise hinge on an arbitrary threshold; a sub-litre
+        shortfall is orders of magnitude below any operational resolution;
   \item block-to-block machine moves and schedule continuity, computed from the playback records
         that produced volume. Continuity is the share of the machines working a block on one
         working day that also work it on the block's next working day, pooled over blocks and days

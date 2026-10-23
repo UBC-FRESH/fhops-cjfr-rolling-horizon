@@ -1,79 +1,126 @@
 \section{Discussion}
 
-\pending{Opening summary of answers to RQ1--RQ4.}
+We re-evaluated the rolling-horizon design of \citet{jaffray2026thesis} with two corrections: every
+window now starts from the state left by the decisions already implemented, and every run is scored
+on its stitched, implemented schedule rather than on a single window's objective. Across
+\NRollingRuns\ runs the rolling-horizon configuration has small effects. Almost all configurations
+deliver close to the best plan found for their scenario, though \NRunsBeyondFourPct\ of
+\NRollingRuns\ runs fall more than 4\% short. Extending the planning window
+beyond about four weeks gains little, the 1-day and 7-day re-optimization intervals are
+indistinguishable, and only the longest interval (14 days) carries a small, consistent penalty.
+Solver time limits explain the failed windows; the weakest simulated-annealing runs had no solver
+failure, so configuration matters too.
 
 \subsection{Planning horizon and re-optimization frequency}
-\pending{Interpretation against rolling-horizon theory \citep{baker1979analytic,sethi1991theory,
-sahin2008master} and forest operations studies \citep{beaudoin2008hierarchical,frisk2016detailed,
-arora2023detailed}.}
 
-\pending{Table~4 (or a paragraph): each conclusion of \citet{jaffray2026thesis} stated as
-confirmed, qualified, or revised, with the supporting result. (a) Re-optimization frequency is
-the dominant driver of solution quality. (b) Horizons beyond about 8 weeks give diminishing
-returns. (c) Weekly re-optimization over 4--8-week horizons is a practical compromise. (d)
-Horizon length mainly drives computing effort. (e) With daily re-optimization, all horizons give
-near-identical solutions.}
+The results are consistent with rolling-horizon theory, which predicts a forecast horizon beyond
+which further look-ahead does not change the first decisions
+\citep{baker1979analytic,sethi1991theory,sahin2008master}. Beyond about four weeks the marginal gain
+in delivered volume is within the resolution of the experiment, and at 16 weeks it is slightly
+negative. That penalty is confounded with tractability: 16-week windows at 40 blocks are the ones
+that most often exhaust the MIP time limit (Table~\ref{tab:windows}). Re-optimization frequency
+behaves the same way. The 1-day and 7-day intervals give the same delivered volume, and the 14-day
+interval is a little worse, because a longer commitment period leaves less room to correct a plan
+that the forecast could not foresee.
+
+Table~\ref{tab:ch4} states each conclusion of \citet{jaffray2026thesis} in the light of the
+corrected procedure.
+
+\begin{table}[htbp]
+  \centering
+  \caption{The Chapter 4 conclusions of \citet{jaffray2026thesis}, re-tested with state
+  carry-forward and stitched-plan evaluation. Mixed-integer programming, MIP.}
+  \label{tab:ch4}
+  \small
+  \begin{tabular}{p{0.42\textwidth}p{0.14\textwidth}p{0.36\textwidth}}
+    \toprule
+    Claim & Verdict & Evidence \\
+    \midrule
+    Re-optimization frequency dominates solution quality &
+    revised &
+    Only the 14-day lock is worse, by 1--3\% at 40 blocks; the 1-day and 7-day locks are the same. \\
+    Diminishing returns beyond about 8 weeks &
+    confirmed, with a limit &
+    For the MIP, 4- and 8-week windows are best or tied-best; for SA the 4--16-week differences are small and 4 weeks is not the best; 16 weeks is no better overall and is confounded by MIP time limits. \\
+    Weekly re-optimization over 4--8-week windows is a practical sweet spot &
+    supported &
+    Among the best configurations, and far cheaper than daily re-optimization (fewer windows to solve). \\
+    Horizon length mainly drives computing effort &
+    confirmed &
+    Runtime grows with the horizon; MIP time-limit hits grow with problem size. \\
+    Daily re-optimization gives near-identical solutions across horizons &
+    qualified &
+    Daily-lock runs reach \RelBestMinLockOne--\RelBestMaxLockOne\% of the best plan (worst \RelBestWorstRolling\% across all configurations); the differences are small, not zero. \\
+    \bottomrule
+  \end{tabular}
+\end{table}
 
 \subsection{Why state carry-forward and stitched-plan evaluation matter}
-A rolling-horizon evaluation measures the planning procedure only if each window starts from the
-state its predecessors left. In a multi-phase harvesting system that state has three parts. Block
-volume already harvested must not be planned again. Volume felled but not yet skidded, or skidded
-but not yet processed, must stay available to the downstream phases. Machines must start where
-they stopped. If a window instead starts from the initial scenario, three things go wrong. It
-re-plans volume that earlier windows have already harvested. It must rebuild the inventory
-between phases from zero, so downstream machines wait at the start of every window. And it moves
-machines at no cost at every window boundary. The stitched plan then double-counts work, starves
-downstream phases, and contains sequencing violations that the individual windows never show.
-These distortions grow with the number of windows, so they are largest for the shortest lock
-spans. That is exactly the parameter whose effect is being measured. Scoring a run by the
-objective of a single window, such as the last, adds a second problem: that objective describes
-one subproblem over a shrinking remainder of the horizon, not the implemented schedule. With state
-carried forward and the stitched plan replayed against the full problem, every configuration is
-judged on the schedule a planner would actually have executed. \pending{Quantify how the corrected
-procedure changes the picture relative to \citet{jaffray2026thesis}, qualitatively and without
-reporting the superseded values as results.}
+
+The two corrections change the answer. Without carry-forward, each window restarts from the initial
+scenario: it re-plans volume that earlier windows already harvested, rebuilds the inter-phase
+inventory from zero so downstream machines wait at every window boundary, and moves machines at no
+cost at every boundary. These distortions grow with the number of windows, so they fall hardest on
+the shortest lock spans, which is the parameter whose effect is being measured. Scoring a single
+window compounds the problem, because a window's objective describes one subproblem, not the
+implemented schedule. That combination produced the large re-optimization-frequency effect in
+\citet{jaffray2026thesis}; with the state carried forward and the stitched plan scored, the effect
+is small. The methodological lesson is general: a rolling-horizon evaluation must carry the
+operational state between windows and judge the plan that is actually implemented.
 
 \subsection{Solver choice and tractability}
-Exact solutions of the operational MIP were within reach only for the smallest problems. The
-6-block, 112-day calibration window was solved to optimality in seconds. Every 18- and 40-block
-window, however, used its full time limit (Table~S1). For 40 blocks and a full-season window, the
-root linear relaxation alone took about 650~s, and the first non-empty incumbent appeared after
-about 1350~s. The choice of solver mattered as much as the time limit. With the same limits, the
-open-source HiGHS solver returned only the empty plan on half of the test windows, whereas Gurobi
-always returned a non-empty plan (Table~S2). A rolling-horizon study with cold-started exact
-solves can therefore confound the effect of the planning horizon with solver failures on large
-windows. This is why we report window outcomes for every run (Table~\ref{tab:windows}). The
-lexicographic earliness stage also needs time. A window that leaves work beyond its lock span
-penalises long horizons with short lock spans, because the locked days are under-used. For
-operational use, these results favour warm-starting the MIP from a heuristic plan, deterministic
-work limits rather than wall-clock limits, or heuristics alone for the largest instances
-\citep{frisk2016detailed,audy2023planning}. \pending{Add the grid evidence: share of time-limited
-windows by size and $\theta$; SA versus MIP delivered volume and wall time.}
+
+The largest differences between runs, and all the outright failures, are solver effects. Cold-started
+MIP windows reach the time limit in \WindowsStageOneLimitMIPForty\% of the 40-block windows, and where they do, the window may
+return no plan or an empty one (Table~\ref{tab:windows}). The simulated annealing never fails,
+because it is bounded by iterations rather than time, and it delivered more volume than the MIP in
+\NPairsSAWinsAny\ of \NPairsAll\ configurations --- in \NPairsSAWinsMIPClean\ of them the MIP
+returned a complete plan, so the gap is not only a failure effect. Where the MIP returned a complete
+plan it was generally at least as good as the heuristic, but not always. Planning systems at this
+scale should therefore not rely on cold-started exact solves alone. Warm-starting the MIP from a heuristic plan, setting a deterministic work limit in
+place of a wall-clock limit, or using the heuristic directly for the largest instances are the
+practical options \citep{frisk2016detailed,audy2023planning}.
 
 \subsection{Implications for evaluating operational planning systems}
-The protocol used here applies to rolling-horizon planning systems in general, not only to FHOPS.
-Four elements make an evaluation trustworthy. First, each window must start from the state
-implied by the decisions already locked. For a multi-phase system that means remaining volume,
-inter-phase inventory, and machine positions, and in other settings it would include open orders,
-crews, or road status. Second, the score must be computed on the stitched plan, replayed against
-the full problem by an evaluator independent of the solver that produced it. The replay then
-reveals infeasibilities that each window's own model cannot see. Third, window outcomes (time
-limits reached, no solution, empty plans) must be reported for every run, so that solver failures
-are not read as planning effects. Fourth, solver limits should be chosen from the observed
-trajectory of incumbent and bound, and reported together with the effective solver effort,
-because the effort a time limit buys depends on the hardware and on what else runs on it.
-These requirements echo the gaps found in operational planning models more broadly. In the review
-of \citet{jaffray2026thesis}, none of 23 models reported explicit validation and none released
-fully open artefacts. A planning system whose configuration is to be trusted in practice should
-let users lock decisions, re-plan from the current state, and audit the implemented schedule. It
-should also expose these diagnostics. Open scenario contracts and replayable outputs, as used
-here, let other groups repeat an evaluation, contest it, or extend it to their own operations.
+The protocol used here is expressed in terms of the carried state and solver behaviour that any
+rolling-horizon planning system shares, so we expect it to transfer beyond FHOPS; we demonstrate it
+on one system only, and that is the main limit on its generality.
+Four elements make an evaluation trustworthy. First, each window must start from the state implied
+by the decisions already locked. For a multi-phase system that means remaining volume, inter-phase
+inventory, and machine positions; in other settings it would include open orders, crews, or road
+status. Second, the score must be computed on the stitched plan, replayed against the full problem
+by an evaluator independent of the solver that produced it. The replay then reveals infeasibilities
+that each window's own model cannot see. Third, window outcomes (time limits reached, no solution,
+empty plans) must be reported for every run, so that solver failures are not read as planning
+effects. Fourth, solver limits should be chosen from the observed trajectory of incumbent and
+bound, and reported together with the effective solver effort, because the effort a time limit buys
+depends on the hardware and on what else runs on it. These requirements echo the gaps found in
+operational planning models more broadly. In the review of \citet{jaffray2026thesis}, none of 23
+models reported explicit validation and none released fully open artefacts. A planning system whose
+configuration is to be trusted in practice should let users lock decisions, re-plan from the current
+state, and audit the implemented schedule, and it should expose these diagnostics. Open scenario
+contracts and replayable outputs, as used here, let other groups repeat an evaluation, contest it,
+or extend it to their own operations.
 
 \subsection{Practical implications}
-\pending{Guidance on configuring rolling-horizon planning, carried over from the thesis
-discussion where the new results support it: directional long-range plans
-\citep{myers2004analysis,beaudoin2008hierarchical}; open tools that lower the perceived risk of
-changing practice \citep{de2023perceptions}; dependence on scale and context.}
+
+For a planner, the practical message is reassuring and simple. Over a season, the choice of
+planning horizon and re-optimization interval changes delivered volume by only a few percent, so it
+should be made on other grounds: computing cost, how often new information arrives, and how much
+schedule change the crews can absorb. A moderate window of four to eight weeks with weekly
+re-optimization sits among the best configurations and is far cheaper than daily re-optimization,
+because it solves eight to sixteen windows per season instead of 112. Daily re-optimization buys
+little when the inputs are deterministic, but it is the natural choice once weather and breakdowns
+are in play, which is the case it was designed for. These results refine rather than overturn the
+practical guidance of \citet{jaffray2026thesis}: moderate horizons with weekly updates remain a
+sound default, but for cost and simplicity rather than because shorter or longer settings would
+lose much volume.
+
+The results also support the value of open, reproducible tooling. Because the scenarios, the
+runner, and the replay evaluator are all available, the corrections in this paper were possible at
+all: the earlier numbers could be reproduced, diagnosed, and replaced. Transparent planning systems
+lower the cost of testing counterfactual configurations without operational risk
+\citep{de2023perceptions}.
 
 \subsection{Limitations}
 This evaluation is deterministic. It isolates the structural effects of the rolling-horizon
@@ -82,22 +129,38 @@ for re-planning. Extending it with the stochastic playback in FHOPS is the natur
 
 The case studies are semi-synthetic. They use real BC inventory and terrain data but one
 harvesting system, synthetic fleets, one landing per block, and no block time windows. They have
-no inter-block distances, so machine moves are free. Neither method therefore has a reason to keep
-machines on a block, and continuity and move counts describe incidental schedule structure.
+no inter-block distances, so machine moves are free and continuity and move counts describe
+incidental schedule structure, not an optimized property.
 
-SA was run with one seed and a fixed iteration budget, so its results show the behaviour of one
-trajectory rather than a distribution. The MIP solves are time-limited and not proven optimal.
-Their results depend on the solver, the limits, the hardware, and the load on the machine, and
-reproducing them exactly requires the commercial Gurobi solver. The limits were calibrated on
-first windows only; later windows start from partly harvested states and may be easier or harder.
+The MIP solves are time-limited and not proven optimal, and the full-horizon baselines are not
+optimal either (gaps up to 2.2\% on North Island at 7200~s). Relative volume near 1.0 is therefore
+close to the resolution of the experiment, and part of the 16-week penalty is a tractability
+effect rather than a planning one. The results depend on the solver, the limits, and the host; the
+effective Gurobi work rate here was about half the calibrated rate because the host was shared.
+Re-running the cold-start MIP arm alone, at a somewhat higher Gurobi work rate, changed the per-run
+outcomes (no-solution windows rose from 9 to 32), so the failure counts describe a time-limited run
+rather than a fixed property of each instance.
+Seeding a window from a heuristic incumbent, made MILP-feasible with a fixed-binary LP, leaves the
+typical objective and gap unchanged at equal total budget but guarantees a feasible plan from the
+first second; that would remove the no-solution outcome observed in a few of the largest windows.
 
-FHOPS windows place no value on work in progress at the end of a window. A time-limited earliness
-stage can therefore leave work deferred beyond the locked span. FHOPS~1.0.1 can also export MIP
-assignments with negligible planned production, which replay as sequencing violations of
-negligible volume; we report violations with a $10^{-3}$~m$^3$ tolerance alongside the raw count.
-Absolute computing times depend on hardware. \pending{Add or remove limitations once the results
-are known.}
+Simulated annealing used one seed and a fixed iteration budget, so its results show one trajectory
+rather than a distribution. The largest runs are expensive: the two 112-day, 1-day-lock runs at 40
+blocks (North Island and Prince George) took 56--64~h each, the longest simulated-annealing runs.
 
 \section{Conclusions}
-\pending{Three to four sentences answering the research questions, plus future work: uncertainty,
-real operational data, other harvesting systems and regions.}
+
+With state carried between rolling-horizon windows and the stitched plan scored against the full
+problem, the design of the rolling horizon matters much less than the earlier evaluation suggested.
+Across \NRollingRuns\ rolling runs on nine semi-synthetic British Columbia case studies, almost all
+configurations delivered close to the best plan found for their scenario
+(\NRunsBeyondFourPct\ of \NRollingRuns\ runs fell more than 4\% short). Windowing beyond
+about four weeks gained little and was confounded by solver tractability; daily and weekly
+re-optimization were indistinguishable, and only a 14-day commitment period carried a small
+penalty. The dominant differences were between solvers: cold-started mixed-integer programming
+reached its time limit in most 40-block windows and failed outright in a few, whereas simulated
+annealing never failed and reached up to \RatioSAMIPMax\ times the MIP volume in those cases. The large re-optimization-frequency
+effect reported in Chapter 4 of \citet{jaffray2026thesis} did not survive the corrected procedure;
+re-planning each window from the initial state and scoring a single window are the likely causes,
+though this design cannot isolate them. Future work should add stochastic
+disturbances, test other harvesting systems and regions, and use real operational data.

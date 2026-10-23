@@ -25,23 +25,49 @@ Operations Planning System (FHOPS) with two solution methods. Two features disti
 First, every window starts from the operational state left by the decisions already implemented:
 remaining block volume, inventory staged between harvesting phases, and machine positions.
 Second, every run is scored on its stitched, implemented schedule, replayed against the full
-problem. \pending{One or two sentences on the main findings and their practical meaning.}
+problem. Almost all configurations delivered close to the best plan found for their scenario (the
+largest shortfall was about 12\%); extending the horizon beyond about four weeks gained little, daily and weekly
+re-optimization were indistinguishable, and only a 14-day commitment period carried a small
+penalty. The clearest differences were between solvers, not configurations: cold-started
+mixed-integer programming reached its time limit in most large windows, whereas simulated
+annealing never failed.
 
 The manuscript re-evaluates, with a corrected procedure, a design first reported in the first
 author's MASc thesis (University of British Columbia, 2026). The earlier evaluation used a FHOPS
 release that did not carry state between windows and scored runs by the last window's
 objective. The present results supersede it, and the manuscript says so explicitly. The FHOPS
-software itself is described in a separate manuscript under review at \emph{SoftwareX}. That
+software itself is described in a separate manuscript in press at \emph{SoftwareX}. That
 manuscript does not report any rolling-horizon results, so there is no overlap in results.
 
 All data, code, and run outputs will be openly available (see the Data availability statement).
 The authors used generative AI tools (Claude Opus 5.5 and Kimi K3 for experiment code, Claude
 Opus 5.5 for editing, and OpenAI GPT-5.x models for FHOPS development), as disclosed in the
-Methods and Acknowledgements; the authors verified all outputs. The authors declare no competing interests other
-than \pending{confirm: G.P. leads development of the open-source FHOPS software}. The manuscript
+Methods and Acknowledgements; the authors verified all outputs. Gregory Paradis leads development of the
+open-source FHOPS software used in the study (a non-financial interest); the authors declare no
+other competing interests. The manuscript
 is not under consideration elsewhere, and all authors have approved the submission.
 
-\pending{Suggested referees (no collaborators): names, affiliations, e-mail addresses.}
+Suggested referees (no collaborators):
+\begin{itemize}
+  \item Prof.\ Mikael R\"onnqvist, Full Professor, Department of Mechanical and Industrial
+        Engineering, Universit\'e Laval, Qu\'ebec, QC, Canada;
+        \texttt{mikael.ronnqvist@gmc.ulaval.ca}
+  \item Prof.\ Woodam Chung, Faye and Lucille Stewart Professor of Forest Operations, Department of
+        Forest Engineering, Resources and Management, Oregon State University, Corvallis, OR, USA;
+        \texttt{woodam.chung@oregonstate.edu}
+  \item Prof.\ Mustapha Ouhimmou, Full Professor, Department of Systems Engineering, \'Ecole de
+        technologie sup\'erieure (\'ETS), Montr\'eal, QC, Canada;
+        \texttt{Mustapha.Ouhimmou@etsmtl.ca}
+  \item Prof.\ Marc E. McDill, Associate Professor of Forest Management, Department of Ecosystem
+        Science and Management, The Pennsylvania State University, University Park, PA, USA;
+        \texttt{mmcdill@psu.edu}
+\end{itemize}
+
+For transparency: I have known Prof.\ R\"onnqvist professionally for over 15 years. We have never
+co-authored a paper and are not collaborating on current or planned work, though a future
+collaboration is conceivable. His spouse, Prof.\ Sophie D'Amours (Rectrice, Universit\'e Laval),
+co-supervised my doctoral thesis. I disclose this so the editor can weigh it; I do not believe it
+prevents an arm's-length review.
 
 \closing{Sincerely,}
 \end{letter}

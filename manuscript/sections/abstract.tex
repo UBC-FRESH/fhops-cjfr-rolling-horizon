@@ -1,19 +1,21 @@
-% Abstract: <= 200 words (CJFR). Findings sentences are placeholders until the re-run is analysed.
+% Abstract <= 200 words (CJFR).
 \section*{Abstract}
-Rolling-horizon optimization is widely used to schedule forest harvesting machines, but there is
-little evidence on how long the planning horizon should be and how often the plan should be
-re-optimized. We evaluated both choices with the open-source Forest Harvesting Operations Planning
-System (FHOPS) on nine semi-synthetic British Columbia case studies (three timber supply areas,
-6--40 blocks, 6--24 machines, 112-day horizon). The design crossed four planning horizons
-(2--16 weeks), three re-optimization intervals (1, 7, and 14 days), and two solution methods
-(simulated annealing and mixed-integer programming). Each window started from the operational
-state left by the previous plan: remaining volume, staged inter-phase inventory, and machine
-positions. Every run was scored by replaying its stitched, implemented schedule against the full
-problem. \pending{Main findings: effect of re-optimization interval and horizon length on
-delivered volume relative to full-horizon plans, sequencing feasibility, and computing time;
-role of solver choice and tractability.} \pending{Implication for configuring operational
-planning systems.} Evaluating rolling-horizon plans on their stitched schedules, with state
-carried between windows, is essential: scoring single windows can misstate plan quality.
+Rolling-horizon optimization is widely used to schedule forest harvesting machines, but the planning
+horizon and re-optimization interval are chosen with little evidence. We evaluated both with the
+open-source Forest Harvesting Operations Planning System
+(FHOPS) on nine semi-synthetic British Columbia case studies (three timber supply areas, 6--40
+blocks, 6--24 machines, 112-day horizon), crossing four planning horizons (2--16 weeks), three
+re-optimization intervals (1, 7, 14 days), and two methods (simulated annealing and mixed-integer
+programming). Each window started from the state left by the previous plan (remaining volume,
+staged inventory, machine positions), and every run was scored by replaying its stitched schedule
+against the full problem. Almost all configurations delivered close to the best plan found for their
+scenario, though \NRunsBeyondFourPct\ of \NRollingRuns\ runs fell more than 4\% short (worst
+\RelBestWorstRolling\%). Horizon length beyond about four weeks gained little and the longest horizon
+was no better, though that comparison is confounded with solver tractability; daily and weekly
+re-optimization were indistinguishable, and only a 14-day commitment period carried a small penalty.
+Failed windows were a solver effect, but the weakest simulated-annealing runs had none, so
+configuration mattered too. An evaluation that scores single windows without carrying state can
+misstate plan quality, as an earlier evaluation did.
 
 \vspace{1em}
 \noindent\textbf{Key words:} forest operations planning; machine scheduling; rolling horizon;

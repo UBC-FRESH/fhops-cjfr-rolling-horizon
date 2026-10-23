@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Analyse the FHOPS 1.0.1 rolling-horizon re-run and generate every result asset of the paper.
+r"""Analyse the FHOPS 1.0.1 rolling-horizon re-run and generate every result asset of the paper.
 
 Reads the per-run outputs of ``scripts/rolling_rerun_v101.py`` in the experiment repository
 (``UBC-FRESH/jaffray-masc-fhops-model``): ``runs/<run_id>.json`` and
@@ -8,7 +8,8 @@ FHOPS deterministic playback, so every metric comes from the implemented schedul
 
 Per-run metrics (``results/rerun/runs_metrics.csv``)
 ---------------------------------------------------
-- ``delivered_m3`` / ``remaining_m3``: playback KPIs (``total_production``, ``remaining_work_total``).
+- ``delivered_m3`` / ``remaining_m3``: playback KPIs (``total_production``,
+  ``remaining_work_total``).
 - ``rel_baseline``: delivered / delivered of the same-method full-horizon baseline of the scenario.
 - ``rel_best``: delivered / the largest delivered volume of any run (either method, any
   configuration, baselines included) for the scenario ("best known plan").
@@ -27,7 +28,8 @@ Per-run metrics (``results/rerun/runs_metrics.csv``)
 
 Generated assets
 ----------------
-- ``results/rerun/runs_metrics.csv`` (+ ``results/rerun/summary.csv`` copied from the run directory).
+- ``results/rerun/runs_metrics.csv`` (+ ``results/rerun/summary.csv`` copied from the
+  run directory).
 - ``manuscript/tables/baselines.tex``, ``manuscript/tables/window_outcomes.tex``.
 - ``manuscript/figures/fig_delivered.pdf``, ``manuscript/figures/fig_effort.pdf``.
 - ``manuscript/generated/numbers.tex``: ``\\newcommand`` macros for numbers quoted in the text.
@@ -36,7 +38,8 @@ Generated assets
 
 Usage
 -----
-    python scripts/analyze_rerun.py --rerun-dir ../jaffray-masc-fhops-model/data/output/rerun_v101_gurobi
+    python scripts/analyze_rerun.py --rerun-dir \\
+        ../jaffray-masc-fhops-model/data/output/rerun_v101_gurobi
 """
 
 from __future__ import annotations
@@ -44,9 +47,12 @@ from __future__ import annotations
 import argparse
 import json
 import math
+import re
 import shutil
 from concurrent.futures import ProcessPoolExecutor
+from itertools import pairwise
 from pathlib import Path
+from typing import Any, Protocol, TypedDict, cast
 
 import pandas as pd
 
@@ -58,12 +64,94 @@ SIZES = [6, 18, 40]
 LOCKS = [1, 7, 14]
 THETAS = [2, 4, 8, 16]
 FULL_X = 2**4.6  # x position of the full-horizon baselines in fig_delivered
-WORDS = {1: "One", 6: "Six", 7: "Seven", 14: "Fourteen", 18: "Eighteen", 40: "Forty"}
+WORDS = {
+    1: "One",
+    2: "Two",
+    4: "Four",
+    6: "Six",
+    7: "Seven",
+    8: "Eight",
+    14: "Fourteen",
+    16: "Sixteen",
+    18: "Eighteen",
+    40: "Forty",
+}
 METHOD_LABEL = {"sa": "SA", "mip": "MIP"}
 
 
+class Iteration(TypedDict, total=False):
+    """One rolling-horizon window record, with the fields the analysis reads."""
+
+    warnings: list[str]
+    status: str
+    empty: bool
+    runtime_s: float
+
+
+class RunSpec(TypedDict):
+    """The ``spec`` block of a run JSON, with the fields the analysis reads."""
+
+    baseline: bool
+    solver: str
+    context: str
+    size: str
+    sub_days: int
+    lock_days: int
+    master_days: int
+    theta_weeks: int | None
+    mip_time_limit: int
+    mip_earliness_time_limit: int | None
+    mip_solver: str | None
+
+
+class PlaybackRecordLike(Protocol):
+    """The playback-record fields that ``_moves_and_continuity`` reads."""
+
+    block_id: str | None
+    production_units: float | None
+    machine_id: str
+    day: int
+    shift_id: str
+
+
+class RunMetricsRow(TypedDict, total=False):
+    """One per-run metrics row, before the relative columns are added."""
+
+    run_id: str
+    context: str
+    size: int
+    method: str
+    mip_solver: str | None
+    baseline: bool
+    theta_weeks: int | None
+    sub_days: int
+    lock_days: int
+    master_days: int
+    mip_time_limit_s: int
+    mip_earliness_time_limit_s: int | None
+    fhops_version: str | None
+    wall_time_s: float
+    n_locked_assignments: int | None
+    windows: int
+    windows_stage1_time_limit: int
+    windows_earliness_time_limit: int
+    windows_no_solution: int
+    windows_skipped: int
+    windows_empty: int
+    solve_time_s: float
+    delivered_m3: float
+    remaining_m3: float
+    completed_blocks: int | None
+    violations: int | None
+    total_volume_m3: float
+    tiny_rows: int
+    violations_material: int
+    moves: int
+    continuity: float
+
+
 # ----------------------------------------------------------------------------- per-run metrics
-def _window_outcomes(iterations: list[dict]) -> dict:
+def _window_outcomes(iterations: list[Iteration]) -> dict[str, int | float]:
     stage1_tl = early_tl = 0
     for it in iterations:
         warnings = it.get("warnings") or []
@@ -82,49 +170,85 @@ def _window_outcomes(iterations: list[dict]) -> dict:
     }
 
 
-def _moves_and_continuity(records, shift_order: dict[str, int]) -> tuple[int, float]:
+def _moves_and_continuity(
+    records: list[PlaybackRecordLike], shift_order: dict[str, int]
+) -> tuple[int, float]:
     working = [r for r in records if r.block_id and (r.production_units or 0.0) > WORK_EPS]
-    by_machine: dict[str, list] = {}
+    by_machine: dict[str, list[tuple[int, int, str]]] = {}
     for r in working:
-        by_machine.setdefault(r.machine_id, []).append((r.day, shift_order.get(r.shift_id, 0), r.block_id))
+        block = cast(str, r.block_id)
+        by_machine.setdefault(r.machine_id, []).append(
+            (r.day, shift_order.get(r.shift_id, 0), block)
+        )
     moves = 0
     for slots in by_machine.values():
         slots.sort()
-        moves += sum(1 for a, b in zip(slots, slots[1:]) if a[2] != b[2])
-    by_block: dict[str, dict[int, set]] = {}
+        moves += sum(1 for a, b in pairwise(slots) if a[2] != b[2])
+    by_block: dict[str, dict[int, set[str]]] = {}
     for r in working:
-        by_block.setdefault(r.block_id, {}).setdefault(r.day, set()).add(r.machine_id)
+        by_block.setdefault(cast(str, r.block_id), {}).setdefault(r.day, set()).add(r.machine_id)
     kept = total = 0
     for days in by_block.values():
         ordered = sorted(days)
-        for d0, d1 in zip(ordered, ordered[1:]):
+        for d0, d1 in pairwise(ordered):
             kept += len(days[d0] & days[d1])
             total += len(days[d0])
     return moves, (kept / total if total else math.nan)
 
 
-def material_violations(problem, assignments: pd.DataFrame) -> int:
-    """Sequencing violations with a volume tolerance of ``TINY_M3`` instead of FHOPS's 1e-6 m3.
+def material_violations(
+    problem: Any,  # noqa: ANN401 - fhops is untyped
+    assignments: pd.DataFrame,
+    tolerance: float = TINY_M3,
+) -> int:
+    """Count sequencing violations with a volume tolerance of ``tolerance``.
 
     FHOPS playback compares volumes with ``fhops.evaluation.sequencing.SEQUENCING_TOLERANCE``
-    (read at call time). Raising it to ``TINY_M3`` for one replay treats proposals of at most
-    ``TINY_M3`` as idle and ignores shortfalls of at most ``TINY_M3``, so only violations of
-    material volume are counted.
+    (read at call time). Raising it for one replay treats proposals of at most the tolerance as idle
+    and ignores shortfalls of at most the tolerance, so only violations of material volume are
+    counted.
+
+    Parameters
+    ----------
+    problem : Any
+        The FHOPS problem for the scenario (untyped library).
+    assignments : pandas.DataFrame
+        The stitched assignment rows to replay.
+    tolerance : float, optional
+        The volume tolerance in m^3 passed to the replay, by default ``TINY_M3`` (1e-3). Higher
+        values ignore more of the negligible-production artefacts; the analysis reports a sweep.
+
+    Returns
+    -------
+    int
+        The number of sequencing violations at ``tolerance``.
     """
     import fhops.evaluation.sequencing as seq
     from fhops.evaluation.metrics.kpis import compute_kpis
 
     saved = seq.SEQUENCING_TOLERANCE
-    seq.SEQUENCING_TOLERANCE = TINY_M3
+    seq.SEQUENCING_TOLERANCE = tolerance
     try:
         return int(compute_kpis(problem, assignments)["sequencing_violation_count"])
     finally:
         seq.SEQUENCING_TOLERANCE = saved
 
 
-def run_metrics(args: tuple[str, str, str]) -> dict:
+def run_metrics(args: tuple[str, str, str]) -> dict[str, Any]:
+    """Compute the per-run metrics for one run by replaying its stitched assignments.
+
+    Parameters
+    ----------
+    args : tuple of str
+        The run JSON path, the assignments CSV path, and the scenario YAML path.
+
+    Returns
+    -------
+    dict of str to Any
+        The run's identifiers, window outcomes, delivered and remaining volume, violations,
+        moves, and continuity.
+    """
     json_path, assignments_path, scenario_path = args
-    from fhops.evaluation.metrics.kpis import compute_kpis
     from fhops.evaluation.playback import run_playback
     from fhops.scenario.contract import Problem
     from fhops.scenario.io import load_scenario
@@ -160,27 +284,56 @@ def run_metrics(args: tuple[str, str, str]) -> dict:
     assignments = pd.read_csv(assignments_path)
     row["total_volume_m3"] = float(sum(b.work_required for b in scenario.blocks))
     row["tiny_rows"] = (
-        int((assignments["production"].fillna(0.0) < TINY_M3).sum()) if "production" in assignments.columns else 0
+        int((assignments["production"].fillna(0.0) < TINY_M3).sum())
+        if "production" in assignments.columns
+        else 0
     )
-    row["violations_material"] = material_violations(problem, assignments) if len(assignments) else 0
-    shift_order = {s.name: i for i, s in enumerate(scenario.timeline.shifts)} if scenario.timeline else {}
+    row["violations_material"] = (
+        material_violations(problem, assignments) if len(assignments) else 0
+    )
+    # Sensitivity of the material-violation count to the tolerance (M10 audit): 1e-4 and 1e-2
+    # bracket the reported 1e-3 so the choice is demonstrably not load-bearing.
+    for tol, label in ((1e-4, "1e4"), (1e-2, "1e2")):
+        row[f"violations_material_{label}"] = (
+            material_violations(problem, assignments, tol) if len(assignments) else 0
+        )
+    shift_order = (
+        {s.name: i for i, s in enumerate(scenario.timeline.shifts)} if scenario.timeline else {}
+    )
     records = run_playback(problem, assignments).records if len(assignments) else []
     row["moves"], row["continuity"] = _moves_and_continuity(records, shift_order)
     return row
 
 
-def _spec(json_path: Path) -> dict:
-    return json.loads(json_path.read_text(encoding="utf-8"))["spec"]
+def _spec(json_path: Path) -> RunSpec:
+    return cast(RunSpec, json.loads(json_path.read_text(encoding="utf-8"))["spec"])
 
 
 def add_relatives(df: pd.DataFrame) -> pd.DataFrame:
-    """Add ``rel_best``, ``rel_baseline`` and ``share_of_volume`` to a paper-set frame."""
+    """Add ``rel_best``, ``rel_baseline`` and ``share_of_volume`` to a paper-set frame.
+
+    Parameters
+    ----------
+    df : pandas.DataFrame
+        The paper-set metrics, with ``context``, ``size``, ``method``, ``baseline``,
+        ``delivered_m3`` and ``total_volume_m3`` columns. Modified in place.
+
+    Returns
+    -------
+    pandas.DataFrame
+        The same frame with the relative columns added.
+    """
     key = ["context", "size"]
     best = df.groupby(key)["delivered_m3"].transform("max")
     df["rel_best"] = df["delivered_m3"] / best.where(best > 0)
-    base = df[df.baseline].set_index(key + ["method"])["delivered_m3"]
-    df["baseline_delivered_m3"] = [base.get((c, s, m), math.nan) for c, s, m in zip(df.context, df["size"], df.method)]
-    df["rel_baseline"] = df["delivered_m3"] / df["baseline_delivered_m3"].where(df["baseline_delivered_m3"] > 0)
+    base = df[df.baseline].set_index([*key, "method"])["delivered_m3"]
+    df["baseline_delivered_m3"] = [
+        base.get((c, s, m), math.nan)
+        for c, s, m in zip(df.context, df["size"], df.method, strict=False)
+    ]
+    df["rel_baseline"] = df["delivered_m3"] / df["baseline_delivered_m3"].where(
+        df["baseline_delivered_m3"] > 0
+    )
     df["share_of_volume"] = df["delivered_m3"] / df["total_volume_m3"]
     return df
 
@@ -188,11 +341,29 @@ def add_relatives(df: pd.DataFrame) -> pd.DataFrame:
 def collect(
     main_dir: Path, override_dirs: list[Path], model_repo: Path, workers: int, methods: str
 ) -> tuple[pd.DataFrame, pd.DataFrame]:
-    """Metrics for every selected run; returns (paper set, superseded grid baselines).
+    """Compute metrics for every selected run.
 
     The main grid directory supplies every run. A full-horizon MIP baseline that also exists in an
     override directory (the 7200 s re-runs) is replaced by the override in the paper set; the grid
     record is kept as ``superseded`` for the supplementary table.
+
+    Parameters
+    ----------
+    main_dir : pathlib.Path
+        The grid directory with the ``runs/`` subdirectory.
+    override_dirs : list of pathlib.Path
+        Directories whose full-horizon MIP baselines replace the grid's.
+    model_repo : pathlib.Path
+        The experiment repository with the scenario bundles.
+    workers : int
+        Concurrent processes for the replay.
+    methods : {"both", "sa", "mip"}
+        Which solver results to include.
+
+    Returns
+    -------
+    tuple of pandas.DataFrame
+        The paper set with the relative columns, and the superseded grid baselines.
     """
     entries: list[tuple[Path, str, bool]] = []  # (json, source, in_paper_set)
     overrides: set[str] = set()
@@ -211,57 +382,94 @@ def collect(
         is_superseded = jp.stem in overrides and sp["baseline"]
         entries.append((jp, main_dir.name, not is_superseded))
     jobs = []
-    for jp, source, paper in entries:
+    for jp, _source, _paper in entries:
         sp = _spec(jp)
-        sc = model_repo / "data" / "input" / "scenarios" / f"{sp['context']}_{sp['size']}" / "scenario.yaml"
+        sc = (
+            model_repo
+            / "data"
+            / "input"
+            / "scenarios"
+            / f"{sp['context']}_{sp['size']}"
+            / "scenario.yaml"
+        )
         jobs.append((str(jp), str(jp.with_name(f"{jp.stem}_assignments.csv")), str(sc)))
     with ProcessPoolExecutor(max_workers=workers) as pool:
         rows = list(pool.map(run_metrics, jobs))
-    for row, (_, source, paper) in zip(rows, entries):
+    for row, (_, source, in_paper) in zip(rows, entries, strict=False):
         row["source"] = source
-        row["paper_set"] = paper
+        row["paper_set"] = in_paper
     df = pd.DataFrame(rows)
-    paper = add_relatives(df[df.paper_set].copy())
-    superseded = df[~df.paper_set].copy()
+    paper_df = add_relatives(df[df.paper_set].copy())
+    superseded_df = df[~df.paper_set].copy()
     order = ["method", "size", "context", "baseline", "sub_days", "lock_days"]
-    return paper.sort_values(order).reset_index(drop=True), superseded.sort_values(order).reset_index(drop=True)
+    return paper_df.sort_values(order).reset_index(drop=True), superseded_df.sort_values(
+        order
+    ).reset_index(drop=True)
 
 
 # ----------------------------------------------------------------------------- solver logs
 def gurobi_work_rates(rerun_dir: Path, min_seconds: float = 100.0) -> pd.DataFrame:
-    """Work units per second of every Gurobi solve longer than ``min_seconds`` in the run logs.
+    """Compute work units per second for every Gurobi solve over ``min_seconds``.
 
     Each ``runs/<run_id>.gurobi.log`` holds both stages of every window; the final line of each
     solve reads "Explored ... in S seconds (W work units)". Short solves are excluded because their
     rate is dominated by start-up overhead.
+
+    Parameters
+    ----------
+    rerun_dir : pathlib.Path
+        The run directory with the ``runs/`` subdirectory of Gurobi logs.
+    min_seconds : float, optional
+        Exclude solves at or below this many seconds. The default is 100.
+
+    Returns
+    -------
+    pandas.DataFrame
+        One row per solve, with ``run_id``, ``seconds``, ``work_units`` and ``work_per_s``.
     """
     import re
 
     pattern = re.compile(r"Explored .* in ([\d.]+) seconds \(([\d.]+) work units\)")
-    rows = []
+    rows: list[dict[str, str | float]] = []
     for log in sorted((rerun_dir / "runs").glob("*.gurobi.log")):
         for line in log.read_text(encoding="utf-8", errors="replace").splitlines():
             m = pattern.search(line)
             if m and float(m.group(1)) > min_seconds:
-                rows.append({"run_id": log.name.removesuffix(".gurobi.log"), "seconds": float(m.group(1)),
-                             "work_units": float(m.group(2))})
+                rows.append(
+                    {
+                        "run_id": log.name.removesuffix(".gurobi.log"),
+                        "seconds": float(m.group(1)),
+                        "work_units": float(m.group(2)),
+                    }
+                )
     df = pd.DataFrame(rows, columns=["run_id", "seconds", "work_units"])
     df["work_per_s"] = df["work_units"] / df["seconds"]
     return df
 
 
 # ----------------------------------------------------------------------------- tables
-def _fmt(x: float, nd: int = 1) -> str:
+def _fmt(x: float | None, nd: int = 1) -> str:
     return "--" if x is None or (isinstance(x, float) and math.isnan(x)) else f"{x:,.{nd}f}"
 
 
 def table_baselines(df: pd.DataFrame, out: Path) -> None:
+    """Write the full-horizon baseline table (Table 2) to ``out``.
+
+    Parameters
+    ----------
+    df : pandas.DataFrame
+        The paper-set metrics, with ``baseline``, ``context``, ``size``, ``method``,
+        ``share_of_volume`` and ``wall_time_s`` columns.
+    out : pathlib.Path
+        The LaTeX file to write.
+    """
     b = df[df.baseline]
     lines = [
         "% Generated by scripts/analyze_rerun.py; do not edit.",
         "\\begin{tabular}{lrrrrr}",
         "\\toprule",
-        " & & \\multicolumn{2}{c}{Delivered (\\% of volume)} & \\multicolumn{2}{c}{Wall time (h)} \\\\",
+        " & & \\multicolumn{2}{c}{Delivered (\\% of volume)} & "
+        "\\multicolumn{2}{c}{Wall time (h)} \\\\",
         "\\cmidrule(lr){3-4}\\cmidrule(lr){5-6}",
         "Study area & Blocks & SA & MIP & SA & MIP \\\\",
         "\\midrule",
@@ -272,22 +480,38 @@ def table_baselines(df: pd.DataFrame, out: Path) -> None:
             mip = b[(b.context == ctx) & (b["size"] == size) & (b.method == "mip")]
             if sa.empty and mip.empty:
                 continue
-            g = lambda d, c, k=1.0: d[c].iloc[0] * k if not d.empty else math.nan  # noqa: E731
+
+            def cell(d: pd.DataFrame, c: str, k: float = 1.0) -> float | None:
+                return float(d[c].iloc[0]) * k if not d.empty else None
+
             lines.append(
-                f"{name} & {size} & {_fmt(g(sa, 'share_of_volume', 100))} & {_fmt(g(mip, 'share_of_volume', 100))} & "
-                f"{_fmt(g(sa, 'wall_time_s', 1 / 3600), 2)} & {_fmt(g(mip, 'wall_time_s', 1 / 3600), 2)} \\\\"
+                f"{name} & {size} & {_fmt(cell(sa, 'share_of_volume', 100))} & "
+                f"{_fmt(cell(mip, 'share_of_volume', 100))} & "
+                f"{_fmt(cell(sa, 'wall_time_s', 1 / 3600), 2)} & "
+                f"{_fmt(cell(mip, 'wall_time_s', 1 / 3600), 2)} \\\\"
             )
     lines += ["\\bottomrule", "\\end{tabular}"]
     out.write_text("\n".join(lines) + "\n", encoding="utf-8")
 
 
 def table_window_outcomes(df: pd.DataFrame, out: Path) -> None:
+    """Write the window-outcomes table (Table 3) to ``out``.
+
+    Parameters
+    ----------
+    df : pandas.DataFrame
+        The paper-set metrics, with ``baseline``, ``method``, ``size`` and the window-outcome
+        columns.
+    out : pathlib.Path
+        The LaTeX file to write.
+    """
     r = df[~df.baseline]
     lines = [
         "% Generated by scripts/analyze_rerun.py; do not edit.",
         "\\begin{tabular}{llrrrrr}",
         "\\toprule",
-        "Method & Blocks & Windows & Stage-1 limit (\\%) & Earliness limit (\\%) & No solution & Empty \\\\",
+        "Method & Blocks & Windows & Stage-1 limit (\\%) & Earliness limit (\\%) & "
+        "No solution & Empty \\\\",
         "\\midrule",
     ]
     for method in ["mip", "sa"]:
@@ -296,7 +520,10 @@ def table_window_outcomes(df: pd.DataFrame, out: Path) -> None:
             if g.empty:
                 continue
             n = int(g.windows.sum())
-            pct = lambda c: 100 * g[c].sum() / n if n else math.nan  # noqa: E731
+
+            def pct(c: str, group: pd.DataFrame = g, total: int = n) -> float | None:
+                return 100 * float(group[c].sum()) / total if total else None
+
             stage1 = _fmt(pct("windows_stage1_time_limit")) if method == "mip" else "--"
             early = _fmt(pct("windows_earliness_time_limit")) if method == "mip" else "--"
             lines.append(
@@ -309,11 +536,20 @@ def table_window_outcomes(df: pd.DataFrame, out: Path) -> None:
 
 # ----------------------------------------------------------------------------- figures
 def fig_delivered(df: pd.DataFrame, out: Path) -> None:
+    """Write the delivered-volume figure (Fig. 2) to ``out``.
+
+    Parameters
+    ----------
+    df : pandas.DataFrame
+        The paper-set metrics, with ``method``, ``size``, ``baseline``, ``lock_days``,
+        ``theta_weeks``, ``context`` and ``rel_best`` columns.
+    out : pathlib.Path
+        The PDF file to write.
+    """
     import matplotlib
 
     matplotlib.use("Agg")
     import matplotlib.pyplot as plt
-
     from matplotlib.ticker import PercentFormatter
 
     colors = {1: "#1b9e77", 7: "#d95f02", 14: "#7570b3"}
@@ -331,13 +567,29 @@ def fig_delivered(df: pd.DataFrame, out: Path) -> None:
                 ax.plot(med.index, med.values, color=colors[lock], lw=1.2, label=f"$f$ = {lock} d")
                 for ctx, mk in markers.items():
                     hc = h[h.context == ctx]
-                    ax.scatter(hc.theta_weeks, hc.rel_best, color=colors[lock], marker=mk, s=12, alpha=0.7, lw=0)
+                    ax.scatter(
+                        hc.theta_weeks,
+                        hc.rel_best,
+                        color=colors[lock],
+                        marker=mk,
+                        s=12,
+                        alpha=0.7,
+                        lw=0,
+                    )
             base = g[g.baseline]
             for ctx, mk in markers.items():
                 bc = base[base.context == ctx]
-                ax.scatter([FULL_X] * len(bc), bc.rel_best, facecolor="none", edgecolor="k", marker=mk, s=40, lw=0.8)
+                ax.scatter(
+                    [FULL_X] * len(bc),
+                    bc.rel_best,
+                    facecolor="none",
+                    edgecolor="k",
+                    marker=mk,
+                    s=40,
+                    lw=0.8,
+                )
             ax.set_xscale("log", base=2)
-            ax.set_xticks(THETAS + [FULL_X], [str(t) for t in THETAS] + ["full"])
+            ax.set_xticks([*THETAS, FULL_X], [str(t) for t in THETAS] + ["full"])
             ax.yaxis.set_major_formatter(PercentFormatter(1.0, decimals=0))
             ax.set_title(f"{METHOD_LABEL[method]}, {size} blocks", fontsize=9)
             ax.grid(alpha=0.3, lw=0.5)
@@ -347,9 +599,15 @@ def fig_delivered(df: pd.DataFrame, out: Path) -> None:
                 ax.set_xlabel(r"Planning horizon $\theta$ (weeks)")
     from matplotlib.lines import Line2D
 
-    handles = [Line2D([], [], color=colors[lock], lw=1.2, label=f"$f$ = {lock} d") for lock in LOCKS]
-    handles += [Line2D([], [], color="k", marker=m, ls="", ms=4, label=AREAS[c]) for c, m in markers.items()]
-    handles += [Line2D([], [], color="k", marker="o", mfc="none", ls="", ms=6, label="Full horizon")]
+    handles = [
+        Line2D([], [], color=colors[lock], lw=1.2, label=f"$f$ = {lock} d") for lock in LOCKS
+    ]
+    handles += [
+        Line2D([], [], color="k", marker=m, ls="", ms=4, label=AREAS[c]) for c, m in markers.items()
+    ]
+    handles += [
+        Line2D([], [], color="k", marker="o", mfc="none", ls="", ms=6, label="Full horizon")
+    ]
     fig.legend(handles=handles, loc="lower center", ncol=7, fontsize=7, frameon=False)
     fig.tight_layout(rect=(0, 0.06, 1, 1))
     fig.savefig(out)
@@ -357,6 +615,16 @@ def fig_delivered(df: pd.DataFrame, out: Path) -> None:
 
 
 def fig_effort(df: pd.DataFrame, out: Path) -> None:
+    """Write the effort figure (Fig. 3) to ``out``.
+
+    Parameters
+    ----------
+    df : pandas.DataFrame
+        The paper-set metrics, with ``baseline``, ``method``, ``lock_days``, ``wall_time_s``,
+        ``continuity`` and ``rel_best`` columns.
+    out : pathlib.Path
+        The PDF file to write.
+    """
     import matplotlib
 
     matplotlib.use("Agg")
@@ -368,22 +636,38 @@ def fig_effort(df: pd.DataFrame, out: Path) -> None:
     for method, mk in [("sa", "o"), ("mip", "s")]:
         for lock in LOCKS:
             h = r[(r.method == method) & (r.lock_days == lock)]
-            axes[0].scatter(h.wall_time_s / 3600, h.rel_best, color=colors[lock], marker=mk, s=12, alpha=0.7, lw=0)
-            axes[1].scatter(h.continuity, h.rel_best, color=colors[lock], marker=mk, s=12, alpha=0.7, lw=0)
+            axes[0].scatter(
+                h.wall_time_s / 3600,
+                h.rel_best,
+                color=colors[lock],
+                marker=mk,
+                s=12,
+                alpha=0.7,
+                lw=0,
+            )
+            axes[1].scatter(
+                h.continuity, h.rel_best, color=colors[lock], marker=mk, s=12, alpha=0.7, lw=0
+            )
     from matplotlib.ticker import PercentFormatter
 
     axes[0].set_xscale("log")
     axes[0].set_xlabel("Wall time per run (h)")
     axes[1].set_xlabel("Schedule continuity")
-    for ax, tag in zip(axes, "ab"):
+    for ax, tag in zip(axes, "ab", strict=False):
         ax.set_ylabel("Delivered / best known")
         ax.yaxis.set_major_formatter(PercentFormatter(1.0, decimals=0))
         ax.grid(alpha=0.3, lw=0.5)
         ax.set_title(f"({tag})", loc="left", fontsize=9)
     from matplotlib.lines import Line2D
 
-    handles = [Line2D([], [], color=c, marker="o", ls="", ms=4, label=f"$f$ = {k} d") for k, c in colors.items()]
-    handles += [Line2D([], [], color="k", marker=m, ls="", ms=4, label=lab) for m, lab in [("o", "SA"), ("s", "MIP")]]
+    handles = [
+        Line2D([], [], color=c, marker="o", ls="", ms=4, label=f"$f$ = {k} d")
+        for k, c in colors.items()
+    ]
+    handles += [
+        Line2D([], [], color="k", marker=m, ls="", ms=4, label=lab)
+        for m, lab in [("o", "SA"), ("s", "MIP")]
+    ]
     fig.legend(handles=handles, loc="lower center", ncol=5, fontsize=7, frameon=False)
     fig.tight_layout(rect=(0, 0.08, 1, 1))
     fig.savefig(out)
@@ -392,6 +676,17 @@ def fig_effort(df: pd.DataFrame, out: Path) -> None:
 
 # ----------------------------------------------------------------------------- numbers
 def numbers(df: pd.DataFrame, out: Path, rates: pd.DataFrame | None = None) -> None:
+    r"""Write the ``\\newcommand`` macros quoted in the text to ``out``.
+
+    Parameters
+    ----------
+    df : pandas.DataFrame
+        The paper-set metrics.
+    out : pathlib.Path
+        The LaTeX file to write.
+    rates : pandas.DataFrame or None
+        The Gurobi work-rate table, or ``None`` to omit the work-rate macros.
+    """
     r = df[~df.baseline]
     macros: dict[str, str] = {
         "NRuns": f"{len(df)}",
@@ -415,6 +710,94 @@ def numbers(df: pd.DataFrame, out: Path, rates: pd.DataFrame | None = None) -> N
             h = r[(r.method == method) & (r["size"] == size)]
             if not h.empty:
                 macros[f"WallMedianHours{m}{WORDS[size]}"] = f"{h.wall_time_s.median() / 3600:.2f}"
+    s40 = r[r["size"] == 40]
+    for theta in THETAS:
+        for lock in LOCKS:
+            h = s40[(s40.theta_weeks == theta) & (s40.lock_days == lock)]
+            if not h.empty:
+                name = f"RelBestSizeFortyTheta{WORDS[theta]}Lock{WORDS[lock]}"
+                macros[name] = f"{100 * h.rel_best.median():.1f}"
+    mip_rolling = r[r.method == "mip"]
+    sa_rolling = r[r.method == "sa"]
+    macros["NRollingRunsSA"] = f"{len(sa_rolling)}"
+    macros["NRollingRunsMIP"] = f"{len(mip_rolling)}"
+    macros["NRunsWithViolationsMIPRolling"] = f"{int((mip_rolling.violations > 0).sum())}"
+    # Violation-count sensitivity to the tolerance (M10 audit).
+    if "violations_material" in df.columns:
+        macros["NViolationsMaterialOneEMinusThree"] = f"{int(df['violations_material'].sum())}"
+    for label, col in (
+        ("OneEMinusFour", "violations_material_1e4"),
+        ("OneEMinusTwo", "violations_material_1e2"),
+    ):
+        if col in df.columns:
+            macros[f"NViolationsMaterial{label}"] = f"{int(df[col].sum())}"
+            macros[f"NRunsWithMaterialViolations{label}"] = f"{int((df[col] > 0).sum())}"
+    if "tiny_rows" in df.columns:
+        macros["NTinyRowsTotal"] = f"{int(df['tiny_rows'].sum()):,}"
+        macros["NTinyRowsMax"] = f"{int(df['tiny_rows'].max()):,}"
+    macros["NViolationsMIPRolling"] = f"{int(mip_rolling.violations.sum())}"
+    macros["RelBestWorstRolling"] = f"{100 * r.rel_best.min():.1f}"
+    for method in ["sa", "mip"]:
+        h = r[r.method == method]
+        if not h.empty:
+            macros[f"RelBaselineMedian{METHOD_LABEL[method]}"] = (
+                f"{100 * h.rel_baseline.median():.1f}"
+            )
+    macros["RelBaselineMin"] = f"{100 * r.rel_baseline.min():.1f}"
+    macros["NRunsBeyondFourPct"] = f"{int((r.rel_best < 0.96).sum())}"
+    cells = r.groupby(["context", "size", "sub_days", "lock_days"])["rel_best"].min()
+    macros["NCellsAll"] = f"{len(cells)}"
+    macros["NCellsBeyondFourPct"] = f"{int((cells < 0.96).sum())}"
+    one_day = r[r.lock_days == 1]
+    if not one_day.empty:
+        macros["RelBestMinLockOne"] = f"{100 * one_day.rel_best.min():.1f}"
+        macros["RelBestMaxLockOne"] = f"{100 * one_day.rel_best.max():.1f}"
+    for method in ["sa", "mip"]:
+        for size in SIZES:
+            h = r[(r.method == method) & (r["size"] == size)]
+            if not h.empty:
+                macros[f"RelBestMedian{METHOD_LABEL[method]}{WORDS[size]}"] = (
+                    f"{100 * h.rel_best.median():.1f}"
+                )
+    key = ["context", "size", "sub_days", "lock_days"]
+    pairs = r.pivot_table(index=key, columns="method", values="rel_best")
+    fails = r.assign(_fail=r.windows_no_solution + r.windows_empty).pivot_table(
+        index=key, columns="method", values="_fail", aggfunc="sum"
+    )
+    if {"sa", "mip"} <= set(pairs.columns):
+        macros["NPairsAll"] = f"{len(pairs)}"
+        macros["NPairsSAWins"] = f"{int((pairs['sa'] > pairs['mip'] + 0.005).sum())}"
+        macros["NPairsSAWinsAny"] = f"{int((pairs['sa'] > pairs['mip']).sum())}"
+        clean = pairs[(pairs["sa"] > pairs["mip"]) & (fails["mip"].reindex(pairs.index) == 0)]
+        macros["NPairsSAWinsMIPClean"] = f"{len(clean)}"
+        positive = pairs[pairs["mip"] > 0]
+        if not positive.empty:
+            macros["RatioSAMIPMax"] = f"{(positive['sa'] / positive['mip']).max():.2f}"
+    # MIP stage-1 time-limit hits by size (audit: numbers typed literally in the prose).
+    for size in SIZES:
+        h = mip_rolling[mip_rolling["size"] == size]
+        if not h.empty and h.windows.sum():
+            macros[f"WindowsStageOneLimitMIP{WORDS[size]}"] = (
+                f"{100 * h.windows_stage1_time_limit.sum() / h.windows.sum():.1f}"
+            )
+    # Full-horizon baseline delivery shares (North Island vs the other, 40-block, cases).
+    baseline = df[df.baseline]
+    ni_baseline = baseline[baseline.context == "ni"]
+    if not ni_baseline.empty:
+        macros["BaselineShareNILow"] = f"{100 * ni_baseline.share_of_volume.min():.0f}"
+        macros["BaselineShareNIHigh"] = f"{100 * ni_baseline.share_of_volume.max():.0f}"
+    large_baseline = baseline[(baseline.context != "ni") & (baseline["size"] == 40)]
+    if not large_baseline.empty:
+        macros["BaselineShareLargeLow"] = f"{100 * large_baseline.share_of_volume.min():.0f}"
+        macros["BaselineShareLargeHigh"] = f"{100 * large_baseline.share_of_volume.max():.0f}"
+    # Continuity medians by method and size.
+    for method in ["sa", "mip"]:
+        for size in SIZES:
+            h = r[(r.method == method) & (r["size"] == size)]
+            if not h.empty and h.continuity.notna().any():
+                macros[f"ContinuityMedian{METHOD_LABEL[method]}{WORDS[size]}"] = (
+                    f"{h.continuity.median():.2f}"
+                )
     if rates is not None and not rates.empty:
         macros["GurobiWorkRateMedian"] = f"{rates.work_per_s.median():.2f}"
         macros["GurobiWorkRateLow"] = f"{rates.work_per_s.quantile(0.05):.2f}"
@@ -425,10 +808,43 @@ def numbers(df: pd.DataFrame, out: Path, rates: pd.DataFrame | None = None) -> N
     out.write_text("\n".join(lines) + "\n", encoding="utf-8")
 
 
+_PERSONAL_PATH_PREFIX = re.compile(r"/(?:home|Users|tmp)/[^/,\n\"]+/")
+
+
+def _scrub_personal_paths(path: Path) -> None:
+    """Replace absolute home/tmp prefixes in a copied CSV with ``<env>/``.
+
+    The copied ``summary.csv`` records, in ``fhops_path``, the interpreter path of the FHOPS
+    install that produced each run. On a maintainer machine that is an absolute home (or ``/tmp``)
+    path; commit a placeholder instead, so the repository carries no personal path (the workflow
+    validator rejects them).
+
+    Parameters
+    ----------
+    path:
+        The copied CSV to rewrite in place. Left untouched when no personal prefix is present.
+    """
+    text = path.read_text(encoding="utf-8")
+    scrubbed = _PERSONAL_PATH_PREFIX.sub("<env>/", text)
+    if scrubbed != text:
+        path.write_text(scrubbed, encoding="utf-8")
+
+
 def main() -> int:
-    parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
+    """Run the analysis end to end and write every result asset.
+
+    Returns
+    -------
+    int
+        0 on success.
+    """
+    parser = argparse.ArgumentParser(
+        description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter
+    )
     out = ROOT.parent / "jaffray-masc-fhops-model" / "data" / "output"
-    parser.add_argument("--rerun-dir", type=Path, default=out / "rerun_v101_gurobi", help="main grid directory")
+    parser.add_argument(
+        "--rerun-dir", type=Path, default=out / "rerun_v101_gurobi", help="main grid directory"
+    )
     parser.add_argument(
         "--baseline-dir",
         type=Path,
@@ -438,7 +854,9 @@ def main() -> int:
     )
     parser.add_argument("--model-repo", type=Path, default=ROOT.parent / "jaffray-masc-fhops-model")
     parser.add_argument("--methods", choices=["both", "sa", "mip"], default="both")
-    parser.add_argument("--out-tag", default="rerun", help="results/<tag>/ and asset suffix ('rerun' for the paper)")
+    parser.add_argument(
+        "--out-tag", default="rerun", help="results/<tag>/ and asset suffix ('rerun' for the paper)"
+    )
     parser.add_argument("--workers", type=int, default=8)
     args = parser.parse_args()
     if args.baseline_dir is None:
@@ -449,12 +867,15 @@ def main() -> int:
 
     res = ROOT / "results" / args.out_tag
     res.mkdir(parents=True, exist_ok=True)
-    df, superseded = collect(args.rerun_dir, args.baseline_dir, args.model_repo, args.workers, args.methods)
+    df, superseded = collect(
+        args.rerun_dir, args.baseline_dir, args.model_repo, args.workers, args.methods
+    )
     df.to_csv(res / "runs_metrics.csv", index=False)
     if not superseded.empty:
         superseded.to_csv(res / "supplementary_baselines_grid_1800s.csv", index=False)
     if args.methods == "both" and (args.rerun_dir / "summary.csv").exists():
         shutil.copy2(args.rerun_dir / "summary.csv", res / "summary.csv")
+        _scrub_personal_paths(res / "summary.csv")
     suffix = "" if args.out_tag == "rerun" else f"_{args.out_tag}"
     tables = ROOT / "manuscript" / "tables"
     figures = ROOT / "manuscript" / "figures"
@@ -468,7 +889,17 @@ def main() -> int:
     rates = gurobi_work_rates(args.rerun_dir)
     rates.to_csv(res / "gurobi_work_rates.csv", index=False)
     numbers(df, generated / f"numbers{suffix}.tex", rates)
-    cols = ["run_id", "source", "delivered_m3", "rel_baseline", "rel_best", "violations", "violations_material", "moves", "continuity"]
+    cols = [
+        "run_id",
+        "source",
+        "delivered_m3",
+        "rel_baseline",
+        "rel_best",
+        "violations",
+        "violations_material",
+        "moves",
+        "continuity",
+    ]
     print(df[cols].round(3).to_string(index=False))
     if not superseded.empty:
         print("\nSuperseded grid baselines (1800 s, supplementary):")
