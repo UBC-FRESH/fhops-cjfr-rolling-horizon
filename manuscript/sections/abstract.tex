@@ -8,9 +8,9 @@ blocks, 6--24 machines, 112-day horizon), crossing four planning horizons (2--16
 re-optimization intervals (1, 7, 14 days), and two methods (simulated annealing and mixed-integer
 programming). Each window started from the state left by the previous plan (remaining volume,
 staged inventory, machine positions), and every run was scored by replaying its stitched schedule
-against the full problem. Almost all configurations delivered close to the best plan found for their
+against the full problem. Almost all configurations delivered close to the best plan for their
 scenario, though \NRunsBeyondFourPct\ of \NRollingRuns\ runs fell more than 4\% short (worst
-\RelBestWorstRolling\%). Horizon length beyond about four weeks gained little and the longest horizon
+\RelBestWorstRolling\%). Horizons beyond four weeks gained little and the longest horizon
 was no better, though that comparison is confounded with solver tractability; daily and weekly
 re-optimization were indistinguishable, and only a 14-day commitment period carried a small penalty.
 Failed windows were a solver effect, but the weakest simulated-annealing runs had none, so

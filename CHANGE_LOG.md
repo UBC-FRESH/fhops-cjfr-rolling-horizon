@@ -693,3 +693,14 @@ m3/m8/m11/m12/m15/m16 and the nitpicks, and a CI gate against un-macro'd numeral
 - Verified: the package has **0 subdirectories**; copied to a clean directory it compiles with
   correct values ("22 of 216"), both DOIs, and no `Pending:` or `??`.
 - Gates: dashboard GREEN.
+
+### Word count now includes the generated macro values (#53)
+
+- `scripts/wordcount.py` stripped every LaTeX command before counting, so `\NRunsBeyondFourPct`,
+  `\NRollingRuns` and `\RelBestWorstRolling` never entered the count. The rendered abstract was
+  **202 words** while the gate reported 200; ScholarOne counts the rendered text.
+- The counter now expands `manuscript/generated/numbers.tex` before counting (body 5,082/6,000
+  instead of 5,000 — still well inside the limit).
+- Trimmed two words in the abstract ("best plan found" -> "best plan"; "Horizons beyond about four
+  weeks" -> "Horizons beyond four weeks") so the rendered text is exactly **200**.
+- Gates: dashboard GREEN; abstract 200/200; body 5,082/6,000.
