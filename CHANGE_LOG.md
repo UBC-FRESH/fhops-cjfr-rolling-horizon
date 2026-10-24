@@ -652,3 +652,11 @@ m3/m8/m11/m12/m15/m16 and the nitpicks, and a CI gate against un-macro'd numeral
   are exempt, so working notes can still cite issues where they are not typeset.
 - Two tests: the shorthand in prose is an error; the same text in a comment is ignored.
 - Gates: dashboard GREEN; body 5,000/6,000; abstract 200/200.
+
+### Submission package now includes the cover-letter PDF (#48)
+
+- `scripts/package_submission.py` copied only `main.pdf` and `supplement.pdf`, although its docstring
+  promised the cover letter too. It now also writes `fhops-cjfr-cover-letter.pdf`, so the package is
+  complete without a manual step.
+- Rebuilt the package from `main`. The flattened `manuscript.tex` compiles standalone (30 pages, no
+  `Pending:`, no `??`), and the cover letter is present as both `.tex` and `.pdf`.
