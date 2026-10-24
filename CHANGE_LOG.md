@@ -677,3 +677,19 @@ m3/m8/m11/m12/m15/m16 and the nitpicks, and a CI gate against un-macro'd numeral
   of all authors (2026-10-24).
 - Rebuilt the submission package.
 - Gates: dashboard GREEN; 44 references; body 5,002/6,000; abstract 200/200.
+
+### Submission package is now actually flat (#51)
+
+- The package still wrote `generated/numbers.tex` and the flattened `manuscript.tex` kept
+  `\IfFileExists{generated/numbers.tex}`. In a genuinely flat folder that guard would fail, the
+  inlined macros would be skipped, and the `\providecommand … \pending{}` fallbacks would have
+  printed **Pending** placeholders. It only compiled because the nested directory happened to be
+  there.
+- `scripts/package_submission.py` now writes `numbers.tex` at the package root, rewrites the guard to
+  `numbers.tex`, and removes any stale `generated/` directory. The docstring says "no nested
+  directories".
+- Tests now use the real guard in the fixture and assert that the package has no `generated/`
+  directory, that `numbers.tex` is at the root, and that no `generated/numbers.tex` path survives.
+- Verified: the package has **0 subdirectories**; copied to a clean directory it compiles with
+  correct values ("22 of 216"), both DOIs, and no `Pending:` or `??`.
+- Gates: dashboard GREEN.

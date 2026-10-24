@@ -7,6 +7,7 @@ figures referenced without directory prefixes. This script writes ``submission/p
 - ``manuscript.tex``: ``manuscript/main.tex`` with every ``\input`` inlined (sections, tables,
   metadata, generated numbers) and every ``\includegraphics{figures/...}`` rewritten to the file
   name, followed by the bibliography environment from the built ``.bbl``.
+- ``numbers.tex``: the generated macros, at the folder root (no nested directories).
 - the figure PDFs, and ``references.bib``.
 
 It also copies the built PDFs (the paper, the supplement and the cover letter) into the folder.
@@ -84,6 +85,9 @@ def main() -> int:
         return "\\includegraphics" + (m.group(1) or "") + "{" + Path(m.group(2)).name + "}"
 
     tex = INCLUDE.sub(include_repl, tex)
+    # Journal systems accept no nested directories. The generated macros are inlined where they are
+    # \input, but main.tex still guards them with \IfFileExists, so point that guard at the root.
+    tex = tex.replace("generated/numbers.tex", "numbers.tex")
     if bbl.exists():
         bbl_text = bbl.read_text(encoding="utf-8")
         bib = re.compile(r"\\bibliographystyle\{[^}]+\}\s*\\bibliography\{[^}]+\}")
@@ -95,10 +99,11 @@ def main() -> int:
                 continue
             shutil.copy2(fig, PACKAGE / fig.name)
     shutil.copy2(MANUSCRIPT / "references.bib", PACKAGE / "references.bib")
-    # the paper guards the generated macros with \IfFileExists, so the file must exist at this path
-    generated = PACKAGE / "generated"
-    generated.mkdir(exist_ok=True)
-    shutil.copy2(MANUSCRIPT / "generated" / "numbers.tex", generated / "numbers.tex")
+    # Flat folder only: the guard in the flattened manuscript now points at ./numbers.tex.
+    stale_generated = PACKAGE / "generated"
+    if stale_generated.exists():
+        shutil.rmtree(stale_generated)
+    shutil.copy2(MANUSCRIPT / "generated" / "numbers.tex", PACKAGE / "numbers.tex")
     for name, target in [
         ("main.pdf", "fhops-cjfr-main.pdf"),
         ("supplement.pdf", "fhops-cjfr-supplement.pdf"),
