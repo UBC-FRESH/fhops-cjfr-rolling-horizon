@@ -610,3 +610,14 @@ m3/m8/m11/m12/m15/m16 and the nitpicks, and a CI gate against un-macro'd numeral
   normal bibliography entry (`paradis2026fhops`), cited with `\citep`/`\citet`. The acronym is
   brace-protected so the bibliography style does not lowercase it.
 - 43 references (< 50 limit). Dashboard GREEN; body 4,887/6,000; abstract 200/200.
+
+### Methods 2.2 no longer reports results (#40)
+
+- Moved the calibration findings and the HiGHS-vs-Gurobi comparison out of Methods 2.2 into a new
+  Results subsection 3.1 ("Solver calibration and solver choice"). Methods now states only the
+  design (eight configurations, 7200-s/1800-s calibration, Gurobi as the chosen solver, forward
+  references); Supplementary Tables S1 and S2 remain the detail.
+- Fixed a stale literal found while checking that section: Results still said "9 returned no solution
+  and 17 were empty" from before the M7 fold-in. It now quotes `\NWindowsNoSolution` (32) and
+  `\NWindowsEmpty` (38).
+- Gates: dashboard GREEN; body 4,964/6,000; abstract 200/200; 29 pages.
