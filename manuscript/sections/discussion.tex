@@ -74,7 +74,7 @@ The largest differences between runs, and all the outright failures, are solver 
 MIP windows reach the time limit in \WindowsStageOneLimitMIPForty\% of the 40-block windows, and where they do, the window may
 return no plan or an empty one (Table~\ref{tab:windows}). The simulated annealing never fails,
 because it is bounded by iterations rather than time, and it delivered more volume than the MIP in
-\NPairsSAWinsAny\ of \NPairsAll\ configurations --- in \NPairsSAWinsMIPClean\ of them the MIP
+\NPairsSAWinsAny\ of \NPairsAll\ configurations---in \NPairsSAWinsMIPClean\ of them the MIP
 returned a complete plan, so the gap is not only a failure effect. Where the MIP returned a complete
 plan it was generally at least as good as the heuristic, but not always. Planning systems at this
 scale should therefore not rely on cold-started exact solves alone. Warm-starting the MIP from a heuristic plan, setting a deterministic work limit in

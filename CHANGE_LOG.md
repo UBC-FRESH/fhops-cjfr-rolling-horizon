@@ -634,3 +634,11 @@ m3/m8/m11/m12/m15/m16 and the nitpicks, and a CI gate against un-macro'd numeral
 - Fixed the Fig. 3 axis label in `scripts/analyze_rerun.py` and regenerated the assets. Only the
   figures changed; `numbers.tex` and the tables reproduced byte-for-byte.
 - Gates: dashboard GREEN; body 5,004/6,000; abstract 200/200.
+
+### Em dashes are not spaced in the text (#44)
+
+- Three prose occurrences used ` --- ` (one in the Discussion, two in the Results); replaced with
+  unspaced `---`. No Unicode em dashes or `~---~` forms exist in the source.
+- Verified in the built PDF: no ` — ` remains; the four em dashes in the document are all unspaced
+  (including the Pyomo book title in the reference list).
+- Gates: dashboard GREEN; body 5,002/6,000; abstract 200/200.
