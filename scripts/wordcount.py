@@ -14,10 +14,36 @@ Usage
 from __future__ import annotations
 
 import re
+from collections.abc import Mapping
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 SECTIONS = ROOT / "manuscript" / "sections"
+GENERATED = ROOT / "manuscript" / "generated" / "numbers.tex"
+MACRO = re.compile(r"\\newcommand\{\\([A-Za-z@]+)\}\{(.*)\}")
+
+
+def load_macros(path: Path = GENERATED) -> dict[str, str]:
+    r"""Read the generated ``\\newcommand`` values so counts include rendered numbers.
+
+    Parameters
+    ----------
+    path : pathlib.Path
+        The generated macros file (``manuscript/generated/numbers.tex``).
+
+    Returns
+    -------
+    dict of str to str
+        Macro name to replacement text; empty when the file is missing.
+    """
+    macros: dict[str, str] = {}
+    if not path.is_file():
+        return macros
+    for line in path.read_text(encoding="utf-8").splitlines():
+        match = MACRO.match(line.strip())
+        if match:
+            macros[match.group(1)] = match.group(2)
+    return macros
 
 
 def _strip_braced(text: str, command: str) -> tuple[str, str]:
@@ -54,19 +80,25 @@ def _strip_braced(text: str, command: str) -> tuple[str, str]:
     return "".join(out), " ".join(removed)
 
 
-def words(tex: str) -> tuple[int, int]:
+def words(tex: str, macros: Mapping[str, str] | None = None) -> tuple[int, int]:
     r"""Count the words in a LaTeX fragment, excluding comments, floats, and citations.
 
     Parameters
     ----------
     tex : str
         The LaTeX source.
+    macros : mapping of str to str, optional
+        Generated macro values to expand before counting, so the rendered numbers are counted
+        rather than dropped with the command name.
 
     Returns
     -------
     tuple of int
         The word count and the count of words inside ``\\pending{}`` notes.
     """
+    if macros:
+        for name in sorted(macros, key=len, reverse=True):
+            tex = re.sub(r"\\" + re.escape(name) + r"(?![A-Za-z@])", macros[name], tex)
     tex = re.sub(r"(?<!\\)%.*", "", tex)
     tex = re.sub(r"\\begin\{(figure|table)\}.*?\\end\{\1\}", " ", tex, flags=re.S)
     for command in ("section", "subsection", "subsubsection", "paragraph"):
@@ -93,12 +125,14 @@ def main() -> int:
         0 on success.
     """
     body = pending = 0
+    macros = load_macros()
     for name in ["introduction", "methods", "results", "discussion"]:
-        w, p = words((SECTIONS / f"{name}.tex").read_text(encoding="utf-8"))
+        w, p = words((SECTIONS / f"{name}.tex").read_text(encoding="utf-8"), macros)
         print(f"{name:13s} {w:5d} words  (+{p} in pending notes)")
         body, pending = body + w, pending + p
+    macros = load_macros()
     abstract = (SECTIONS / "abstract.tex").read_text(encoding="utf-8").split("\\noindent")[0]
-    aw, ap = words(abstract.replace("\\section*{Abstract}", ""))
+    aw, ap = words(abstract.replace("\\section*{Abstract}", ""), macros)
     print(f"{'BODY':13s} {body:5d} / 6000 words  (+{pending} in pending notes)")
     print(f"{'ABSTRACT':13s} {aw:5d} / 200 words  (+{ap} in pending notes)")
     return 0
