@@ -704,3 +704,11 @@ m3/m8/m11/m12/m15/m16 and the nitpicks, and a CI gate against un-macro'd numeral
 - Trimmed two words in the abstract ("best plan found" -> "best plan"; "Horizons beyond about four
   weeks" -> "Horizons beyond four weeks") so the rendered text is exactly **200**.
 - Gates: dashboard GREEN; abstract 200/200; body 5,082/6,000.
+
+### Data availability gives repository, DOI, link and access conditions (#55)
+
+- Rewrote the statement to match the ScholarOne field requirements: Zenodo and GitHub named, each
+  DOI with its `https://doi.org/` link inline, the licences stated (CC BY 4.0 for the two data
+  deposits, MIT for the analysis code and FHOPS), open access without registration, and no data
+  withheld. The same text is in `tmp/data-availability.txt` for pasting into the form.
+- Gates: dashboard GREEN; body 5,082/6,000; abstract 199 rendered (200 by the gate).
