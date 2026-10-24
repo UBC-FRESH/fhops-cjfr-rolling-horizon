@@ -35,6 +35,7 @@ completion time, is therefore the primary measure of plan quality.
 \end{table}
 
 \subsection{Scheduling model and solution methods}
+\label{sec:solution-methods}
 
 FHOPS represents each scenario as a shift-level machine scheduling problem: which machine works on
 which block in each shift. The objective maximizes delivered volume, subject to machine
@@ -55,18 +56,13 @@ postpone work beyond its locked span \citep{fhops2026v101}. This stage was limit
 \earlinesslimit.
 
 The limits were set from a calibration on the first window of eight representative configurations
-(sizes 6--40, windows of 14--112 days). Each was solved with a 7200-s first stage and an 1800-s
-second stage, and the incumbent and bound were recorded over time. At 1800~s the first-stage
-incumbent was within 0.4\% of its 7200-s value in six of the seven windows not solved to
-optimality, and within 1.1\% in the largest (40 blocks, 112 days). The remaining optimality gaps
-(0.4--5.2\% at 1800~s) narrowed little by 7200~s. Shorter limits were not adequate for the largest
-window: no first-stage incumbent is recorded before 1800~s in its trajectory checkpoints. The second
-stage converged more slowly. At 300~s its objective was up to 23\% below its 1800-s value, and at
-900~s within 3\% in all but one window, where it stayed well below (the 40-block, 14-day Prince
-George calibration; Supplementary Table~S1). We used Gurobi for the MIP arm because of a comparison with the
-open-source solver HiGHS~1.15.1 \citep{huangfu2018highs} on six windows (sizes 18 and 40), with an
-1800-s first stage and a 300-s second stage. HiGHS returned only the empty plan on three of them;
-Gurobi returned non-empty plans on all six. Supplementary Tables S1 and S2 give the calibration and the solver comparison.\footnote{Supplementary material is available with the article through the journal Web site.}
+(sizes 6--40, windows of 14--112 days), each solved with a 7200-s first stage and an 1800-s second
+stage while the incumbent and bound were recorded over time; Section~\ref{sec:calibration} reports
+the calibration. The MIP arm used Gurobi rather than the open-source solver HiGHS~1.15.1
+\citep{huangfu2018highs}; Section~\ref{sec:calibration} reports the comparison
+that motivated the choice. Supplementary Tables~S1 and S2 give the calibration and the solver
+comparison in full.\footnote{Supplementary material is available with the article through the
+journal Web site.}
 
 \subsection{Rolling-horizon procedure with state carry-forward}
 
