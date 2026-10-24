@@ -642,3 +642,13 @@ m3/m8/m11/m12/m15/m16 and the nitpicks, and a CI gate against un-macro'd numeral
 - Verified in the built PDF: no ` — ` remains; the four em dashes in the document are all unspaced
   (including the Pyomo book title in the reference list).
 - Gates: dashboard GREEN; body 5,002/6,000; abstract 200/200.
+
+### No repository issue references in the manuscript (#46)
+
+- Removed "(UBC-FRESH/fhops#157)" from the Results. A journal reader cannot resolve `owner/repo#123`,
+  and the number drifts; the sentence now states the finding without it.
+- Added validator rule **`PAPER-FORUM-REF`** (error): any `owner/repo#123` or GitHub issue/PR URL in
+  `manuscript/sections/*.tex` or `manuscript/supplement.tex` fails the dashboard. LaTeX comment lines
+  are exempt, so working notes can still cite issues where they are not typeset.
+- Two tests: the shorthand in prose is an error; the same text in a comment is ignored.
+- Gates: dashboard GREEN; body 5,000/6,000; abstract 200/200.

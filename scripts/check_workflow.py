@@ -1154,6 +1154,50 @@ def check_literal_numbers(root: Path) -> list[Diagnostic]:
     return diags
 
 
+FORUM_REF = re.compile(r"\b[\w.-]+/[\w.-]+#\d+\b|github\.com/[\w.-]+/[\w.-]+/(?:issues|pull)/\d+")
+
+
+def check_manuscript_refs(root: Path) -> list[Diagnostic]:
+    """Error on repository issue or pull-request shorthand in manuscript prose.
+
+    A reader of the paper cannot resolve ``owner/repo#123``, and the number drifts as the
+    repository evolves. Such references belong in ``CHANGE_LOG.md`` and the issue tracker, not in
+    the typeset text. LaTeX comment lines are skipped because they are not rendered.
+
+    Parameters
+    ----------
+    root : Path
+        Repository root.
+
+    Returns
+    -------
+    list of Diagnostic
+        One error per offending line, in file and line order.
+    """
+    paths = sorted((root / "manuscript" / "sections").glob("*.tex"))
+    supplement = root / "manuscript" / "supplement.tex"
+    if supplement.is_file():
+        paths.append(supplement)
+    diags: list[Diagnostic] = []
+    for path in paths:
+        rel = str(path.relative_to(root))
+        for lineno, line in enumerate(path.read_text(encoding="utf-8").splitlines(), start=1):
+            if line.lstrip().startswith("%"):
+                continue
+            match = FORUM_REF.search(line)
+            if match:
+                diags.append(
+                    error(
+                        "PAPER-FORUM-REF",
+                        rel,
+                        lineno,
+                        f"repository reference '{match.group(0)}' in manuscript text; "
+                        "describe the point instead",
+                    )
+                )
+    return diags
+
+
 def run(root: Path) -> list[Diagnostic]:
     """Run every repository check against a root and return all findings.
 
@@ -1177,6 +1221,7 @@ def run(root: Path) -> list[Diagnostic]:
     diags.extend(check_markdown_links(root))
     diags.extend(check_llms(root))
     diags.extend(check_literal_numbers(root))
+    diags.extend(check_manuscript_refs(root))
     diags.extend(scan_repository(root))
     return diags
 

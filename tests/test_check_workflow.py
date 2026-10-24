@@ -825,3 +825,23 @@ def test_literal_percent_is_a_warning(tmp_path: Path) -> None:
     assert diags[0].severity == "warning"
     assert "97.8" in diags[0].message
     assert error_codes(root) == set()
+
+
+def test_manuscript_forum_reference_is_an_error(tmp_path: Path) -> None:
+    """An owner/repo#123 reference in the typeset text is a PAPER-FORUM-REF error."""
+    root = make_repo(tmp_path)
+    sections = root / "manuscript" / "sections"
+    sections.mkdir(parents=True)
+    ref = "owner" + "/" + "repo" + "#" + "123"
+    (sections / "results.tex").write_text(f"Text with a reference ({ref}).\n", encoding="utf-8")
+    assert "PAPER-FORUM-REF" in error_codes(root)
+
+
+def test_manuscript_forum_reference_in_a_comment_is_ignored(tmp_path: Path) -> None:
+    """A LaTeX comment is not typeset, so the same reference there is allowed."""
+    root = make_repo(tmp_path)
+    sections = root / "manuscript" / "sections"
+    sections.mkdir(parents=True)
+    ref = "owner" + "/" + "repo" + "#" + "123"
+    (sections / "results.tex").write_text(f"% see {ref}\nText.\n", encoding="utf-8")
+    assert "PAPER-FORUM-REF" not in error_codes(root)
