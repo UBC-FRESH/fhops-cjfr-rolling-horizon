@@ -621,3 +621,16 @@ m3/m8/m11/m12/m15/m16 and the nitpicks, and a CI gate against un-macro'd numeral
   and 17 were empty" from before the M7 fold-in. It now quotes `\NWindowsNoSolution` (32) and
   `\NWindowsEmpty` (38).
 - Gates: dashboard GREEN; body 4,964/6,000; abstract 200/200; 29 pages.
+
+### "Continuity" renamed to day-to-day machine continuity (#42)
+
+- The metric (after Vanhoucke's work-continuity constraint) is the share of machines on a block on
+  one working day that also work it on the block's next working day, pooled over blocks and days.
+  The thesis narrative called it "schedule volatility/instability", which invites a reading the
+  measure does not support (stability of the plan across re-solves). The paper now says
+  **day-to-day machine continuity** throughout — Introduction question, Methods, Results,
+  Discussion, Fig. 3 axis — and Methods states explicitly that it measures persistence within the
+  stitched plan, not agreement between successive windows' plans.
+- Fixed the Fig. 3 axis label in `scripts/analyze_rerun.py` and regenerated the assets. Only the
+  figures changed; `numbers.tex` and the tables reproduced byte-for-byte.
+- Gates: dashboard GREEN; body 5,004/6,000; abstract 200/200.

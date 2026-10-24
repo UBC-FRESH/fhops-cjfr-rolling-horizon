@@ -20,7 +20,8 @@ Per-run metrics (``results/rerun/runs_metrics.csv``)
   rows with planned production below ``TINY_M3``.
 - ``moves``: block-to-block machine moves between consecutive working slots of each machine,
   counted on playback records that produced volume (> 1e-6 m3).
-- ``continuity``: for every block and pair of consecutive working days, the share of the machines
+- ``continuity``: day-to-day machine continuity — for every block and pair of consecutive working
+  days, the share of the machines
   working the block on the first day that also work it on the next; pooled over blocks and days
   (sum of intersections / sum of first-day machine counts).
 - Window outcomes: windows, stage-1 and earliness time-limit hits, ``no_solution``, ``skipped``,
@@ -652,7 +653,7 @@ def fig_effort(df: pd.DataFrame, out: Path) -> None:
 
     axes[0].set_xscale("log")
     axes[0].set_xlabel("Wall time per run (h)")
-    axes[1].set_xlabel("Schedule continuity")
+    axes[1].set_xlabel("Day-to-day machine continuity")
     for ax, tag in zip(axes, "ab", strict=False):
         ax.set_ylabel("Delivered / best known")
         ax.yaxis.set_major_formatter(PercentFormatter(1.0, decimals=0))
