@@ -77,7 +77,7 @@ This study repeats that evaluation with FHOPS~1.0.1 \citep{paradis2026fhops} on 
 studies representative of British Columbia (BC) harvesting operations, with both an exact and a
 heuristic solution method. Its contributions are threefold. First, it provides evidence on how
 planning horizon and re-optimization interval affect the delivered volume, feasibility, and
-continuity of implemented machine schedules, and the computing effort needed to produce them.
+day-to-day continuity of the implemented machine schedules, and the computing effort needed to produce them.
 Second, it sets out an evaluation protocol for rolling-horizon planning systems: carried state,
 stitched-plan replay, explicit reporting of window outcomes, and calibrated solver limits. The
 protocol is stated in terms of the operational state and solver behaviour that any such system
@@ -87,8 +87,8 @@ script, and run output, so that the results can be reproduced and extended. We a
   \item At what planning horizon length do further gains in delivered volume become small?
   \item Does frequent re-optimization outperform longer planning windows that are updated less
         often?
-  \item How do horizon length and re-optimization frequency affect schedule continuity and the
-        feasibility of the implemented schedule?
+  \item How do horizon length and re-optimization frequency affect day-to-day machine continuity and
+        the feasibility of the implemented schedule?
   \item How do these effects depend on problem size and on the solution method (exact
         mixed-integer programming versus simulated annealing), including the computing time each
         configuration requires?
