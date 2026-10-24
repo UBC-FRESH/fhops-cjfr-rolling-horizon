@@ -99,9 +99,13 @@ def main() -> int:
     generated = PACKAGE / "generated"
     generated.mkdir(exist_ok=True)
     shutil.copy2(MANUSCRIPT / "generated" / "numbers.tex", generated / "numbers.tex")
-    for name in ["main.pdf", "supplement.pdf"]:
+    for name, target in [
+        ("main.pdf", "fhops-cjfr-main.pdf"),
+        ("supplement.pdf", "fhops-cjfr-supplement.pdf"),
+        ("cover-letter.pdf", "fhops-cjfr-cover-letter.pdf"),
+    ]:
         if (MANUSCRIPT / "build" / name).exists():
-            shutil.copy2(MANUSCRIPT / "build" / name, PACKAGE / f"fhops-cjfr-{name}")
+            shutil.copy2(MANUSCRIPT / "build" / name, PACKAGE / target)
     cover = ROOT / "submission" / "cover-letter.tex"
     if cover.exists():
         shutil.copy2(cover, PACKAGE / "cover-letter.tex")
