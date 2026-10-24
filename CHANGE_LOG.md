@@ -600,3 +600,13 @@ m3/m8/m11/m12/m15/m16 and the nitpicks, and a CI gate against un-macro'd numeral
 - The script now creates the output directory before each build. Verified by removing
   `manuscript/build/` and rebuilding: `main.tex`, `supplement.tex`, `cover-letter.tex` all exit 0.
 - Dashboard GREEN locally; this is what makes PR #38 mergeable.
+
+## 2026-10-24
+
+### FHOPS SoftwareX paper published: promoted to a reference entry
+
+- *SoftwareX* **36**, 103147 (2026), doi:10.1016/j.softx.2026.103147 (Paradis, Jaffray, Coupland).
+- Replaced the in-text `\fhopspaper` description and the cover letter's "in press" wording with a
+  normal bibliography entry (`paradis2026fhops`), cited with `\citep`/`\citet`. The acronym is
+  brace-protected so the bibliography style does not lowercase it.
+- 43 references (< 50 limit). Dashboard GREEN; body 4,887/6,000; abstract 200/200.
