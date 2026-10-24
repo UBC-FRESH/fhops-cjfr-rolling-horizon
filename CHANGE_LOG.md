@@ -660,3 +660,20 @@ m3/m8/m11/m12/m15/m16 and the nitpicks, and a CI gate against un-macro'd numeral
   complete without a manual step.
 - Rebuilt the package from `main`. The flattened `manuscript.tex` compiles standalone (30 pages, no
   `Pending:`, no `??`), and the cover letter is present as both `.tex` and `.pdf`.
+
+### Final DOIs from GitHub releases; code check recorded (#50)
+
+- Cut the dataset release **`v1.1.1-rerun-m7`** on `UBC-FRESH/jaffray-masc-fhops-model`; Zenodo minted
+  **10.5281/zenodo.23626401**. Updated `jaffray2026rerun` from 23448896 to the new DOI.
+- Cut the analysis release **`v1.0.1`** on this repository; Zenodo minted
+  **10.5281/zenodo.23626443**. Added `jaffray2026analysis` and cited it in the Data availability
+  statement for the scripts.
+- Confirmed the scenario record 10.5281/zenodo.19200385 contains the bundles (93 files under
+  `data/input/scenarios/` in `v1.0.0`).
+- Recorded the code check behind the Methods sentence in `results/rerun/CODE_REVIEW.md`: 234 runs,
+  936 field comparisons of the analysis outputs against the raw run JSONs; one apparent mismatch
+  explained by the 7,200 s baseline override.
+- Checklist items 10, 11, 12 and 22 updated to done; item 22 records G.P.'s self-sign-off on behalf
+  of all authors (2026-10-24).
+- Rebuilt the submission package.
+- Gates: dashboard GREEN; 44 references; body 5,002/6,000; abstract 200/200.
