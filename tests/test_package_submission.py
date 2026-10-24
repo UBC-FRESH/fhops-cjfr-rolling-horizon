@@ -18,7 +18,8 @@ def _mini_manuscript(root: Path) -> None:
     (root / "build").mkdir()
     (root / "main.tex").write_text(
         "\\documentclass{article}\n\\input{metadata}\n\\input{sections/body}\n"
-        "\\input{generated/numbers}\n\\includegraphics{figures/fig.pdf}\n"
+        "\\IfFileExists{generated/numbers.tex}{\\input{generated/numbers}}{}\n"
+        "\\includegraphics{figures/fig.pdf}\n"
         "\\bibliographystyle{cjfr-apalike-doi}\n\\bibliography{references}\n",
         encoding="utf-8",
     )
@@ -61,7 +62,10 @@ def test_main_writes_a_flat_package(tmp_path: Path, monkeypatch: object) -> None
     assert (package / "fig.pdf").exists()
     assert not (package / "fig_smoke.pdf").exists()  # interim and smoke figures are skipped
     assert (package / "references.bib").exists()
-    assert (package / "generated" / "numbers.tex").exists()
+    assert (package / "numbers.tex").exists()
+    assert not (package / "generated").exists()  # no nested directories
+    assert "generated/numbers.tex" not in flat
+    assert "\\IfFileExists{numbers.tex}" in flat  # guard rewritten to the flat path
 
 
 def test_main_fails_without_main_tex(tmp_path: Path, monkeypatch: object) -> None:
